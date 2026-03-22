@@ -53,12 +53,12 @@ db.exec(`
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// ── Auth middleware ──────────────────────────────────────────────────────────
+// ── Auth middleware (write operations only) ──────────────────────────────────
 function requireAuth(req, res, next) {
   const authHeader = req.headers["authorization"] || "";
   const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
   const validKeys = Object.values(API_KEYS).filter(Boolean);
-  // If no keys are configured yet, allow all (open during setup)
+  // If no keys configured yet, allow all (open during initial setup)
   if (!validKeys.length) {
     req.caller = "unknown";
     return next();
@@ -90,7 +90,7 @@ app.get("/api/status", async (req, res) => {
   if (row) {
     try { return res.json(JSON.parse(row.data)); } catch {}
   }
-  // GitHub fallback (transition period — until Socrates writes directly to Monitor)
+  // GitHub fallback (transition period)
   try {
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_FILE}`;
     const headers = { Accept: "application/vnd.github.v3.raw", "User-Agent": "socrates-monitor" };
@@ -117,8 +117,8 @@ app.post("/api/status", requireAuth, (req, res) => {
   res.json({ ok: true });
 });
 
-// ── GET /api/tasks — list tasks (filterable) ─────────────────────────────────
-app.get("/api/tasks", requireAuth, (req, res) => {
+// ── GET /api/tasks — list tasks — PUBLIC ─────────────────────────────────────
+app.get("/api/tasks", (req, res) => {
   const { assigned_to, status, priority } = req.query;
   let query = "SELECT * FROM tasks WHERE 1=1";
   const params = [];
@@ -137,8 +137,8 @@ app.get("/api/tasks", requireAuth, (req, res) => {
   res.json(tasks.map(t => ({ ...t, notes: JSON.parse(t.notes || "[]") })));
 });
 
-// ── GET /api/tasks/:id — single task ─────────────────────────────────────────
-app.get("/api/tasks/:id", requireAuth, (req, res) => {
+// ── GET /api/tasks/:id — single task — PUBLIC ─────────────────────────────────
+app.get("/api/tasks/:id", (req, res) => {
   const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(req.params.id);
   if (!task) return res.status(404).json({ error: "not_found" });
   res.json({ ...task, notes: JSON.parse(task.notes || "[]") });
@@ -185,7 +185,6 @@ app.patch("/api/tasks/:id", requireAuth, async (req, res) => {
     new Date().toISOString(),
     task.id
   );
-  // Notify Slack on meaningful status transitions
   if (status && status !== task.status && ["complete", "blocked"].includes(status)) {
     const emoji = status === "complete" ? "✅" : "🚧";
     await notifySlack(`${emoji} *${task.title}* — ${status}${pr_url ? `\nPR: ${pr_url}` : ""}`);

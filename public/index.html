@@ -102,6 +102,126 @@
     margin-bottom: 16px;
   }
 
+  /* ── Task Queue ── */
+  .task-queue-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #21262d;
+  }
+  .task-queue-item:last-child { border-bottom: none; }
+
+  .priority-pip {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .pip-critical { background: #f85149; box-shadow: 0 0 6px #f8514966; }
+  .pip-high { background: #d29922; }
+  .pip-medium { background: #58a6ff; }
+  .pip-low { background: #484f58; }
+
+  .task-info { flex: 1; min-width: 0; }
+  .task-title { font-size: 14px; font-weight: 500; color: #e6edf3; margin-bottom: 4px; }
+  .task-desc { font-size: 12px; color: #8b949e; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .task-meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+  .task-status-tag {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .tag-queued { background: #21262d; color: #8b949e; }
+  .tag-in_progress { background: #1f6feb22; color: #58a6ff; border: 1px solid #1f6feb44; }
+  .tag-blocked { background: #f8514915; color: #f85149; border: 1px solid #f8514933; }
+
+  .task-by { font-size: 11px; color: #484f58; }
+
+  .task-pr { font-size: 11px; color: #58a6ff; text-decoration: none; }
+  .task-pr:hover { text-decoration: underline; }
+
+  .task-empty { font-size: 13px; color: #484f58; text-align: center; padding: 24px 0; }
+
+  /* ── New Task Form ── */
+  .form-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #21262d;
+  }
+  .form-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #484f58;
+    margin-bottom: 12px;
+  }
+  .form-row { margin-bottom: 10px; }
+  .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .form-label { font-size: 11px; color: #8b949e; margin-bottom: 4px; display: block; }
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    color: #e6edf3;
+    font-size: 13px;
+    padding: 7px 10px;
+    outline: none;
+    font-family: inherit;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #58a6ff; }
+  .form-select option { background: #161b22; }
+  .form-textarea { resize: vertical; min-height: 56px; }
+  .form-submit {
+    background: #238636;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 4px;
+  }
+  .form-submit:hover { background: #2ea043; }
+  .form-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .key-notice {
+    font-size: 12px;
+    color: #d29922;
+    background: #d2992215;
+    border: 1px solid #d2992230;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+  }
+  .form-msg { font-size: 12px; margin-top: 8px; text-align: center; }
+  .form-msg.ok { color: #3fb950; }
+  .form-msg.err { color: #f85149; }
+
+  /* ── Settings toggle ── */
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  .settings-btn {
+    background: none;
+    border: 1px solid #21262d;
+    border-radius: 6px;
+    color: #8b949e;
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  .settings-btn:hover { color: #e6edf3; border-color: #484f58; }
+
+  /* ── Existing sprint styles ── */
   .sprint-header {
     display: flex;
     justify-content: space-between;
@@ -249,6 +369,7 @@
     .sprint-item { grid-template-columns: 24px 1fr; gap: 8px; }
     .sprint-item .progress-bar-container { grid-column: 1 / -1; }
     .sprint-item-pct { display: none; }
+    .form-row-2 { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -262,14 +383,223 @@
         <span id="status-label">LOADING</span>
       </div>
     </div>
+    <div class="header-right">
+      <button class="settings-btn" onclick="toggleSettings()">⚙ API Key</button>
+    </div>
   </div>
   <div id="status-message" class="status-message"></div>
   <div id="last-updated" class="last-updated"></div>
   <div id="demo-banner" class="demo-banner" style="display:none;">Showing demo data — Socrates hasn't reported in yet</div>
+
+  <!-- Settings panel -->
+  <div id="settings-panel" class="card" style="display:none; margin-bottom:16px;">
+    <div class="card-title">API Key (stored in your browser)</div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">Your API Key</label>
+        <input type="password" id="api-key-input" class="form-input" placeholder="Enter your key..." />
+      </div>
+      <div style="display:flex;align-items:flex-end;">
+        <button class="form-submit" style="margin-top:0;" onclick="saveApiKey()">Save Key</button>
+      </div>
+    </div>
+    <div id="key-saved-msg" class="form-msg ok" style="display:none;">Key saved.</div>
+  </div>
+
+  <!-- Task Queue card -->
+  <div class="card">
+    <div class="card-title">Task Queue <span id="task-count" style="color:#58a6ff;font-size:11px;"></span></div>
+    <div id="task-list"><div class="task-empty">Loading tasks…</div></div>
+
+    <div class="form-section">
+      <div class="form-section-title">Assign Task to Socrates</div>
+      <div id="key-notice" class="key-notice" style="display:none;">Set your API key above to submit tasks.</div>
+      <div class="form-row">
+        <label class="form-label">Title *</label>
+        <input type="text" id="task-title" class="form-input" placeholder="e.g. Build Error Recovery Agent" />
+      </div>
+      <div class="form-row">
+        <label class="form-label">Description</label>
+        <textarea id="task-desc" class="form-textarea" placeholder="Context, acceptance criteria, references…"></textarea>
+      </div>
+      <div class="form-row-2">
+        <div>
+          <label class="form-label">Priority</label>
+          <select id="task-priority" class="form-select">
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+            <option value="medium" selected>Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Assign To</label>
+          <select id="task-assignee" class="form-select">
+            <option value="socrates" selected>Socrates</option>
+            <option value="atlas">Atlas</option>
+            <option value="titus">Titus</option>
+          </select>
+        </div>
+      </div>
+      <button class="form-submit" id="submit-task-btn" onclick="submitTask()">Submit Task</button>
+      <div id="form-msg" class="form-msg" style="display:none;"></div>
+    </div>
+  </div>
+
   <div id="content"></div>
 </div>
 
 <script>
+// ── API Key management ────────────────────────────────────────────────────────
+function getApiKey() { return localStorage.getItem('monitor_api_key') || ''; }
+function saveApiKey() {
+  var k = document.getElementById('api-key-input').value.trim();
+  localStorage.setItem('monitor_api_key', k);
+  document.getElementById('key-saved-msg').style.display = 'block';
+  setTimeout(function() { document.getElementById('key-saved-msg').style.display = 'none'; }, 2000);
+  checkKeyNotice();
+}
+function toggleSettings() {
+  var p = document.getElementById('settings-panel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+  if (p.style.display === 'block') {
+    document.getElementById('api-key-input').value = getApiKey();
+  }
+}
+function checkKeyNotice() {
+  document.getElementById('key-notice').style.display = getApiKey() ? 'none' : 'block';
+}
+
+// ── Task Queue ────────────────────────────────────────────────────────────────
+function pipClass(priority) {
+  return 'priority-pip pip-' + (priority || 'medium');
+}
+function tagClass(status) {
+  return 'task-status-tag tag-' + (status || 'queued');
+}
+function timeAgo(d) {
+  var diff = Math.floor((new Date() - new Date(d)) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+function renderTaskQueue(tasks) {
+  var list = document.getElementById('task-list');
+  while (list.firstChild) list.removeChild(list.firstChild);
+  var active = tasks.filter(function(t) { return t.status !== 'complete' && t.status !== 'cancelled'; });
+  document.getElementById('task-count').textContent = active.length ? '(' + active.length + ')' : '';
+  if (!active.length) {
+    var empty = document.createElement('div');
+    empty.className = 'task-empty';
+    empty.textContent = 'No active tasks — queue is clear';
+    list.appendChild(empty);
+    return;
+  }
+  active.forEach(function(t) {
+    var row = document.createElement('div');
+    row.className = 'task-queue-item';
+
+    var pip = document.createElement('div');
+    pip.className = pipClass(t.priority);
+    row.appendChild(pip);
+
+    var info = document.createElement('div');
+    info.className = 'task-info';
+
+    var title = document.createElement('div');
+    title.className = 'task-title';
+    title.textContent = t.title;
+    info.appendChild(title);
+
+    if (t.description) {
+      var desc = document.createElement('div');
+      desc.className = 'task-desc';
+      desc.textContent = t.description;
+      info.appendChild(desc);
+    }
+
+    var meta = document.createElement('div');
+    meta.className = 'task-meta';
+
+    var stag = document.createElement('span');
+    stag.className = tagClass(t.status);
+    stag.textContent = t.status.replace('_', ' ');
+    meta.appendChild(stag);
+
+    var by = document.createElement('span');
+    by.className = 'task-by';
+    by.textContent = 'from ' + (t.created_by || '?') + ' \u00b7 ' + timeAgo(t.created_at);
+    meta.appendChild(by);
+
+    if (t.pr_url) {
+      var pr = document.createElement('a');
+      pr.className = 'task-pr';
+      pr.href = t.pr_url;
+      pr.target = '_blank';
+      pr.textContent = 'PR \u2192';
+      meta.appendChild(pr);
+    }
+
+    info.appendChild(meta);
+    row.appendChild(info);
+    list.appendChild(row);
+  });
+}
+
+async function fetchTasks() {
+  try {
+    var res = await fetch('/api/tasks?status=queued,in_progress,blocked');
+    var tasks = await res.json();
+    if (Array.isArray(tasks)) renderTaskQueue(tasks);
+  } catch (e) {
+    console.error('Task fetch failed:', e);
+  }
+}
+
+async function submitTask() {
+  var key = getApiKey();
+  if (!key) { checkKeyNotice(); return; }
+  var title = document.getElementById('task-title').value.trim();
+  if (!title) { showFormMsg('Title is required.', 'err'); return; }
+  var btn = document.getElementById('submit-task-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting\u2026';
+  try {
+    var res = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({
+        title: title,
+        description: document.getElementById('task-desc').value.trim(),
+        priority: document.getElementById('task-priority').value,
+        assigned_to: document.getElementById('task-assignee').value,
+      })
+    });
+    if (res.status === 401) { showFormMsg('Invalid API key.', 'err'); return; }
+    if (!res.ok) { showFormMsg('Error submitting task.', 'err'); return; }
+    document.getElementById('task-title').value = '';
+    document.getElementById('task-desc').value = '';
+    showFormMsg('Task submitted.', 'ok');
+    fetchTasks();
+  } catch (e) {
+    showFormMsg('Network error.', 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Task';
+  }
+}
+
+function showFormMsg(msg, type) {
+  var el = document.getElementById('form-msg');
+  el.textContent = msg;
+  el.className = 'form-msg ' + type;
+  el.style.display = 'block';
+  setTimeout(function() { el.style.display = 'none'; }, 3000);
+}
+
+// ── Sprint status dashboard ───────────────────────────────────────────────────
 const DEMO_DATA = {
   status: "active",
   status_message: "Building Script Quality Gate agent",
@@ -283,7 +613,7 @@ const DEMO_DATA = {
     description: "Hook scoring + CTR prediction before video enters queue"
   },
   sprint: {
-    name: "Sprint 1 \u2014 FlowStack 2.1",
+    name: "Sprint 1 — FlowStack 2.1",
     started_at: "2026-03-22T00:00:00Z",
     target_end: "2026-04-05T00:00:00Z",
     items: [
@@ -331,27 +661,13 @@ function lerpColor(a, b, t) {
 
 function statusIcon(s) {
   if (s === 'complete') return '\u2705';
-  if (s === 'in_progress') return '\uD83D\uDD28';
-  if (s === 'blocked') return '\u26A0\uFE0F';
-  return '\u25CB';
-}
-
-function timeAgo(d) {
-  var diff = Math.floor((new Date() - new Date(d)) / 1000);
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  return Math.floor(diff/86400) + 'd ago';
+  if (s === 'in_progress') return '\ud83d\udd28';
+  if (s === 'blocked') return '\u26a0\ufe0f';
+  return '\u25cb';
 }
 
 function fmtTime(d) {
   return new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function esc(s) {
-  var d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
 }
 
 function render(data) {
@@ -362,22 +678,17 @@ function render(data) {
   document.getElementById('last-updated').textContent = data.last_updated ? 'Last updated ' + timeAgo(data.last_updated) : '';
 
   var el = document.getElementById('content');
-  // Clear existing content safely
   while (el.firstChild) el.removeChild(el.firstChild);
 
-  // Sprint section
   if (data.sprint) {
     var items = data.sprint.items || [];
     var overall = items.length > 0 ? Math.round(items.reduce(function(s, i) { return s + (i.progress_pct || 0); }, 0) / items.length) : 0;
-
     var card = document.createElement('div');
     card.className = 'card';
-
     var title = document.createElement('div');
     title.className = 'card-title';
     title.textContent = 'Sprint Progress';
     card.appendChild(title);
-
     var hdr = document.createElement('div');
     hdr.className = 'sprint-header';
     var sn = document.createElement('div');
@@ -389,7 +700,6 @@ function render(data) {
     st.textContent = 'Target: ' + new Date(data.sprint.target_end).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
     hdr.appendChild(st);
     card.appendChild(hdr);
-
     var ob = document.createElement('div');
     ob.className = 'sprint-overall';
     var obBar = document.createElement('div');
@@ -405,16 +715,13 @@ function render(data) {
     obLabel.textContent = overall + '% complete';
     ob.appendChild(obLabel);
     card.appendChild(ob);
-
     items.forEach(function(item) {
       var row = document.createElement('div');
       row.className = 'sprint-item';
-
       var icon = document.createElement('div');
       icon.className = 'sprint-item-icon';
       icon.textContent = statusIcon(item.status);
       row.appendChild(icon);
-
       var info = document.createElement('div');
       var name = document.createElement('div');
       name.className = 'sprint-item-name';
@@ -427,7 +734,6 @@ function render(data) {
         info.appendChild(notes);
       }
       row.appendChild(info);
-
       var barC = document.createElement('div');
       barC.className = 'progress-bar-container';
       var barF = document.createElement('div');
@@ -436,19 +742,16 @@ function render(data) {
       barF.style.background = progressColor(item.progress_pct || 0);
       barC.appendChild(barF);
       row.appendChild(barC);
-
       var pct = document.createElement('div');
       pct.className = 'sprint-item-pct';
       pct.style.color = (item.progress_pct || 0) >= 75 ? '#3fb950' : (item.progress_pct || 0) >= 50 ? '#e3b341' : (item.progress_pct || 0) > 0 ? '#d29922' : '#484f58';
       pct.textContent = (item.progress_pct || 0) + '%';
       row.appendChild(pct);
-
       card.appendChild(row);
     });
     el.appendChild(card);
   }
 
-  // Current task
   if (data.current_task) {
     var tc = document.createElement('div');
     tc.className = 'card';
@@ -490,7 +793,6 @@ function render(data) {
     el.appendChild(tc);
   }
 
-  // Blockers
   if (data.blockers && data.blockers.length > 0) {
     var bc = document.createElement('div');
     bc.className = 'card blockers-card';
@@ -523,7 +825,6 @@ function render(data) {
     el.appendChild(bc);
   }
 
-  // Activity feed
   if (data.recent_actions && data.recent_actions.length > 0) {
     var ac = document.createElement('div');
     ac.className = 'card';
@@ -550,7 +851,6 @@ function render(data) {
     el.appendChild(ac);
   }
 
-  // Deploy
   if (data.deploy) {
     var dc = document.createElement('div');
     dc.className = 'card';
@@ -608,8 +908,12 @@ async function fetchStatus() {
   }
 }
 
+// Init
+checkKeyNotice();
 fetchStatus();
+fetchTasks();
 setInterval(fetchStatus, 30000);
+setInterval(fetchTasks, 30000);
 </script>
 </body>
 </html>
