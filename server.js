@@ -1,7 +1,6 @@
 const express = require("express");
 const path = require("path");
-const crypto = require("crypto");
-const Database = require("better-sqlite3");
+const db = require("./db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,201 +8,244 @@ const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
 const REPO_OWNER = process.env.REPO_OWNER || "mmjohnson84BMP";
 const REPO_NAME = process.env.REPO_NAME || "flowstackclaude";
 const STATUS_FILE = process.env.STATUS_FILE || "SOCRATES_STATUS.json";
-const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || "";
 
-// API keys per agent — set these in Railway env vars
 const API_KEYS = {
-  atlas: process.env.ATLAS_API_KEY || "",
-  titus: process.env.TITUS_API_KEY || "",
-  socrates: process.env.SOCRATES_API_KEY || "",
+  [process.env.TITUS_API_KEY]: "titus",
+  [process.env.ATLAS_API_KEY]: "atlas",
+  [process.env.SOCRATES_API_KEY]: "socrates",
 };
 
-// SQLite — persists to /data/monitor.db on Railway with a volume, falls back to local file
-let db;
-try {
-  db = new Database(process.env.DB_PATH || "/data/monitor.db");
-} catch {
-  db = new Database("monitor.db");
-}
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS tasks (
-    id TEXT PRIMARY KEY,
-    title TEXT NOT NULL,
-    description TEXT DEFAULT '',
-    status TEXT DEFAULT 'queued',
-    priority TEXT DEFAULT 'medium',
-    assigned_to TEXT DEFAULT 'socrates',
-    created_by TEXT DEFAULT 'unknown',
-    sprint_item_id INTEGER,
-    branch TEXT,
-    pr_url TEXT,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL,
-    notes TEXT DEFAULT '[]'
-  );
-
-  CREATE TABLE IF NOT EXISTS sprint_status (
-    id INTEGER PRIMARY KEY CHECK (id = 1),
-    data TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-  );
-`);
-
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// ── Auth middleware (write operations only) ──────────────────────────────────
-function requireAuth(req, res, next) {
-  const authHeader = req.headers["authorization"] || "";
-  const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : "";
-  const validKeys = Object.values(API_KEYS).filter(Boolean);
-  // If no keys configured yet, allow all (open during initial setup)
-  if (!validKeys.length) {
-    req.caller = "unknown";
-    return next();
-  }
-  if (validKeys.includes(token)) {
-    req.caller = Object.entries(API_KEYS).find(([, v]) => v === token)?.[0] || "unknown";
-    return next();
-  }
-  return res.status(401).json({ error: "unauthorized" });
+function apiKeyAuth(req, res, next) {
+  const key = req.headers["x-api-key"];
+  if (!key) { req.actor = "browser"; return next(); }
+  const actor = API_KEYS[key];
+  if (!actor) return res.status(401).json({ error: "invalid_api_key" });
+  req.actor = actor;
+  next();
 }
 
-// ── Slack notification helper ────────────────────────────────────────────────
-async function notifySlack(message) {
-  if (!SLACK_WEBHOOK_URL) return;
-  try {
-    await fetch(SLACK_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: message }),
-    });
-  } catch (e) {
-    console.error("Slack notification failed:", e.message);
-  }
+app.use("/api", apiKeyAuth);
+
+function logActivity(taskId, action, actor, details) {
+  db.query("INSERT INTO activity_log (task_id, action, actor, details) VALUES ($1, $2, $3, $4)",
+    [taskId, action, actor, details ? JSON.stringify(details) : null]
+  ).catch((err) => console.error("Activity log error:", err.message));
 }
 
-// ── GET /api/status — backward compat (DB first, GitHub fallback) ────────────
-app.get("/api/status", async (req, res) => {
-  const row = db.prepare("SELECT data FROM sprint_status WHERE id = 1").get();
-  if (row) {
-    try { return res.json(JSON.parse(row.data)); } catch {}
-  }
-  // GitHub fallback (transition period)
+async function fetchGitHubStatus() {
   try {
     const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_FILE}`;
     const headers = { Accept: "application/vnd.github.v3.raw", "User-Agent": "socrates-monitor" };
     if (GITHUB_TOKEN) headers.Authorization = `token ${GITHUB_TOKEN}`;
     const response = await fetch(url, { headers });
-    if (response.status === 404) return res.json({ error: "not_found" });
-    if (!response.ok) return res.status(response.status).json({ error: "github_error" });
-    return res.json(await response.json());
-  } catch (error) {
-    return res.status(500).json({ error: "fetch_error", message: error.message });
+    if (response.status === 404) return { error: "not_found" };
+    if (!response.ok) return { error: "github_error", status: response.status };
+    return await response.json();
+  } catch (err) { return { error: "fetch_error", message: err.message }; }
+}
+
+app.get("/api/status", async (req, res) => {
+  const data = await fetchGitHubStatus();
+  if (data.error === "github_error") return res.status(data.status).json(data);
+  res.json(data);
+});
+
+app.get("/api/overview", async (req, res) => {
+  try {
+    const sprintRes = await db.query("SELECT * FROM sprints WHERE status = 'active' ORDER BY started_at DESC LIMIT 1");
+    const activeSprint = sprintRes.rows[0] || null;
+    let taskCounts = null, inProgress = [], completedToday = [];
+    if (activeSprint) {
+      const allTasks = await db.query("SELECT id, title, category, status, priority, override_priority, assignee, branch, updated_at FROM tasks WHERE sprint_id = $1 ORDER BY priority ASC, created_at ASC", [activeSprint.id]);
+      const tasks = allTasks.rows;
+      const byCategory = {};
+      for (const t of tasks) {
+        if (!byCategory[t.category]) byCategory[t.category] = { total: 0, complete: 0 };
+        byCategory[t.category].total++;
+        if (t.status === "complete") byCategory[t.category].complete++;
+      }
+      taskCounts = { total: tasks.length, complete: tasks.filter(t => t.status === "complete").length, in_progress: tasks.filter(t => t.status === "in_progress").length, on_staging: tasks.filter(t => t.status === "on_staging").length, queued: tasks.filter(t => t.status === "queued").length, by_category: byCategory };
+      inProgress = tasks.filter(t => ["in_progress", "on_staging", "review"].includes(t.status));
+      completedToday = tasks.filter(t => t.status === "complete" && new Date(t.updated_at).toDateString() === new Date().toDateString());
+    }
+    const socratesStatus = await fetchGitHubStatus();
+    res.json({ active_sprint: activeSprint ? { ...activeSprint, task_counts: taskCounts } : null, completed_today: completedToday, in_progress: inProgress, socrates_status: socratesStatus.error ? null : socratesStatus });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    console.error("Overview error:", err);
+    res.status(500).json({ error: "db_error", message: err.message });
   }
 });
 
-// ── POST /api/status — Socrates updates sprint status ───────────────────────
-app.post("/api/status", requireAuth, (req, res) => {
-  const data = req.body;
-  if (!data || typeof data !== "object") return res.status(400).json({ error: "invalid_body" });
-  data.last_updated = new Date().toISOString();
-  const json = JSON.stringify(data);
-  db.prepare(`
-    INSERT INTO sprint_status (id, data, updated_at) VALUES (1, ?, ?)
-    ON CONFLICT(id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at
-  `).run(json, data.last_updated);
-  res.json({ ok: true });
-});
-
-// ── GET /api/tasks — list tasks — PUBLIC ─────────────────────────────────────
-app.get("/api/tasks", (req, res) => {
-  const { assigned_to, status, priority } = req.query;
-  let query = "SELECT * FROM tasks WHERE 1=1";
-  const params = [];
-  if (assigned_to) { query += " AND assigned_to = ?"; params.push(assigned_to); }
-  if (status) {
-    const statuses = status.split(",");
-    query += ` AND status IN (${statuses.map(() => "?").join(",")})`;
-    params.push(...statuses);
+app.get("/api/tasks", async (req, res) => {
+  try {
+    const conditions = [], params = []; let i = 1;
+    if (req.query.status) { conditions.push(`status = $${i++}`); params.push(req.query.status); }
+    if (req.query.category) { conditions.push(`category = $${i++}`); params.push(req.query.category); }
+    if (req.query.sprint_id) { conditions.push(`sprint_id = $${i++}`); params.push(req.query.sprint_id); }
+    if (req.query.assignee) { conditions.push(`assignee = $${i++}`); params.push(req.query.assignee); }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT * FROM tasks ${where} ORDER BY override_priority DESC, priority ASC, created_at ASC`, params);
+    res.json({ tasks: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
   }
-  if (priority) { query += " AND priority = ?"; params.push(priority); }
-  query += ` ORDER BY
-    CASE priority WHEN 'critical' THEN 0 WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
-    CASE status WHEN 'in_progress' THEN 0 WHEN 'queued' THEN 1 ELSE 2 END,
-    created_at ASC`;
-  const tasks = db.prepare(query).all(...params);
-  res.json(tasks.map(t => ({ ...t, notes: JSON.parse(t.notes || "[]") })));
 });
 
-// ── GET /api/tasks/:id — single task — PUBLIC ─────────────────────────────────
-app.get("/api/tasks/:id", (req, res) => {
-  const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(req.params.id);
-  if (!task) return res.status(404).json({ error: "not_found" });
-  res.json({ ...task, notes: JSON.parse(task.notes || "[]") });
-});
-
-// ── POST /api/tasks — create task ────────────────────────────────────────────
-app.post("/api/tasks", requireAuth, async (req, res) => {
-  const { title, description = "", priority = "medium", assigned_to = "socrates", sprint_item_id } = req.body;
-  if (!title) return res.status(400).json({ error: "title_required" });
-  const id = crypto.randomUUID();
-  const now = new Date().toISOString();
-  db.prepare(`
-    INSERT INTO tasks (id, title, description, status, priority, assigned_to, created_by, sprint_item_id, created_at, updated_at, notes)
-    VALUES (?, ?, ?, 'queued', ?, ?, ?, ?, ?, ?, '[]')
-  `).run(id, title, description, priority, assigned_to, req.caller, sprint_item_id || null, now, now);
-  const priorityEmoji = { critical: "🔴", high: "🟠", medium: "🟡", low: "🟢" }[priority] || "⚪";
-  await notifySlack(`${priorityEmoji} *New task assigned to ${assigned_to}*\n*${title}*${description ? `\n${description}` : ""}`);
-  res.status(201).json({ id, title, description, status: "queued", priority, assigned_to, created_by: req.caller, notes: [] });
-});
-
-// ── PATCH /api/tasks/:id — update task ───────────────────────────────────────
-app.patch("/api/tasks/:id", requireAuth, async (req, res) => {
-  const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(req.params.id);
-  if (!task) return res.status(404).json({ error: "not_found" });
-  const { status, priority, assigned_to, branch, pr_url, notes: newNote } = req.body;
-  const existingNotes = JSON.parse(task.notes || "[]");
-  if (newNote) {
-    const noteText = Array.isArray(newNote) ? newNote[0] : newNote;
-    existingNotes.push(`[${new Date().toISOString()}] ${noteText}`);
+app.post("/api/tasks", async (req, res) => {
+  try {
+    const { title, description, category, priority, assignee, branch, sprint_id } = req.body;
+    if (!title || !category) return res.status(400).json({ error: "missing_fields", message: "title and category required" });
+    const result = await db.query(`INSERT INTO tasks (title, description, category, priority, assignee, branch, sprint_id, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [title, description || null, category, priority || 3, assignee || null, branch || null, sprint_id || null, req.actor]);
+    logActivity(result.rows[0].id, "task_created", req.actor, { title, category });
+    res.status(201).json({ task: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    if (err.code === "23514") return res.status(400).json({ error: "invalid_value", message: err.message });
+    res.status(500).json({ error: "db_error", message: err.message });
   }
-  const updatedStatus = status || task.status;
-  db.prepare(`
-    UPDATE tasks SET
-      status = ?, priority = ?, assigned_to = ?, branch = ?, pr_url = ?,
-      notes = ?, updated_at = ?
-    WHERE id = ?
-  `).run(
-    updatedStatus,
-    priority || task.priority,
-    assigned_to || task.assigned_to,
-    branch !== undefined ? branch : task.branch,
-    pr_url !== undefined ? pr_url : task.pr_url,
-    JSON.stringify(existingNotes),
-    new Date().toISOString(),
-    task.id
-  );
-  if (status && status !== task.status && ["complete", "blocked"].includes(status)) {
-    const emoji = status === "complete" ? "✅" : "🚧";
-    await notifySlack(`${emoji} *${task.title}* — ${status}${pr_url ? `\nPR: ${pr_url}` : ""}`);
-  }
-  const updated = db.prepare("SELECT * FROM tasks WHERE id = ?").get(task.id);
-  res.json({ ...updated, notes: JSON.parse(updated.notes || "[]") });
 });
 
-// ── DELETE /api/tasks/:id — cancel task ──────────────────────────────────────
-app.delete("/api/tasks/:id", requireAuth, (req, res) => {
-  const task = db.prepare("SELECT * FROM tasks WHERE id = ?").get(req.params.id);
-  if (!task) return res.status(404).json({ error: "not_found" });
-  db.prepare("UPDATE tasks SET status = 'cancelled', updated_at = ? WHERE id = ?")
-    .run(new Date().toISOString(), task.id);
-  res.json({ ok: true });
+app.get("/api/tasks/:id", async (req, res) => {
+  try {
+    const taskRes = await db.query("SELECT * FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskRes.rows.length) return res.status(404).json({ error: "not_found" });
+    const commentsRes = await db.query("SELECT * FROM comments WHERE task_id = $1 ORDER BY created_at ASC", [req.params.id]);
+    const filesRes = await db.query("SELECT * FROM files WHERE task_id = $1 ORDER BY created_at ASC", [req.params.id]);
+    res.json({ task: taskRes.rows[0], comments: commentsRes.rows, files: filesRes.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/tasks/:id", async (req, res) => {
+  try {
+    const allowed = ["title", "description", "category", "status", "priority", "override_priority", "assignee", "branch", "sprint_id"];
+    const sets = [], params = []; let i = 1;
+    const oldRes = await db.query("SELECT * FROM tasks WHERE id = $1", [req.params.id]);
+    if (!oldRes.rows.length) return res.status(404).json({ error: "not_found" });
+    const old = oldRes.rows[0];
+    for (const key of allowed) { if (req.body[key] !== undefined) { sets.push(`${key} = $${i++}`); params.push(req.body[key]); } }
+    if (!sets.length) return res.status(400).json({ error: "no_fields" });
+    sets.push(`updated_at = NOW()`); params.push(req.params.id);
+    const result = await db.query(`UPDATE tasks SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    const changes = {};
+    for (const key of allowed) { if (req.body[key] !== undefined && String(old[key]) !== String(req.body[key])) changes[key] = { from: old[key], to: req.body[key] }; }
+    if (Object.keys(changes).length) logActivity(result.rows[0].id, "task_updated", req.actor, changes);
+    res.json({ task: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    if (err.code === "23514") return res.status(400).json({ error: "invalid_value", message: err.message });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.delete("/api/tasks/:id", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM tasks WHERE id = $1", [req.params.id]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "not_found" });
+    logActivity(null, "task_deleted", req.actor, { task_id: req.params.id });
+    res.status(204).send();
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/tasks/:id/comments", async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ error: "missing_fields", message: "content required" });
+    const author = req.body.author || req.actor;
+    const taskCheck = await db.query("SELECT id FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskCheck.rows.length) return res.status(404).json({ error: "task_not_found" });
+    const result = await db.query("INSERT INTO comments (task_id, author, content) VALUES ($1, $2, $3) RETURNING *", [req.params.id, author, content]);
+    logActivity(parseInt(req.params.id), "comment_added", author, { preview: content.slice(0, 100) });
+    res.status(201).json({ comment: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/tasks/:id/files", async (req, res) => {
+  try {
+    const { filename, url_or_content } = req.body;
+    if (!filename || !url_or_content) return res.status(400).json({ error: "missing_fields", message: "filename and url_or_content required" });
+    const uploaded_by = req.body.uploaded_by || req.actor;
+    const taskCheck = await db.query("SELECT id FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskCheck.rows.length) return res.status(404).json({ error: "task_not_found" });
+    const result = await db.query("INSERT INTO files (task_id, filename, url_or_content, uploaded_by) VALUES ($1, $2, $3, $4) RETURNING *", [req.params.id, filename, url_or_content, uploaded_by]);
+    logActivity(parseInt(req.params.id), "file_attached", uploaded_by, { filename });
+    res.status(201).json({ file: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/sprints", async (req, res) => {
+  try { const result = await db.query("SELECT * FROM sprints ORDER BY started_at DESC"); res.json({ sprints: result.rows }); }
+  catch (err) { if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" }); res.status(500).json({ error: "db_error", message: err.message }); }
+});
+
+app.post("/api/sprints", async (req, res) => {
+  try {
+    const { name, target_end } = req.body;
+    if (!name) return res.status(400).json({ error: "missing_fields", message: "name required" });
+    const result = await db.query("INSERT INTO sprints (name, target_end) VALUES ($1, $2) RETURNING *", [name, target_end || null]);
+    logActivity(null, "sprint_created", req.actor, { name });
+    res.status(201).json({ sprint: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/sprints/:id", async (req, res) => {
+  try {
+    const allowed = ["name", "target_end", "status"];
+    const sets = [], params = []; let i = 1;
+    for (const key of allowed) { if (req.body[key] !== undefined) { sets.push(`${key} = $${i++}`); params.push(req.body[key]); } }
+    if (!sets.length) return res.status(400).json({ error: "no_fields" });
+    params.push(req.params.id);
+    const result = await db.query(`UPDATE sprints SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    res.json({ sprint: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/activity", async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+    const params = [limit];
+    const conditions = [];
+    if (req.query.task_id) { conditions.push("task_id = $2"); params.push(req.query.task_id); }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT a.*, t.title as task_title FROM activity_log a LEFT JOIN tasks t ON a.task_id = t.id ${where} ORDER BY a.created_at DESC LIMIT $1`, params);
+    res.json({ activity: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
 });
 
 app.get("/health", (req, res) => res.send("ok"));
+app.get("/legacy", (req, res) => res.sendFile(path.join(__dirname, "public", "legacy.html")));
 
-app.listen(PORT, () => {
-  console.log(`Socrates Monitor v2 live on port ${PORT}`);
-});
+async function boot() {
+  await db.initSchema();
+  const keys = ["TITUS_API_KEY", "ATLAS_API_KEY", "SOCRATES_API_KEY"];
+  for (const k of keys) { if (!process.env[k]) console.warn(`WARNING: ${k} not set`); }
+  app.listen(PORT, () => console.log(`BMP Command Center live on port ${PORT}`));
+}
+
+boot().catch((err) => { console.error("Boot failed:", err); process.exit(1); });

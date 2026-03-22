@@ -1,13 +1,13 @@
 {
   "name": "socrates-monitor",
-  "version": "2.0.0",
-  "description": "Socrates Command Center — Task queue + read/write status API",
+  "version": "3.0.0",
+  "description": "BMP Command Center — Dev operations hub",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
-    "better-sqlite3": "^9.4.3"
+    "pg": "^8.11.0"
   }
 }
