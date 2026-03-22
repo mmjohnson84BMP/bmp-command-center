@@ -1,12 +1,13 @@
 {
   "name": "socrates-monitor",
-  "version": "1.0.0",
-  "description": "Socrates CTO Agent — Real-time status dashboard",
+  "version": "2.0.0",
+  "description": "Socrates Command Center — Task queue + read/write status API",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "better-sqlite3": "^9.4.3"
   }
 }
