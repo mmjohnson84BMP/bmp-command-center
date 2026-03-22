@@ -430,6 +430,12 @@ html, body {
 .drawer-close:hover { background: rgba(255,255,255,0.06); color: var(--text); border-color: var(--border-hover); }
 .drawer-title { font-size: 20px; font-weight: 600; margin-bottom: 8px; padding-right: 44px; line-height: 1.3; }
 .drawer-desc { font-size: 14px; color: var(--text-secondary); margin-bottom: 20px; white-space: pre-wrap; line-height: 1.6; }
+.drawer-objective { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); border-radius: var(--radius-md); padding: 16px; margin-bottom: 16px; }
+.drawer-objective-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--blue); margin-bottom: 8px; }
+.drawer-objective-text { font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; }
+.drawer-done { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.15); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px; }
+.drawer-done-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 8px; }
+.drawer-done-text { font-size: 14px; color: var(--text); line-height: 1.6; white-space: pre-wrap; }
 .drawer-section { margin-bottom: 24px; }
 .drawer-label {
   font-size: 11px; font-weight: 600; text-transform: uppercase;
@@ -1263,9 +1269,28 @@ function renderDrawer() {
     // Title
     drawer.appendChild(el('div', { className: 'drawer-title' }, task.title || 'Untitled'));
 
-    // Description
+    // Objective & Done When
     if (task.description) {
-      drawer.appendChild(el('div', { className: 'drawer-desc' }, task.description));
+      var parts = task.description.split(/\n(?=Done[: ]|Done when[: ])/i);
+      var objective = parts[0].trim();
+      var doneWhen = parts.length > 1 ? parts[1].replace(/^Done(?:\s*when)?[:\s]*/i, '').trim() : null;
+
+      var objBox = el('div', { className: 'drawer-objective' });
+      objBox.appendChild(el('div', { className: 'drawer-objective-title' }, 'Objective'));
+      objBox.appendChild(el('div', { className: 'drawer-objective-text' }, objective));
+      drawer.appendChild(objBox);
+
+      if (doneWhen) {
+        var doneBox = el('div', { className: 'drawer-done' });
+        doneBox.appendChild(el('div', { className: 'drawer-done-title' }, 'Done When'));
+        doneBox.appendChild(el('div', { className: 'drawer-done-text' }, doneWhen));
+        drawer.appendChild(doneBox);
+      }
+    } else {
+      var emptyObj = el('div', { className: 'drawer-objective', style: { opacity: '0.5' } });
+      emptyObj.appendChild(el('div', { className: 'drawer-objective-title' }, 'Objective'));
+      emptyObj.appendChild(el('div', { className: 'drawer-objective-text' }, 'No description yet — click to add one'));
+      drawer.appendChild(emptyObj);
     }
 
     // Status row
