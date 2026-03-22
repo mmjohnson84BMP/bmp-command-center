@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Socrates Monitor</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  .container { max-width: 800px; margin: 0 auto; }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 16px; }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #f0f6fc;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .status-active .status-dot { background: #3fb950; box-shadow: 0 0 8px #3fb95088; }
+  .status-active { background: #3fb95015; border: 1px solid #3fb95033; color: #3fb950; }
+
+  .status-paused .status-dot { background: #d29922; box-shadow: 0 0 8px #d2992288; }
+  .status-paused { background: #d2992215; border: 1px solid #d2992233; color: #d29922; }
+
+  .status-blocked .status-dot { background: #f85149; box-shadow: 0 0 8px #f8514988; animation: pulse 2s infinite; }
+  .status-blocked { background: #f8514915; border: 1px solid #f8514933; color: #f85149; }
+
+  .status-idle .status-dot { background: #484f58; }
+  .status-idle { background: #484f5815; border: 1px solid #484f5833; color: #484f58; }
+
+  .status-error .status-dot { background: #f85149; animation: pulse 1s infinite; }
+  .status-error { background: #f8514915; border: 1px solid #f8514933; color: #f85149; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-message { font-size: 14px; color: #8b949e; margin-bottom: 4px; }
+  .last-updated { font-size: 12px; color: #484f58; margin-bottom: 24px; }
+
+  .demo-banner {
+    background: #d2992220;
+    border: 1px solid #d2992240;
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #d29922;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .card {
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #484f58;
+    margin-bottom: 16px;
+  }
+
+  .sprint-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .sprint-name { font-size: 16px; font-weight: 600; color: #f0f6fc; }
+  .sprint-target { font-size: 12px; color: #484f58; }
+
+  .sprint-overall { margin-bottom: 20px; }
+
+  .sprint-overall-bar {
+    width: 100%;
+    height: 8px;
+    background: #21262d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .sprint-overall-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+  }
+
+  .sprint-overall-label { font-size: 12px; color: #8b949e; text-align: right; }
+
+  .sprint-item {
+    display: grid;
+    grid-template-columns: 28px 1fr 200px 48px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #21262d;
+  }
+
+  .sprint-item:last-child { border-bottom: none; }
+  .sprint-item-icon { font-size: 16px; text-align: center; }
+
+  .sprint-item-name { font-size: 14px; font-weight: 500; color: #e6edf3; }
+  .sprint-item-notes { font-size: 11px; color: #484f58; margin-top: 2px; }
+
+  .progress-bar-container {
+    width: 100%;
+    height: 14px;
+    background: #21262d;
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 7px;
+    transition: width 0.6s ease;
+  }
+
+  .sprint-item-pct {
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .current-task-name { font-size: 16px; font-weight: 600; color: #f0f6fc; margin-bottom: 8px; }
+
+  .current-task-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+
+  .task-tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: #21262d;
+    color: #8b949e;
+  }
+
+  .task-tag-phase { background: #1f6feb22; color: #58a6ff; border: 1px solid #1f6feb44; }
+  .task-tag-branch { background: #3fb95015; color: #3fb950; border: 1px solid #3fb95033; font-family: monospace; font-size: 11px; }
+
+  .current-task-desc { font-size: 13px; color: #8b949e; margin-top: 10px; line-height: 1.5; }
+
+  .blockers-card { background: #f8514910; border-color: #f8514930; }
+
+  .blocker-item { padding: 12px 0; border-bottom: 1px solid #f8514920; }
+  .blocker-item:last-child { border-bottom: none; }
+  .blocker-desc { font-size: 14px; color: #f0f6fc; margin-bottom: 6px; }
+  .blocker-meta { display: flex; gap: 16px; font-size: 12px; color: #f8514999; }
+
+  .activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid #21262d;
+    align-items: baseline;
+  }
+
+  .activity-item:last-child { border-bottom: none; }
+
+  .activity-time {
+    font-size: 12px;
+    font-family: monospace;
+    color: #484f58;
+    white-space: nowrap;
+    min-width: 70px;
+  }
+
+  .activity-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot-commit { background: #8b949e; }
+  .dot-pr_opened { background: #58a6ff; }
+  .dot-pr_merged { background: #a371f7; }
+  .dot-deploy { background: #3fb950; }
+  .dot-status_change { background: #d29922; }
+  .dot-blocker { background: #f85149; }
+
+  .activity-text { font-size: 13px; color: #e6edf3; }
+
+  .deploy-row { display: flex; gap: 16px; align-items: center; font-size: 13px; }
+
+  .deploy-env {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: #1f6feb22;
+    color: #58a6ff;
+    border: 1px solid #1f6feb44;
+  }
+
+  .deploy-ok { color: #3fb950; }
+  .deploy-fail { color: #f85149; }
+  .deploy-building { color: #d29922; }
+
+  @media (max-width: 600px) {
+    body { padding: 16px; }
+    .header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .sprint-item { grid-template-columns: 24px 1fr; gap: 8px; }
+    .sprint-item .progress-bar-container { grid-column: 1 / -1; }
+    .sprint-item-pct { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-left">
+      <h1>SOCRATES</h1>
+      <div id="status-badge" class="status-badge status-idle">
+        <div class="status-dot"></div>
+        <span id="status-label">LOADING</span>
+      </div>
+    </div>
+  </div>
+  <div id="status-message" class="status-message"></div>
+  <div id="last-updated" class="last-updated"></div>
+  <div id="demo-banner" class="demo-banner" style="display:none;">Showing demo data — Socrates hasn't reported in yet</div>
+  <div id="content"></div>
+</div>
+
+<script>
+const DEMO_DATA = {
+  status: "active",
+  status_message: "Building Script Quality Gate agent",
+  last_updated: new Date().toISOString(),
+  current_task: {
+    name: "Script Quality Gate",
+    phase: "implementation",
+    progress_pct: 35,
+    branch: "feature/script-quality-gate",
+    started_at: "2026-03-22T01:00:00Z",
+    description: "Hook scoring + CTR prediction before video enters queue"
+  },
+  sprint: {
+    name: "Sprint 1 \u2014 FlowStack 2.1",
+    started_at: "2026-03-22T00:00:00Z",
+    target_end: "2026-04-05T00:00:00Z",
+    items: [
+      {id:1,name:"Platform Audit",status:"complete",progress_pct:100,branch:null,pr_number:null,completed_at:"2026-03-24T00:00:00Z",notes:"State of the platform report delivered"},
+      {id:2,name:"Script Quality Gate",status:"in_progress",progress_pct:35,branch:"feature/script-quality-gate",pr_number:null,completed_at:null,notes:"Building hook scoring logic"},
+      {id:3,name:"Channel Provisioner",status:"not_started",progress_pct:0,branch:null,pr_number:null,completed_at:null,notes:null},
+      {id:4,name:"Performance Strategy Engine",status:"not_started",progress_pct:0,branch:null,pr_number:null,completed_at:null,notes:null},
+      {id:5,name:"Channel Health Monitor",status:"not_started",progress_pct:0,branch:null,pr_number:null,completed_at:null,notes:null},
+      {id:6,name:"Growth Intelligence Engine",status:"not_started",progress_pct:0,branch:null,pr_number:null,completed_at:null,notes:null}
+    ]
+  },
+  recent_actions: [
+    {action:"Created server/agents/scriptQualityGate.ts",timestamp:"2026-03-22T03:15:00Z",type:"commit"},
+    {action:"Opened PR #12: Script Quality Gate - hook scoring",timestamp:"2026-03-22T02:45:00Z",type:"pr_opened"},
+    {action:"Completed platform audit report",timestamp:"2026-03-22T02:30:00Z",type:"status_change"},
+    {action:"Sprint 1 kicked off",timestamp:"2026-03-22T01:00:00Z",type:"status_change"}
+  ],
+  blockers: [
+    {description:"YouTube Analytics OAuth scope not confirmed for all BMP channels",blocking_item:"Growth Intelligence Engine",owner:"Mike",since:"2026-03-22T00:00:00Z"}
+  ],
+  deploy: {
+    last_deploy_at: "2026-03-22T03:10:00Z",
+    deploy_status: "success",
+    environment: "staging"
+  }
+};
+
+function progressColor(pct) {
+  if (pct <= 0) return '#f85149';
+  if (pct <= 25) return lerpColor('#f85149', '#d29922', pct / 25);
+  if (pct <= 50) return lerpColor('#d29922', '#e3b341', (pct - 25) / 25);
+  if (pct <= 75) return lerpColor('#e3b341', '#7ee787', (pct - 50) / 25);
+  return lerpColor('#7ee787', '#3fb950', (pct - 75) / 25);
+}
+
+function lerpColor(a, b, t) {
+  const ah = parseInt(a.slice(1), 16), bh = parseInt(b.slice(1), 16);
+  const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab2 = ah & 0xff;
+  const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+  const rr = Math.round(ar + (br - ar) * t);
+  const rg = Math.round(ag + (bg - ag) * t);
+  const rb = Math.round(ab2 + (bb - ab2) * t);
+  return '#' + ((rr << 16) | (rg << 8) | rb).toString(16).padStart(6, '0');
+}
+
+function statusIcon(s) {
+  if (s === 'complete') return '\u2705';
+  if (s === 'in_progress') return '\uD83D\uDD28';
+  if (s === 'blocked') return '\u26A0\uFE0F';
+  return '\u25CB';
+}
+
+function timeAgo(d) {
+  var diff = Math.floor((new Date() - new Date(d)) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  return Math.floor(diff/86400) + 'd ago';
+}
+
+function fmtTime(d) {
+  return new Date(d).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function esc(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function render(data) {
+  var badge = document.getElementById('status-badge');
+  badge.className = 'status-badge status-' + (data.status || 'idle');
+  document.getElementById('status-label').textContent = (data.status || 'idle').toUpperCase();
+  document.getElementById('status-message').textContent = data.status_message || '';
+  document.getElementById('last-updated').textContent = data.last_updated ? 'Last updated ' + timeAgo(data.last_updated) : '';
+
+  var el = document.getElementById('content');
+  // Clear existing content safely
+  while (el.firstChild) el.removeChild(el.firstChild);
+
+  // Sprint section
+  if (data.sprint) {
+    var items = data.sprint.items || [];
+    var overall = items.length > 0 ? Math.round(items.reduce(function(s, i) { return s + (i.progress_pct || 0); }, 0) / items.length) : 0;
+
+    var card = document.createElement('div');
+    card.className = 'card';
+
+    var title = document.createElement('div');
+    title.className = 'card-title';
+    title.textContent = 'Sprint Progress';
+    card.appendChild(title);
+
+    var hdr = document.createElement('div');
+    hdr.className = 'sprint-header';
+    var sn = document.createElement('div');
+    sn.className = 'sprint-name';
+    sn.textContent = data.sprint.name;
+    hdr.appendChild(sn);
+    var st = document.createElement('div');
+    st.className = 'sprint-target';
+    st.textContent = 'Target: ' + new Date(data.sprint.target_end).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    hdr.appendChild(st);
+    card.appendChild(hdr);
+
+    var ob = document.createElement('div');
+    ob.className = 'sprint-overall';
+    var obBar = document.createElement('div');
+    obBar.className = 'sprint-overall-bar';
+    var obFill = document.createElement('div');
+    obFill.className = 'sprint-overall-fill';
+    obFill.style.width = overall + '%';
+    obFill.style.background = progressColor(overall);
+    obBar.appendChild(obFill);
+    ob.appendChild(obBar);
+    var obLabel = document.createElement('div');
+    obLabel.className = 'sprint-overall-label';
+    obLabel.textContent = overall + '% complete';
+    ob.appendChild(obLabel);
+    card.appendChild(ob);
+
+    items.forEach(function(item) {
+      var row = document.createElement('div');
+      row.className = 'sprint-item';
+
+      var icon = document.createElement('div');
+      icon.className = 'sprint-item-icon';
+      icon.textContent = statusIcon(item.status);
+      row.appendChild(icon);
+
+      var info = document.createElement('div');
+      var name = document.createElement('div');
+      name.className = 'sprint-item-name';
+      name.textContent = item.name;
+      info.appendChild(name);
+      if (item.notes) {
+        var notes = document.createElement('div');
+        notes.className = 'sprint-item-notes';
+        notes.textContent = item.notes;
+        info.appendChild(notes);
+      }
+      row.appendChild(info);
+
+      var barC = document.createElement('div');
+      barC.className = 'progress-bar-container';
+      var barF = document.createElement('div');
+      barF.className = 'progress-bar-fill';
+      barF.style.width = (item.progress_pct || 0) + '%';
+      barF.style.background = progressColor(item.progress_pct || 0);
+      barC.appendChild(barF);
+      row.appendChild(barC);
+
+      var pct = document.createElement('div');
+      pct.className = 'sprint-item-pct';
+      pct.style.color = (item.progress_pct || 0) >= 75 ? '#3fb950' : (item.progress_pct || 0) >= 50 ? '#e3b341' : (item.progress_pct || 0) > 0 ? '#d29922' : '#484f58';
+      pct.textContent = (item.progress_pct || 0) + '%';
+      row.appendChild(pct);
+
+      card.appendChild(row);
+    });
+    el.appendChild(card);
+  }
+
+  // Current task
+  if (data.current_task) {
+    var tc = document.createElement('div');
+    tc.className = 'card';
+    var tt = document.createElement('div');
+    tt.className = 'card-title';
+    tt.textContent = 'Current Task';
+    tc.appendChild(tt);
+    var tn = document.createElement('div');
+    tn.className = 'current-task-name';
+    tn.textContent = data.current_task.name;
+    tc.appendChild(tn);
+    var tm = document.createElement('div');
+    tm.className = 'current-task-meta';
+    if (data.current_task.phase) {
+      var tp = document.createElement('span');
+      tp.className = 'task-tag task-tag-phase';
+      tp.textContent = data.current_task.phase;
+      tm.appendChild(tp);
+    }
+    if (data.current_task.branch) {
+      var tb = document.createElement('span');
+      tb.className = 'task-tag task-tag-branch';
+      tb.textContent = data.current_task.branch;
+      tm.appendChild(tb);
+    }
+    if (data.current_task.started_at) {
+      var ts2 = document.createElement('span');
+      ts2.className = 'task-tag';
+      ts2.textContent = 'Started ' + timeAgo(data.current_task.started_at);
+      tm.appendChild(ts2);
+    }
+    tc.appendChild(tm);
+    if (data.current_task.description) {
+      var td = document.createElement('div');
+      td.className = 'current-task-desc';
+      td.textContent = data.current_task.description;
+      tc.appendChild(td);
+    }
+    el.appendChild(tc);
+  }
+
+  // Blockers
+  if (data.blockers && data.blockers.length > 0) {
+    var bc = document.createElement('div');
+    bc.className = 'card blockers-card';
+    var bt = document.createElement('div');
+    bt.className = 'card-title';
+    bt.style.color = '#f85149';
+    bt.textContent = 'Blockers';
+    bc.appendChild(bt);
+    data.blockers.forEach(function(b) {
+      var bi = document.createElement('div');
+      bi.className = 'blocker-item';
+      var bd = document.createElement('div');
+      bd.className = 'blocker-desc';
+      bd.textContent = b.description;
+      bi.appendChild(bd);
+      var bm = document.createElement('div');
+      bm.className = 'blocker-meta';
+      var s1 = document.createElement('span');
+      s1.textContent = 'Blocking: ' + b.blocking_item;
+      bm.appendChild(s1);
+      var s2 = document.createElement('span');
+      s2.textContent = 'Owner: ' + b.owner;
+      bm.appendChild(s2);
+      var s3 = document.createElement('span');
+      s3.textContent = 'Since ' + timeAgo(b.since);
+      bm.appendChild(s3);
+      bi.appendChild(bm);
+      bc.appendChild(bi);
+    });
+    el.appendChild(bc);
+  }
+
+  // Activity feed
+  if (data.recent_actions && data.recent_actions.length > 0) {
+    var ac = document.createElement('div');
+    ac.className = 'card';
+    var at2 = document.createElement('div');
+    at2.className = 'card-title';
+    at2.textContent = 'Recent Activity';
+    ac.appendChild(at2);
+    data.recent_actions.forEach(function(a) {
+      var ai = document.createElement('div');
+      ai.className = 'activity-item';
+      var atime = document.createElement('div');
+      atime.className = 'activity-time';
+      atime.textContent = fmtTime(a.timestamp);
+      ai.appendChild(atime);
+      var adot = document.createElement('div');
+      adot.className = 'activity-dot dot-' + (a.type || 'commit');
+      ai.appendChild(adot);
+      var atxt = document.createElement('div');
+      atxt.className = 'activity-text';
+      atxt.textContent = a.action;
+      ai.appendChild(atxt);
+      ac.appendChild(ai);
+    });
+    el.appendChild(ac);
+  }
+
+  // Deploy
+  if (data.deploy) {
+    var dc = document.createElement('div');
+    dc.className = 'card';
+    var dt2 = document.createElement('div');
+    dt2.className = 'card-title';
+    dt2.textContent = 'Deploy';
+    dc.appendChild(dt2);
+    var dr = document.createElement('div');
+    dr.className = 'deploy-row';
+    var de = document.createElement('span');
+    de.className = 'deploy-env';
+    de.textContent = data.deploy.environment || 'staging';
+    dr.appendChild(de);
+    var ds = document.createElement('span');
+    ds.className = data.deploy.deploy_status === 'success' ? 'deploy-ok' : data.deploy.deploy_status === 'failed' ? 'deploy-fail' : 'deploy-building';
+    ds.textContent = data.deploy.deploy_status;
+    dr.appendChild(ds);
+    var dta = document.createElement('span');
+    dta.style.color = '#484f58';
+    dta.style.fontSize = '12px';
+    dta.textContent = data.deploy.last_deploy_at ? timeAgo(data.deploy.last_deploy_at) : '';
+    dr.appendChild(dta);
+    dc.appendChild(dr);
+    el.appendChild(dc);
+  }
+}
+
+var isDemo = false;
+
+async function fetchStatus() {
+  try {
+    var res = await fetch('/api/status');
+    var data = await res.json();
+    if (data.error === 'not_found') {
+      if (!isDemo) {
+        isDemo = true;
+        document.getElementById('demo-banner').style.display = 'block';
+      }
+      render(DEMO_DATA);
+      return;
+    }
+    if (data.error) { console.error('API error:', data.message); return; }
+    if (isDemo) {
+      isDemo = false;
+      document.getElementById('demo-banner').style.display = 'none';
+    }
+    render(data);
+  } catch (err) {
+    console.error('Fetch failed:', err);
+    if (!isDemo) {
+      isDemo = true;
+      document.getElementById('demo-banner').style.display = 'block';
+      render(DEMO_DATA);
+    }
+  }
+}
+
+fetchStatus();
+setInterval(fetchStatus, 30000);
+</script>
+</body>
+</html>
