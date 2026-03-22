@@ -1,0 +1,12 @@
+{
+  "name": "socrates-monitor",
+  "version": "1.0.0",
+  "description": "Socrates CTO Agent — Real-time status dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
