@@ -366,53 +366,51 @@ function renderOverview() {
   var sprintCard = el('div', { className: 'card', style: { marginBottom: '24px' } });
   sprintCard.appendChild(el('div', { className: 'section-title' }, 'Active Sprint'));
 
-  if (ov && ov.sprint) {
-    var sp = ov.sprint;
+  if (ov && ov.active_sprint) {
+    var sp = ov.active_sprint;
+    var tc = sp.task_counts || {};
     var hdr = el('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' } });
     hdr.appendChild(el('span', { style: { fontSize: '18px', fontWeight: '600' } }, sp.name || 'Sprint'));
-    if (sp.target_date) hdr.appendChild(el('span', { style: { fontSize: '13px', color: '#8b949e' } }, 'Target: ' + sp.target_date));
+    if (sp.target_end) hdr.appendChild(el('span', { style: { fontSize: '13px', color: '#8b949e' } }, 'Target: ' + new Date(sp.target_end).toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'})));
     sprintCard.appendChild(hdr);
 
-    var pct = ov.progress != null ? ov.progress : 0;
+    var pct = tc.total > 0 ? Math.round((tc.complete / tc.total) * 100) : 0;
     var pLabel = el('div', { className: 'progress-label' });
     pLabel.appendChild(el('span', null, 'Overall Progress'));
-    pLabel.appendChild(el('span', null, Math.round(pct) + '%'));
+    pLabel.appendChild(el('span', null, pct + '% (' + (tc.complete||0) + '/' + (tc.total||0) + ')'));
     sprintCard.appendChild(pLabel);
     var pWrap = el('div', { className: 'progress-wrap' });
     pWrap.appendChild(el('div', { className: 'progress-bar', style: { width: pct + '%', background: progressColor(pct) } }));
     sprintCard.appendChild(pWrap);
 
     // Category breakdown
-    if (ov.categories) {
-      var cats = ov.categories;
+    if (tc.by_category) {
+      var cats = tc.by_category;
       sprintCard.appendChild(el('div', { style: { marginTop: '16px' } }));
       for (var ci = 0; ci < CATEGORIES.length; ci++) {
         var cat = CATEGORIES[ci];
-        var cd = cats[cat.key] || { done: 0, total: 0 };
-        var cPct = cd.total > 0 ? (cd.done / cd.total * 100) : 0;
+        var cd = cats[cat.key] || { complete: 0, total: 0 };
+        var cPct = cd.total > 0 ? (cd.complete / cd.total * 100) : 0;
         var row = el('div', { className: 'cat-row' });
         row.appendChild(el('span', { className: 'cat-name' }, cat.label));
         var bw = el('div', { className: 'cat-bar-wrap' });
         bw.appendChild(el('div', { className: 'cat-bar', style: { width: cPct + '%', background: progressColor(cPct) } }));
         row.appendChild(bw);
-        row.appendChild(el('span', { className: 'cat-count' }, cd.done + '/' + cd.total));
+        row.appendChild(el('span', { className: 'cat-count' }, cd.complete + '/' + cd.total));
         sprintCard.appendChild(row);
       }
     }
 
     // Counts
-    if (ov.counts) {
-      var cDiv = el('div', { style: { display: 'flex', gap: '20px', marginTop: '16px', flexWrap: 'wrap' } });
-      var countKeys = Object.keys(ov.counts);
-      for (var cki = 0; cki < countKeys.length; cki++) {
-        var ck = countKeys[cki];
-        var lbl = STATUS_LABELS[ck] || ck;
-        cDiv.appendChild(el('span', { style: { fontSize: '13px', color: '#8b949e' } }, lbl + ': ' + ov.counts[ck]));
-      }
-      sprintCard.appendChild(cDiv);
+    var cDiv = el('div', { style: { display: 'flex', gap: '20px', marginTop: '16px', flexWrap: 'wrap' } });
+    var countPairs = [['complete','Complete'],['in_progress','In Progress'],['on_staging','On Staging'],['queued','Queued']];
+    for (var cki = 0; cki < countPairs.length; cki++) {
+      var ck = countPairs[cki][0], lbl = countPairs[cki][1];
+      if (tc[ck] != null) cDiv.appendChild(el('span', { style: { fontSize: '13px', color: '#8b949e' } }, lbl + ': ' + tc[ck]));
     }
+    sprintCard.appendChild(cDiv);
   } else {
-    sprintCard.appendChild(el('div', { className: 'empty' }, 'No active sprint data'));
+    sprintCard.appendChild(el('div', { className: 'empty' }, 'No active sprint'));
   }
   main.appendChild(sprintCard);
 
