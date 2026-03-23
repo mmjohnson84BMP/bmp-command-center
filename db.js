@@ -4,9 +4,10 @@ const DATABASE_URL = process.env.DATABASE_URL;
 
 let pool = null;
 if (DATABASE_URL) {
+  const isInternal = DATABASE_URL.includes('.railway.internal');
   pool = new Pool({
     connectionString: DATABASE_URL,
-    ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+    ssl: isInternal ? false : { rejectUnauthorized: false },
   });
 }
 
@@ -88,8 +89,14 @@ async function initSchema() {
     console.warn("WARNING: DATABASE_URL not set — database features disabled");
     return;
   }
-  await pool.query(INIT_SQL);
-  console.log("Database schema initialized");
+  try {
+    await pool.query(INIT_SQL);
+    console.log("Database schema initialized");
+  } catch (err) {
+    console.error("Schema init failed:", err.message);
+    console.error("DATABASE_URL prefix:", DATABASE_URL ? DATABASE_URL.substring(0, 30) + "..." : "NOT SET");
+    throw err;
+  }
 }
 
 module.exports = { query, initSchema };
