@@ -1397,7 +1397,7 @@ function loadAll() {
 // ── Render Nav ──
 function renderNav() {
   var nav = document.getElementById('nav');
-  clearEl(nav);
+  var frag = document.createDocumentFragment();
 
   // Brand
   var brand = el('div', { className: 'nav-brand' });
@@ -1408,7 +1408,7 @@ function renderNav() {
   brandLabel.appendChild(el('span', { className: 'nav-brand-title' }, 'BMP'));
   brandLabel.appendChild(el('span', { className: 'nav-brand-sub' }, 'Command Center'));
   brand.appendChild(brandLabel);
-  nav.appendChild(brand);
+  frag.appendChild(brand);
 
   // Hamburger for mobile
   var hamburger = el('button', { className: 'hamburger', onClick: function() {
@@ -1417,7 +1417,7 @@ function renderNav() {
     if (S.mobileMenuOpen) mm.classList.add('open');
     else mm.classList.remove('open');
   } }, '\u2630');
-  nav.appendChild(hamburger);
+  frag.appendChild(hamburger);
 
   // Tabs
   var tabs = el('div', { className: 'nav-tabs' });
@@ -1442,7 +1442,7 @@ function renderNav() {
       tabs.appendChild(btn);
     })(views[vi]);
   }
-  nav.appendChild(tabs);
+  frag.appendChild(tabs);
 
   // Right side
   var right = el('div', { className: 'nav-right' });
@@ -1480,14 +1480,15 @@ function renderNav() {
     onClick: function(e) { addRipple(e); playClick(); openCreateModal(null); }
   }, '\u2694 New Mission');
   right.appendChild(newBtn);
-  nav.appendChild(right);
+  frag.appendChild(right);
+  nav.replaceChildren(frag);
 
   // Mobile menu
   var mm = document.getElementById('mobile-menu');
-  clearEl(mm);
+  var mmFrag = document.createDocumentFragment();
   for (var mi = 0; mi < views.length; mi++) {
     (function(v) {
-      mm.appendChild(el('button', {
+      mmFrag.appendChild(el('button', {
         className: 'nav-tab' + (S.view === v.key ? ' active' : ''),
         onClick: function() {
           S.view = v.key;
@@ -1498,12 +1499,12 @@ function renderNav() {
       }, v.label));
     })(views[mi]);
   }
+  mm.replaceChildren(mmFrag);
 }
 
 // ── Render Overview (War Room) ──
 function renderOverview() {
   var main = document.getElementById('main');
-  clearEl(main);
   var wrap = el('div', { className: 'view-enter' });
 
   // Quick links - Faction Cards
@@ -1676,13 +1677,12 @@ function renderOverview() {
   bottomRow.appendChild(lbCard);
   wrap.appendChild(bottomRow);
 
-  main.appendChild(wrap);
+  main.replaceChildren(wrap);
 }
 
 // ── Render Board (Mission Board) ──
 function renderBoard() {
   var main = document.getElementById('main');
-  clearEl(main);
   var wrap = el('div', { className: 'view-enter' });
 
   // Sprint selector
@@ -1819,13 +1819,12 @@ function renderBoard() {
     })(CATEGORIES[bci]);
   }
   wrap.appendChild(board);
-  main.appendChild(wrap);
+  main.replaceChildren(wrap);
 }
 
 // ── Render Activity (Battle Log) ──
 function renderActivity() {
   var main = document.getElementById('main');
-  clearEl(main);
   var wrap = el('div', { className: 'view-enter' });
 
   var card = el('div', { className: 'card' });
@@ -1868,7 +1867,7 @@ function renderActivity() {
     card.appendChild(logWrap);
   }
   wrap.appendChild(card);
-  main.appendChild(wrap);
+  main.replaceChildren(wrap);
 }
 
 // ── Drawer ──
@@ -2365,7 +2364,9 @@ loadAll().then(function() {
 // Auto-refresh every 30s, skip if modal/drawer open
 setInterval(function() {
   if (S.createModal || S.selectedTaskId) return;
-  loadAll().then(render);
+  loadAll().then(function() {
+    requestAnimationFrame(render);
+  });
 }, 30000);
 
 })();
