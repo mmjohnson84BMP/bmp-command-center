@@ -66,11 +66,20 @@ CREATE TABLE IF NOT EXISTS activity_log (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS channels (
+  id          SERIAL PRIMARY KEY,
+  name        TEXT NOT NULL,
+  members     JSONB NOT NULL DEFAULT '[]',
+  created_by  TEXT NOT NULL DEFAULT 'system',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS messages (
   id          SERIAL PRIMARY KEY,
   sender      TEXT NOT NULL,
-  recipient   TEXT NOT NULL,
+  recipient   TEXT,
   content     TEXT NOT NULL,
+  channel_id  INTEGER REFERENCES channels(id) ON DELETE SET NULL,
   thread_id   TEXT,
   read        BOOLEAN NOT NULL DEFAULT FALSE,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -85,6 +94,8 @@ CREATE INDEX IF NOT EXISTS idx_comments_task   ON comments(task_id);
 CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient, read);
 CREATE INDEX IF NOT EXISTS idx_messages_thread    ON messages(thread_id);
 CREATE INDEX IF NOT EXISTS idx_messages_time      ON messages(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_channel   ON messages(channel_id);
+CREATE INDEX IF NOT EXISTS idx_channels_members   ON channels USING GIN(members);
 `;
 
 async function query(text, params) {
@@ -97,6 +108,13 @@ async function query(text, params) {
   return result;
 }
 
+const MIGRATIONS = [
+  // Add channel_id to existing messages table (v2 upgrade)
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS channel_id INTEGER REFERENCES channels(id) ON DELETE SET NULL`,
+  // Make recipient nullable (channels don't need a recipient)
+  `ALTER TABLE messages ALTER COLUMN recipient DROP NOT NULL`,
+];
+
 async function initSchema() {
   if (!pool) {
     console.warn("WARNING: DATABASE_URL not set — database features disabled");
@@ -105,6 +123,11 @@ async function initSchema() {
   try {
     await pool.query(INIT_SQL);
     console.log("Database schema initialized");
+    // Run migrations for existing databases
+    for (const sql of MIGRATIONS) {
+      try { await pool.query(sql); } catch (e) { /* column may already exist */ }
+    }
+    console.log("Migrations complete");
   } catch (err) {
     console.error("Schema init failed:", err.message);
     console.error("DATABASE_URL prefix:", DATABASE_URL ? DATABASE_URL.substring(0, 30) + "..." : "NOT SET");
