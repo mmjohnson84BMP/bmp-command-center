@@ -318,7 +318,7 @@ html, body {
 .mobile-menu .nav-tab { text-align: left; padding: 12px 16px; border-radius: var(--radius-sm); }
 
 /* ── MAIN ── */
-.main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+.main { max-width: 1400px; margin: 0 auto; padding: 24px; transition: opacity 0.15s ease; }
 
 /* ── CARDS ── */
 .card {
@@ -2680,8 +2680,16 @@ loadAll().then(function() {
 // Auto-refresh every 30s, skip if modal/drawer open
 setInterval(function() {
   if (S.createModal || S.selectedTaskId) return;
+  var prevSnapshot = JSON.stringify({ tasks: S.tasks, overview: S.overview, sprints: S.sprints, activity: S.activity });
   loadAll().then(function() {
-    requestAnimationFrame(render);
+    var newSnapshot = JSON.stringify({ tasks: S.tasks, overview: S.overview, sprints: S.sprints, activity: S.activity });
+    if (newSnapshot === prevSnapshot) return; // nothing changed — skip DOM update entirely
+    var mainEl = document.getElementById('main');
+    mainEl.style.opacity = '0';
+    requestAnimationFrame(function() {
+      render();
+      requestAnimationFrame(function() { mainEl.style.opacity = '1'; });
+    });
   });
 }, 30000);
 
