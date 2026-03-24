@@ -1,1 +1,318 @@
-Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoImV4cHJlc3MiKTsKY29uc3QgcGF0aCA9IHJlcXVpcmUoInBhdGgiKTsKY29uc3QgZGIgPSByZXF1aXJlKCIuL2RiIik7Cgpjb25zdCBhcHAgPSBleHByZXNzKCk7CmNvbnN0IFBPUlQgPSBwcm9jZXNzLmVudi5QT1JUIHx8IDMwMDA7CmNvbnN0IEdJVEhVQl9UT0tFTiA9IHByb2Nlc3MuZW52LkdJVEhVQl9UT0tFTiB8fCAiIjsKY29uc3QgUkVQT19PV05FUiA9IHByb2Nlc3MuZW52LlJFUE9fT1dORVIgfHwgIm1tam9obnNvbjg0Qk1QIjsKY29uc3QgUkVQT19OQU1FID0gcHJvY2Vzcy5lbnYuUkVQT19OQU1FIHx8ICJmbG93c3RhY2tjbGF1ZGUiOwpjb25zdCBTVEFUVVNfRklMRSA9IHByb2Nlc3MuZW52LlNUQVRVU19GSUxFIHx8ICJTT0NSQVRFU19TVEFUVVMuanNvbiI7Cgpjb25zdCBBUElfS0VZUyA9IHsKICBbcHJvY2Vzcy5lbnYuVElUVVNfQVBJX0tFWV06ICJ0aXR1cyIsCiAgW3Byb2Nlc3MuZW52LkFUTEFTX0FQSV9LRVldOiAiYXRsYXMiLAogIFtwcm9jZXNzLmVudi5TT0NSQVRFU19BUElfS0VZXTogInNvY3JhdGVzIiwKfTsKCmFwcC51c2UoZXhwcmVzcy5qc29uKHsgbGltaXQ6ICIxbWIiIH0pKTsKYXBwLnVzZShleHByZXNzLnN0YXRpYyhwYXRoLmpvaW4oX19kaXJuYW1lLCAicHVibGljIikpKTsKCmZ1bmN0aW9uIGFwaUtleUF1dGgocmVxLCByZXMsIG5leHQpIHsKICBjb25zdCBrZXkgPSByZXEuaGVhZGVyc1sieC1hcGkta2V5Il07CiAgaWYgKCFrZXkpIHsgcmVxLmFjdG9yID0gImJyb3dzZXIiOyByZXR1cm4gbmV4dCgpOyB9CiAgY29uc3QgYWN0b3IgPSBBUElfS0VZU1trZXldOwogIGlmICghYWN0b3IpIHJldHVybiByZXMuc3RhdHVzKDQwMSkuanNvbih7IGVycm9yOiAiaW52YWxpZF9hcGlfa2V5IiB9KTsKICByZXEuYWN0b3IgPSBhY3RvcjsKICBuZXh0KCk7Cn0KCmFwcC51c2UoIi9hcGkiLCBhcGlLZXlBdXRoKTsKCmZ1bmN0aW9uIGxvZ0FjdGl2aXR5KHRhc2tJZCwgYWN0aW9uLCBhY3RvciwgZGV0YWlscykgewogIGRiLnF1ZXJ5KCJJTlNFUlQgSU5UTyBhY3Rpdml0eV9sb2cgKHRhc2tfaWQsIGFjdGlvbiwgYWN0b3IsIGRldGFpbHMpIFZBTFVFUyAoJDEsICQyLCAkMywgJDQpIiwKICAgIFt0YXNrSWQsIGFjdGlvbiwgYWN0b3IsIGRldGFpbHMgPyBKU09OLnN0cmluZ2lmeShkZXRhaWxzKSA6IG51bGxdCiAgKS5jYXRjaCgoZXJyKSA9PiBjb25zb2xlLmVycm9yKCJBY3Rpdml0eSBsb2cgZXJyb3I6IiwgZXJyLm1lc3NhZ2UpKTsKfQoKYXN5bmMgZnVuY3Rpb24gZmV0Y2hHaXRIdWJTdGF0dXMoKSB7CiAgdHJ5IHsKICAgIGNvbnN0IHVybCA9IGBodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zLyR7UkVQT19PV05FUn0vJHtSRVBPX05BTUV9L2NvbnRlbnRzLyR7U1RBVFVTX0ZJTEV9YDsKICAgIGNvbnN0IGhlYWRlcnMgPSB7IEFjY2VwdDogImFwcGxpY2F0aW9uL3ZuZC5naXRodWIudjMucmF3IiwgIlVzZXItQWdlbnQiOiAic29jcmF0ZXMtbW9uaXRvciIgfTsKICAgIGlmIChHSVRIVUJfVE9LRU4pIGhlYWRlcnMuQXV0aG9yaXphdGlvbiA9IGB0b2tlbiAke0dJVEhVQl9UT0tFTn1gOwogICAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaCh1cmwsIHsgaGVhZGVycyB9KTsKICAgIGlmIChyZXNwb25zZS5zdGF0dXMgPT09IDQwNCkgcmV0dXJuIHsgZXJyb3I6ICJub3RfZm91bmQiIH07CiAgICBpZiAoIXJlc3BvbnNlLm9rKSByZXR1cm4geyBlcnJvcjogImdpdGh1Yl9lcnJvciIsIHN0YXR1czogcmVzcG9uc2Uuc3RhdHVzIH07CiAgICByZXR1cm4gYXdhaXQgcmVzcG9uc2UuanNvbigpOwogIH0gY2F0Y2ggKGVycikgeyByZXR1cm4geyBlcnJvcjogImZldGNoX2Vycm9yIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfTsgfQp9CgphcHAuZ2V0KCIvYXBpL3N0YXR1cyIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIGNvbnN0IGRhdGEgPSBhd2FpdCBmZXRjaEdpdEh1YlN0YXR1cygpOwogIGlmIChkYXRhLmVycm9yID09PSAiZ2l0aHViX2Vycm9yIikgcmV0dXJuIHJlcy5zdGF0dXMoZGF0YS5zdGF0dXMpLmpzb24oZGF0YSk7CiAgcmVzLmpzb24oZGF0YSk7Cn0pOwoKYXBwLmdldCgiL2FwaS9vdmVydmlldyIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBzcHJpbnRSZXMgPSBhd2FpdCBkYi5xdWVyeSgiU0VMRUNUICogRlJPTSBzcHJpbnRzIFdIRVJFIHN0YXR1cyA9ICdhY3RpdmUnIE9SREVSIEJZIHN0YXJ0ZWRfYXQgREVTQyBMSU1JVCAxIik7CiAgICBjb25zdCBhY3RpdmVTcHJpbnQgPSBzcHJpbnRSZXMucm93c1swXSB8fCBudWxsOwogICAgbGV0IHRhc2tDb3VudHMgPSBudWxsLCBpblByb2dyZXNzID0gW10sIGNvbXBsZXRlZFRvZGF5ID0gW107CiAgICBpZiAoYWN0aXZlU3ByaW50KSB7CiAgICAgIGNvbnN0IGFsbFRhc2tzID0gYXdhaXQgZGIucXVlcnkoIlNFTEVDVCBpZCwgdGl0bGUsIGNhdGVnb3J5LCBzdGF0dXMsIHByaW9yaXR5LCBvdmVycmlkZV9wcmlvcml0eSwgYXNzaWduZWUsIGJyYW5jaCwgdXBkYXRlZF9hdCBGUk9NIHRhc2tzIFdIRVJFIHNwcmludF9pZCA9ICQxIE9SREVSIEJZIHByaW9yaXR5IEFTQywgY3JlYXRlZF9hdCBBU0MiLCBbYWN0aXZlU3ByaW50LmlkXSk7CiAgICAgIGNvbnN0IHRhc2tzID0gYWxsVGFza3Mucm93czsKICAgICAgY29uc3QgYnlDYXRlZ29yeSA9IHt9OwogICAgICBmb3IgKGNvbnN0IHQgb2YgdGFza3MpIHsKICAgICAgICBpZiAoIWJ5Q2F0ZWdvcnlbdC5jYXRlZ29yeV0pIGJ5Q2F0ZWdvcnlbdC5jYXRlZ29yeV0gPSB7IHRvdGFsOiAwLCBjb21wbGV0ZTogMCB9OwogICAgICAgIGJ5Q2F0ZWdvcnlbdC5jYXRlZ29yeV0udG90YWwrKzsKICAgICAgICBpZiAodC5zdGF0dXMgPT09ICJjb21wbGV0ZSIpIGJ5Q2F0ZWdvcnlbdC5jYXRlZ29yeV0uY29tcGxldGUrKzsKICAgICAgfQogICAgICB0YXNrQ291bnRzID0geyB0b3RhbDogdGFza3MubGVuZ3RoLCBjb21wbGV0ZTogdGFza3MuZmlsdGVyKHQgPT4gdC5zdGF0dXMgPT09ICJjb21wbGV0ZSIpLmxlbmd0aCwgaW5fcHJvZ3Jlc3M6IHRhc2tzLmZpbHRlcih0ID0+IHQuc3RhdHVzID09PSAiaW5fcHJvZ3Jlc3MiKS5sZW5ndGgsIG9uX3N0YWdpbmc6IHRhc2tzLmZpbHRlcih0ID0+IHQuc3RhdHVzID09PSAib25fc3RhZ2luZyIpLmxlbmd0aCwgcXVldWVkOiB0YXNrcy5maWx0ZXIodCA9PiB0LnN0YXR1cyA9PT0gInF1ZXVlZCIpLmxlbmd0aCwgYnlfY2F0ZWdvcnk6IGJ5Q2F0ZWdvcnkgfTsKICAgICAgaW5Qcm9ncmVzcyA9IHRhc2tzLmZpbHRlcih0ID0+IFsiaW5fcHJvZ3Jlc3MiLCAib25fc3RhZ2luZyIsICJyZXZpZXciXS5pbmNsdWRlcyh0LnN0YXR1cykpOwogICAgICBjb21wbGV0ZWRUb2RheSA9IHRhc2tzLmZpbHRlcih0ID0+IHQuc3RhdHVzID09PSAiY29tcGxldGUiICYmIG5ldyBEYXRlKHQudXBkYXRlZF9hdCkudG9EYXRlU3RyaW5nKCkgPT09IG5ldyBEYXRlKCkudG9EYXRlU3RyaW5nKCkpOwogICAgfQogICAgY29uc3Qgc29jcmF0ZXNTdGF0dXMgPSBhd2FpdCBmZXRjaEdpdEh1YlN0YXR1cygpOwogICAgcmVzLmpzb24oeyBhY3RpdmVfc3ByaW50OiBhY3RpdmVTcHJpbnQgPyB7IC4uLmFjdGl2ZVNwcmludCwgdGFza19jb3VudHM6IHRhc2tDb3VudHMgfSA6IG51bGwsIGNvbXBsZXRlZF90b2RheTogY29tcGxldGVkVG9kYXksIGluX3Byb2dyZXNzOiBpblByb2dyZXNzLCBzb2NyYXRlc19zdGF0dXM6IHNvY3JhdGVzU3RhdHVzLmVycm9yID8gbnVsbCA6IHNvY3JhdGVzU3RhdHVzIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIGNvbnNvbGUuZXJyb3IoIk92ZXJ2aWV3IGVycm9yOiIsIGVycik7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmdldCgiL2FwaS90YXNrcyIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBjb25kaXRpb25zID0gW10sIHBhcmFtcyA9IFtdOyBsZXQgaSA9IDE7CiAgICBpZiAocmVxLnF1ZXJ5LnN0YXR1cykgeyBjb25kaXRpb25zLnB1c2goYHN0YXR1cyA9ICQke2krK31gKTsgcGFyYW1zLnB1c2gocmVxLnF1ZXJ5LnN0YXR1cyk7IH0KICAgIGlmIChyZXEucXVlcnkuY2F0ZWdvcnkpIHsgY29uZGl0aW9ucy5wdXNoKGBjYXRlZ29yeSA9ICQke2krK31gKTsgcGFyYW1zLnB1c2gocmVxLnF1ZXJ5LmNhdGVnb3J5KTsgfQogICAgaWYgKHJlcS5xdWVyeS5zcHJpbnRfaWQpIHsgY29uZGl0aW9ucy5wdXNoKGBzcHJpbnRfaWQgPSAkJHtpKyt9YCk7IHBhcmFtcy5wdXNoKHJlcS5xdWVyeS5zcHJpbnRfaWQpOyB9CiAgICBpZiAocmVxLnF1ZXJ5LmFzc2lnbmVlKSB7IGNvbmRpdGlvbnMucHVzaChgYXNzaWduZWUgPSAkJHtpKyt9YCk7IHBhcmFtcy5wdXNoKHJlcS5xdWVyeS5hc3NpZ25lZSk7IH0KICAgIGNvbnN0IHdoZXJlID0gY29uZGl0aW9ucy5sZW5ndGggPyAiV0hFUkUgIiArIGNvbmRpdGlvbnMuam9pbigiIEFORCAiKSA6ICIiOwogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoYFNFTEVDVCAqIEZST00gdGFza3MgJHt3aGVyZX0gT1JERVIgQlkgb3ZlcnJpZGVfcHJpb3JpdHkgREVTQywgcHJpb3JpdHkgQVNDLCBjcmVhdGVkX2F0IEFTQ2AsIHBhcmFtcyk7CiAgICByZXMuanNvbih7IHRhc2tzOiByZXN1bHQucm93cyB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLnBvc3QoIi9hcGkvdGFza3MiLCBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgeyB0aXRsZSwgZGVzY3JpcHRpb24sIGNhdGVnb3J5LCBwcmlvcml0eSwgYXNzaWduZWUsIGJyYW5jaCwgc3ByaW50X2lkIH0gPSByZXEuYm9keTsKICAgIGlmICghdGl0bGUgfHwgIWNhdGVnb3J5KSByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogIm1pc3NpbmdfZmllbGRzIiwgbWVzc2FnZTogInRpdGxlIGFuZCBjYXRlZ29yeSByZXF1aXJlZCIgfSk7CiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeShgSU5TRVJUIElOVE8gdGFza3MgKHRpdGxlLCBkZXNjcmlwdGlvbiwgY2F0ZWdvcnksIHByaW9yaXR5LCBhc3NpZ25lZSwgYnJhbmNoLCBzcHJpbnRfaWQsIGNyZWF0ZWRfYnkpIFZBTFVFUyAoJDEsICQyLCAkMywgJDQsICQ1LCAkNiwgJDcsICQ4KSBSRVRVUk5JTkcgKmAsIFt0aXRsZSwgZGVzY3JpcHRpb24gfHwgbnVsbCwgY2F0ZWdvcnksIHByaW9yaXR5IHx8IDMsIGFzc2lnbmVlIHx8IG51bGwsIGJyYW5jaCB8fCBudWxsLCBzcHJpbnRfaWQgfHwgbnVsbCwgcmVxLmFjdG9yXSk7CiAgICBsb2dBY3Rpdml0eShyZXN1bHQucm93c1swXS5pZCwgInRhc2tfY3JlYXRlZCIsIHJlcS5hY3RvciwgeyB0aXRsZSwgY2F0ZWdvcnkgfSk7CiAgICByZXMuc3RhdHVzKDIwMSkuanNvbih7IHRhc2s6IHJlc3VsdC5yb3dzWzBdIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIGlmIChlcnIuY29kZSA9PT0gIjIzNTE0IikgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICJpbnZhbGlkX3ZhbHVlIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmdldCgiL2FwaS90YXNrcy86aWQiLCBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgdGFza1JlcyA9IGF3YWl0IGRiLnF1ZXJ5KCJTRUxFQ1QgKiBGUk9NIHRhc2tzIFdIRVJFIGlkID0gJDEiLCBbcmVxLnBhcmFtcy5pZF0pOwogICAgaWYgKCF0YXNrUmVzLnJvd3MubGVuZ3RoKSByZXR1cm4gcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBlcnJvcjogIm5vdF9mb3VuZCIgfSk7CiAgICBjb25zdCBjb21tZW50c1JlcyA9IGF3YWl0IGRiLnF1ZXJ5KCJTRUxFQ1QgKiBGUk9NIGNvbW1lbnRzIFdIRVJFIHRhc2tfaWQgPSAkMSBPUkRFUiBCWSBjcmVhdGVkX2F0IEFTQyIsIFtyZXEucGFyYW1zLmlkXSk7CiAgICBjb25zdCBmaWxlc1JlcyA9IGF3YWl0IGRiLnF1ZXJ5KCJTRUxFQ1QgKiBGUk9NIGZpbGVzIFdIRVJFIHRhc2tfaWQgPSAkMSBPUkRFUiBCWSBjcmVhdGVkX2F0IEFTQyIsIFtyZXEucGFyYW1zLmlkXSk7CiAgICByZXMuanNvbih7IHRhc2s6IHRhc2tSZXMucm93c1swXSwgY29tbWVudHM6IGNvbW1lbnRzUmVzLnJvd3MsIGZpbGVzOiBmaWxlc1Jlcy5yb3dzIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgZXJyb3I6ICJkYl9lcnJvciIsIG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgphcHAucGF0Y2goIi9hcGkvdGFza3MvOmlkIiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGFsbG93ZWQgPSBbInRpdGxlIiwgImRlc2NyaXB0aW9uIiwgImNhdGVnb3J5IiwgInN0YXR1cyIsICJwcmlvcml0eSIsICJvdmVycmlkZV9wcmlvcml0eSIsICJhc3NpZ25lZSIsICJicmFuY2giLCAic3ByaW50X2lkIl07CiAgICBjb25zdCBzZXRzID0gW10sIHBhcmFtcyA9IFtdOyBsZXQgaSA9IDE7CiAgICBjb25zdCBvbGRSZXMgPSBhd2FpdCBkYi5xdWVyeSgiU0VMRUNUICogRlJPTSB0YXNrcyBXSEVSRSBpZCA9ICQxIiwgW3JlcS5wYXJhbXMuaWRdKTsKICAgIGlmICghb2xkUmVzLnJvd3MubGVuZ3RoKSByZXR1cm4gcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBlcnJvcjogIm5vdF9mb3VuZCIgfSk7CiAgICBjb25zdCBvbGQgPSBvbGRSZXMucm93c1swXTsKICAgIGZvciAoY29uc3Qga2V5IG9mIGFsbG93ZWQpIHsgaWYgKHJlcS5ib2R5W2tleV0gIT09IHVuZGVmaW5lZCkgeyBzZXRzLnB1c2goYCR7a2V5fSA9ICQke2krK31gKTsgcGFyYW1zLnB1c2gocmVxLmJvZHlba2V5XSk7IH0gfQogICAgaWYgKCFzZXRzLmxlbmd0aCkgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICJub19maWVsZHMiIH0pOwogICAgc2V0cy5wdXNoKGB1cGRhdGVkX2F0ID0gTk9XKClgKTsgcGFyYW1zLnB1c2gocmVxLnBhcmFtcy5pZCk7CiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeShgVVBEQVRFIHRhc2tzIFNFVCAke3NldHMuam9pbigiLCAiKX0gV0hFUkUgaWQgPSAkJHtpfSBSRVRVUk5JTkcgKmAsIHBhcmFtcyk7CiAgICBjb25zdCBjaGFuZ2VzID0ge307CiAgICBmb3IgKGNvbnN0IGtleSBvZiBhbGxvd2VkKSB7IGlmIChyZXEuYm9keVtrZXldICE9PSB1bmRlZmluZWQgJiYgU3RyaW5nKG9sZFtrZXldKSAhPT0gU3RyaW5nKHJlcS5ib2R5W2tleV0pKSBjaGFuZ2VzW2tleV0gPSB7IGZyb206IG9sZFtrZXldLCB0bzogcmVxLmJvZHlba2V5XSB9OyB9CiAgICBpZiAoT2JqZWN0LmtleXMoY2hhbmdlcykubGVuZ3RoKSBsb2dBY3Rpdml0eShyZXN1bHQucm93c1swXS5pZCwgInRhc2tfdXBkYXRlZCIsIHJlcS5hY3RvciwgY2hhbmdlcyk7CiAgICByZXMuanNvbih7IHRhc2s6IHJlc3VsdC5yb3dzWzBdIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIGlmIChlcnIuY29kZSA9PT0gIjIzNTE0IikgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICJpbnZhbGlkX3ZhbHVlIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmRlbGV0ZSgiL2FwaS90YXNrcy86aWQiLCBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoIkRFTEVURSBGUk9NIHRhc2tzIFdIRVJFIGlkID0gJDEiLCBbcmVxLnBhcmFtcy5pZF0pOwogICAgaWYgKHJlc3VsdC5yb3dDb3VudCA9PT0gMCkgcmV0dXJuIHJlcy5zdGF0dXMoNDA0KS5qc29uKHsgZXJyb3I6ICJub3RfZm91bmQiIH0pOwogICAgbG9nQWN0aXZpdHkobnVsbCwgInRhc2tfZGVsZXRlZCIsIHJlcS5hY3RvciwgeyB0YXNrX2lkOiByZXEucGFyYW1zLmlkIH0pOwogICAgcmVzLnN0YXR1cygyMDQpLnNlbmQoKTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLnBvc3QoIi9hcGkvdGFza3MvOmlkL2NvbW1lbnRzIiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHsgY29udGVudCB9ID0gcmVxLmJvZHk7CiAgICBpZiAoIWNvbnRlbnQpIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IGVycm9yOiAibWlzc2luZ19maWVsZHMiLCBtZXNzYWdlOiAiY29udGVudCByZXF1aXJlZCIgfSk7CiAgICBjb25zdCBhdXRob3IgPSByZXEuYm9keS5hdXRob3IgfHwgcmVxLmFjdG9yOwogICAgY29uc3QgdGFza0NoZWNrID0gYXdhaXQgZGIucXVlcnkoIlNFTEVDVCBpZCBGUk9NIHRhc2tzIFdIRVJFIGlkID0gJDEiLCBbcmVxLnBhcmFtcy5pZF0pOwogICAgaWYgKCF0YXNrQ2hlY2sucm93cy5sZW5ndGgpIHJldHVybiByZXMuc3RhdHVzKDQwNCkuanNvbih7IGVycm9yOiAidGFza19ub3RfZm91bmQiIH0pOwogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoIklOU0VSVCBJTlRPIGNvbW1lbnRzICh0YXNrX2lkLCBhdXRob3IsIGNvbnRlbnQpIFZBTFVFUyAoJDEsICQyLCAkMykgUkVUVVJOSU5HICoiLCBbcmVxLnBhcmFtcy5pZCwgYXV0aG9yLCBjb250ZW50XSk7CiAgICBsb2dBY3Rpdml0eShwYXJzZUludChyZXEucGFyYW1zLmlkKSwgImNvbW1lbnRfYWRkZWQiLCBhdXRob3IsIHsgcHJldmlldzogY29udGVudC5zbGljZSgwLCAxMDApIH0pOwogICAgcmVzLnN0YXR1cygyMDEpLmpzb24oeyBjb21tZW50OiByZXN1bHQucm93c1swXSB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLnBvc3QoIi9hcGkvdGFza3MvOmlkL2ZpbGVzIiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHsgZmlsZW5hbWUsIHVybF9vcl9jb250ZW50IH0gPSByZXEuYm9keTsKICAgIGlmICghZmlsZW5hbWUgfHwgIXVybF9vcl9jb250ZW50KSByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogIm1pc3NpbmdfZmllbGRzIiwgbWVzc2FnZTogImZpbGVuYW1lIGFuZCB1cmxfb3JfY29udGVudCByZXF1aXJlZCIgfSk7CiAgICBjb25zdCB1cGxvYWRlZF9ieSA9IHJlcS5ib2R5LnVwbG9hZGVkX2J5IHx8IHJlcS5hY3RvcjsKICAgIGNvbnN0IHRhc2tDaGVjayA9IGF3YWl0IGRiLnF1ZXJ5KCJTRUxFQ1QgaWQgRlJPTSB0YXNrcyBXSEVSRSBpZCA9ICQxIiwgW3JlcS5wYXJhbXMuaWRdKTsKICAgIGlmICghdGFza0NoZWNrLnJvd3MubGVuZ3RoKSByZXR1cm4gcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBlcnJvcjogInRhc2tfbm90X2ZvdW5kIiB9KTsKICAgIGNvbnN0IHJlc3VsdCA9IGF3YWl0IGRiLnF1ZXJ5KCJJTlNFUlQgSU5UTyBmaWxlcyAodGFza19pZCwgZmlsZW5hbWUsIHVybF9vcl9jb250ZW50LCB1cGxvYWRlZF9ieSkgVkFMVUVTICgkMSwgJDIsICQzLCAkNCkgUkVUVVJOSU5HICoiLCBbcmVxLnBhcmFtcy5pZCwgZmlsZW5hbWUsIHVybF9vcl9jb250ZW50LCB1cGxvYWRlZF9ieV0pOwogICAgbG9nQWN0aXZpdHkocGFyc2VJbnQocmVxLnBhcmFtcy5pZCksICJmaWxlX2F0dGFjaGVkIiwgdXBsb2FkZWRfYnksIHsgZmlsZW5hbWUgfSk7CiAgICByZXMuc3RhdHVzKDIwMSkuanNvbih7IGZpbGU6IHJlc3VsdC5yb3dzWzBdIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgZXJyb3I6ICJkYl9lcnJvciIsIG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgovLyDilIDilIAgTWVzc2FnZXMg4pSA4pSACgphcHAucG9zdCgiL2FwaS9tZXNzYWdlcyIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCB7IHJlY2lwaWVudCwgY29udGVudCwgdGhyZWFkX2lkIH0gPSByZXEuYm9keTsKICAgIGlmICghcmVjaXBpZW50IHx8ICFjb250ZW50KSByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogIm1pc3NpbmdfZmllbGRzIiwgbWVzc2FnZTogInJlY2lwaWVudCBhbmQgY29udGVudCByZXF1aXJlZCIgfSk7CiAgICBjb25zdCBzZW5kZXIgPSByZXEuYWN0b3I7CiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeSgKICAgICAgIklOU0VSVCBJTlRPIG1lc3NhZ2VzIChzZW5kZXIsIHJlY2lwaWVudCwgY29udGVudCwgdGhyZWFkX2lkKSBWQUxVRVMgKCQxLCAkMiwgJDMsICQ0KSBSRVRVUk5JTkcgKiIsCiAgICAgIFtzZW5kZXIsIHJlY2lwaWVudCwgY29udGVudCwgdGhyZWFkX2lkIHx8IG51bGxdCiAgICApOwogICAgbG9nQWN0aXZpdHkobnVsbCwgIm1lc3NhZ2Vfc2VudCIsIHNlbmRlciwgeyByZWNpcGllbnQsIHRocmVhZF9pZCwgcHJldmlldzogY29udGVudC5zbGljZSgwLCAxMDApIH0pOwogICAgcmVzLnN0YXR1cygyMDEpLmpzb24oeyBtZXNzYWdlOiByZXN1bHQucm93c1swXSB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmdldCgiL2FwaS9tZXNzYWdlcyIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBjb25kaXRpb25zID0gW10sIHBhcmFtcyA9IFtdOyBsZXQgaSA9IDE7CiAgICBpZiAocmVxLnF1ZXJ5LnRvKSB7IGNvbmRpdGlvbnMucHVzaChgcmVjaXBpZW50ID0gJCR7aSsrfWApOyBwYXJhbXMucHVzaChyZXEucXVlcnkudG8pOyB9CiAgICBpZiAocmVxLnF1ZXJ5LmZyb20pIHsgY29uZGl0aW9ucy5wdXNoKGBzZW5kZXIgPSAkJHtpKyt9YCk7IHBhcmFtcy5wdXNoKHJlcS5xdWVyeS5mcm9tKTsgfQogICAgaWYgKHJlcS5xdWVyeS51bnJlYWQgPT09ICJ0cnVlIikgeyBjb25kaXRpb25zLnB1c2goYHJlYWQgPSBGQUxTRWApOyB9CiAgICBpZiAocmVxLnF1ZXJ5LnRocmVhZF9pZCkgeyBjb25kaXRpb25zLnB1c2goYHRocmVhZF9pZCA9ICQke2krK31gKTsgcGFyYW1zLnB1c2gocmVxLnF1ZXJ5LnRocmVhZF9pZCk7IH0KICAgIGNvbnN0IGxpbWl0ID0gTWF0aC5taW4ocGFyc2VJbnQocmVxLnF1ZXJ5LmxpbWl0KSB8fCA1MCwgMjAwKTsKICAgIHBhcmFtcy5wdXNoKGxpbWl0KTsKICAgIGNvbnN0IHdoZXJlID0gY29uZGl0aW9ucy5sZW5ndGggPyAiV0hFUkUgIiArIGNvbmRpdGlvbnMuam9pbigiIEFORCAiKSA6ICIiOwogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoYFNFTEVDVCAqIEZST00gbWVzc2FnZXMgJHt3aGVyZX0gT1JERVIgQlkgY3JlYXRlZF9hdCBBU0MgTElNSVQgJCR7aX1gLCBwYXJhbXMpOwogICAgcmVzLmpzb24oeyBtZXNzYWdlczogcmVzdWx0LnJvd3MgfSk7CiAgfSBjYXRjaCAoZXJyKSB7CiAgICBpZiAoZXJyLmNvZGUgPT09ICJEQl9VTkFWQUlMQUJMRSIpIHJldHVybiByZXMuc3RhdHVzKDUwMykuanNvbih7IGVycm9yOiAiZGF0YWJhc2VfdW5hdmFpbGFibGUiIH0pOwogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogImRiX2Vycm9yIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgfQp9KTsKCi8vIEJ1bGsgbWFyayByZWFkIOKAlCBtdXN0IGNvbWUgYmVmb3JlIHRoZSBwYXJhbWV0ZXJpemVkIDppZCByb3V0ZQphcHAucGF0Y2goIi9hcGkvbWVzc2FnZXMvcmVhZCIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCB7IGlkcywgdGhyZWFkX2lkIH0gPSByZXEuYm9keTsKICAgIGxldCByZXN1bHQ7CiAgICBpZiAodGhyZWFkX2lkKSB7CiAgICAgIHJlc3VsdCA9IGF3YWl0IGRiLnF1ZXJ5KCJVUERBVEUgbWVzc2FnZXMgU0VUIHJlYWQgPSBUUlVFIFdIRVJFIHRocmVhZF9pZCA9ICQxIiwgW3RocmVhZF9pZF0pOwogICAgfSBlbHNlIGlmIChpZHMgJiYgaWRzLmxlbmd0aCkgewogICAgICByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeSgiVVBEQVRFIG1lc3NhZ2VzIFNFVCByZWFkID0gVFJVRSBXSEVSRSBpZCA9IEFOWSgkMTo6aW50W10pIiwgW2lkc10pOwogICAgfSBlbHNlIHsKICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICJtaXNzaW5nX2ZpZWxkcyIsIG1lc3NhZ2U6ICJpZHMgb3IgdGhyZWFkX2lkIHJlcXVpcmVkIiB9KTsKICAgIH0KICAgIHJlcy5qc29uKHsgdXBkYXRlZDogcmVzdWx0LnJvd0NvdW50IH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgZXJyb3I6ICJkYl9lcnJvciIsIG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgphcHAucGF0Y2goIi9hcGkvbWVzc2FnZXMvOmlkL3JlYWQiLCBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoIlVQREFURSBtZXNzYWdlcyBTRVQgcmVhZCA9IFRSVUUgV0hFUkUgaWQgPSAkMSBSRVRVUk5JTkcgKiIsIFtyZXEucGFyYW1zLmlkXSk7CiAgICBpZiAoIXJlc3VsdC5yb3dzLmxlbmd0aCkgcmV0dXJuIHJlcy5zdGF0dXMoNDA0KS5qc29uKHsgZXJyb3I6ICJub3RfZm91bmQiIH0pOwogICAgcmVzLmpzb24oeyBtZXNzYWdlOiByZXN1bHQucm93c1swXSB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmdldCgiL2FwaS9zcHJpbnRzIiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoIlNFTEVDVCAqIEZST00gc3ByaW50cyBPUkRFUiBCWSBzdGFydGVkX2F0IERFU0MiKTsgcmVzLmpzb24oeyBzcHJpbnRzOiByZXN1bHQucm93cyB9KTsgfQogIGNhdGNoIChlcnIpIHsgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogImRiX2Vycm9yIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7IH0KfSk7CgphcHAucG9zdCgiL2FwaS9zcHJpbnRzIiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHsgbmFtZSwgdGFyZ2V0X2VuZCB9ID0gcmVxLmJvZHk7CiAgICBpZiAoIW5hbWUpIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IGVycm9yOiAibWlzc2luZ19maWVsZHMiLCBtZXNzYWdlOiAibmFtZSByZXF1aXJlZCIgfSk7CiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeSgiSU5TRVJUIElOVE8gc3ByaW50cyAobmFtZSwgdGFyZ2V0X2VuZCkgVkFMVUVTICgkMSwgJDIpIFJFVFVSTklORyAqIiwgW25hbWUsIHRhcmdldF9lbmQgfHwgbnVsbF0pOwogICAgbG9nQWN0aXZpdHkobnVsbCwgInNwcmludF9jcmVhdGVkIiwgcmVxLmFjdG9yLCB7IG5hbWUgfSk7CiAgICByZXMuc3RhdHVzKDIwMSkuanNvbih7IHNwcmludDogcmVzdWx0LnJvd3NbMF0gfSk7CiAgfSBjYXRjaCAoZXJyKSB7CiAgICBpZiAoZXJyLmNvZGUgPT09ICJEQl9VTkFWQUlMQUJMRSIpIHJldHVybiByZXMuc3RhdHVzKDUwMykuanNvbih7IGVycm9yOiAiZGF0YWJhc2VfdW5hdmFpbGFibGUiIH0pOwogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogImRiX2Vycm9yIiwgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgfQp9KTsKCmFwcC5wYXRjaCgiL2FwaS9zcHJpbnRzLzppZCIsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBhbGxvd2VkID0gWyJuYW1lIiwgInRhcmdldF9lbmQiLCAic3RhdHVzIl07CiAgICBjb25zdCBzZXRzID0gW10sIHBhcmFtcyA9IFtdOyBsZXQgaSA9IDE7CiAgICBmb3IgKGNvbnN0IGtleSBvZiBhbGxvd2VkKSB7IGlmIChyZXEuYm9keVtrZXldICE9PSB1bmRlZmluZWQpIHsgc2V0cy5wdXNoKGAke2tleX0gPSAkJHtpKyt9YCk7IHBhcmFtcy5wdXNoKHJlcS5ib2R5W2tleV0pOyB9IH0KICAgIGlmICghc2V0cy5sZW5ndGgpIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IGVycm9yOiAibm9fZmllbGRzIiB9KTsKICAgIHBhcmFtcy5wdXNoKHJlcS5wYXJhbXMuaWQpOwogICAgY29uc3QgcmVzdWx0ID0gYXdhaXQgZGIucXVlcnkoYFVQREFURSBzcHJpbnRzIFNFVCAke3NldHMuam9pbigiLCAiKX0gV0hFUkUgaWQgPSAkJHtpfSBSRVRVUk5JTkcgKmAsIHBhcmFtcyk7CiAgICBpZiAoIXJlc3VsdC5yb3dzLmxlbmd0aCkgcmV0dXJuIHJlcy5zdGF0dXMoNDA0KS5qc29uKHsgZXJyb3I6ICJub3RfZm91bmQiIH0pOwogICAgcmVzLmpzb24oeyBzcHJpbnQ6IHJlc3VsdC5yb3dzWzBdIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgaWYgKGVyci5jb2RlID09PSAiREJfVU5BVkFJTEFCTEUiKSByZXR1cm4gcmVzLnN0YXR1cyg1MDMpLmpzb24oeyBlcnJvcjogImRhdGFiYXNlX3VuYXZhaWxhYmxlIiB9KTsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgZXJyb3I6ICJkYl9lcnJvciIsIG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7CgphcHAuZ2V0KCIvYXBpL2FjdGl2aXR5IiwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGxpbWl0ID0gTWF0aC5taW4ocGFyc2VJbnQocmVxLnF1ZXJ5LmxpbWl0KSB8fCAyMDAsIDUwMCk7CiAgICBjb25zdCBwYXJhbXMgPSBbbGltaXRdOwogICAgY29uc3QgY29uZGl0aW9ucyA9IFtdOwogICAgaWYgKHJlcS5xdWVyeS50YXNrX2lkKSB7IGNvbmRpdGlvbnMucHVzaCgidGFza19pZCA9ICQyIik7IHBhcmFtcy5wdXNoKHJlcS5xdWVyeS50YXNrX2lkKTsgfQogICAgY29uc3Qgd2hlcmUgPSBjb25kaXRpb25zLmxlbmd0aCA/ICJXSEVSRSAiICsgY29uZGl0aW9ucy5qb2luKCIgQU5EICIpIDogIiI7CiAgICBjb25zdCByZXN1bHQgPSBhd2FpdCBkYi5xdWVyeShgU0VMRUNUIGEuKiwgdC50aXRsZSBhcyB0YXNrX3RpdGxlIEZST00gYWN0aXZpdHlfbG9nIGEgTEVGVCBKT0lOIHRhc2tzIHQgT04gYS50YXNrX2lkID0gdC5pZCAke3doZXJlfSBPUkRFUiBCWSBhLmNyZWF0ZWRfYXQgREVTQyBMSU1JVCAkMWAsIHBhcmFtcyk7CiAgICByZXMuanNvbih7IGFjdGl2aXR5OiByZXN1bHQucm93cyB9KTsKICB9IGNhdGNoIChlcnIpIHsKICAgIGlmIChlcnIuY29kZSA9PT0gIkRCX1VOQVZBSUxBQkxFIikgcmV0dXJuIHJlcy5zdGF0dXMoNTAzKS5qc29uKHsgZXJyb3I6ICJkYXRhYmFzZV91bmF2YWlsYWJsZSIgfSk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAiZGJfZXJyb3IiLCBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOwoKYXBwLmdldCgiL2hlYWx0aCIsIChyZXEsIHJlcykgPT4gcmVzLnNlbmQoIm9rIikpOwphcHAuZ2V0KCIvbGVnYWN5IiwgKHJlcSwgcmVzKSA9PiByZXMuc2VuZEZpbGUocGF0aC5qb2luKF9fZGlybmFtZSwgInB1YmxpYyIsICJsZWdhY3kuaHRtbCIpKSk7Cgphc3luYyBmdW5jdGlvbiBib290KCkgewogIGF3YWl0IGRiLmluaXRTY2hlbWEoKTsKICBjb25zdCBrZXlzID0gWyJUSVRVU19BUElfS0VZIiwgIkFUTEFTX0FQSV9LRVkiLCAiU09DUkFURVNfQVBJX0tFWSJdOwogIGZvciAoY29uc3QgayBvZiBrZXlzKSB7IGlmICghcHJvY2Vzcy5lbnZba10pIGNvbnNvbGUud2FybihgV0FSTklORzogJHtrfSBub3Qgc2V0YCk7IH0KICBhcHAubGlzdGVuKFBPUlQsICgpID0+IGNvbnNvbGUubG9nKGBCTVAgQ29tbWFuZCBDZW50ZXIgbGl2ZSBvbiBwb3J0ICR7UE9SVH1gKSk7Cn0KCmJvb3QoKS5jYXRjaCgoZXJyKSA9PiB7IGNvbnNvbGUuZXJyb3IoIkJvb3QgZmFpbGVkOiIsIGVycik7IHByb2Nlc3MuZXhpdCgxKTsgfSk7Cg==
+const express = require("express");
+const path = require("path");
+const db = require("./db");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || "";
+const REPO_OWNER = process.env.REPO_OWNER || "mmjohnson84BMP";
+const REPO_NAME = process.env.REPO_NAME || "flowstackclaude";
+const STATUS_FILE = process.env.STATUS_FILE || "SOCRATES_STATUS.json";
+
+const API_KEYS = {
+  [process.env.TITUS_API_KEY]: "titus",
+  [process.env.ATLAS_API_KEY]: "atlas",
+  [process.env.SOCRATES_API_KEY]: "socrates",
+};
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static(path.join(__dirname, "public")));
+
+function apiKeyAuth(req, res, next) {
+  const key = req.headers["x-api-key"];
+  if (!key) { req.actor = "browser"; return next(); }
+  const actor = API_KEYS[key];
+  if (!actor) return res.status(401).json({ error: "invalid_api_key" });
+  req.actor = actor;
+  next();
+}
+
+app.use("/api", apiKeyAuth);
+
+function logActivity(taskId, action, actor, details) {
+  db.query("INSERT INTO activity_log (task_id, action, actor, details) VALUES ($1, $2, $3, $4)",
+    [taskId, action, actor, details ? JSON.stringify(details) : null]
+  ).catch((err) => console.error("Activity log error:", err.message));
+}
+
+async function fetchGitHubStatus() {
+  try {
+    const url = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${STATUS_FILE}`;
+    const headers = { Accept: "application/vnd.github.v3.raw", "User-Agent": "socrates-monitor" };
+    if (GITHUB_TOKEN) headers.Authorization = `token ${GITHUB_TOKEN}`;
+    const response = await fetch(url, { headers });
+    if (response.status === 404) return { error: "not_found" };
+    if (!response.ok) return { error: "github_error", status: response.status };
+    return await response.json();
+  } catch (err) { return { error: "fetch_error", message: err.message }; }
+}
+
+app.get("/api/status", async (req, res) => {
+  const data = await fetchGitHubStatus();
+  if (data.error === "github_error") return res.status(data.status).json(data);
+  res.json(data);
+});
+
+app.get("/api/overview", async (req, res) => {
+  try {
+    const sprintRes = await db.query("SELECT * FROM sprints WHERE status = 'active' ORDER BY started_at DESC LIMIT 1");
+    const activeSprint = sprintRes.rows[0] || null;
+    let taskCounts = null, inProgress = [], completedToday = [];
+    if (activeSprint) {
+      const allTasks = await db.query("SELECT id, title, category, status, priority, override_priority, assignee, branch, updated_at FROM tasks WHERE sprint_id = $1 ORDER BY priority ASC, created_at ASC", [activeSprint.id]);
+      const tasks = allTasks.rows;
+      const byCategory = {};
+      for (const t of tasks) {
+        if (!byCategory[t.category]) byCategory[t.category] = { total: 0, complete: 0 };
+        byCategory[t.category].total++;
+        if (t.status === "complete") byCategory[t.category].complete++;
+      }
+      taskCounts = { total: tasks.length, complete: tasks.filter(t => t.status === "complete").length, in_progress: tasks.filter(t => t.status === "in_progress").length, on_staging: tasks.filter(t => t.status === "on_staging").length, queued: tasks.filter(t => t.status === "queued").length, by_category: byCategory };
+      inProgress = tasks.filter(t => ["in_progress", "on_staging", "review"].includes(t.status));
+      completedToday = tasks.filter(t => t.status === "complete" && new Date(t.updated_at).toDateString() === new Date().toDateString());
+    }
+    const socratesStatus = await fetchGitHubStatus();
+    res.json({ active_sprint: activeSprint ? { ...activeSprint, task_counts: taskCounts } : null, completed_today: completedToday, in_progress: inProgress, socrates_status: socratesStatus.error ? null : socratesStatus });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    console.error("Overview error:", err);
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/tasks", async (req, res) => {
+  try {
+    const conditions = [], params = []; let i = 1;
+    if (req.query.status) { conditions.push(`status = $${i++}`); params.push(req.query.status); }
+    if (req.query.category) { conditions.push(`category = $${i++}`); params.push(req.query.category); }
+    if (req.query.sprint_id) { conditions.push(`sprint_id = $${i++}`); params.push(req.query.sprint_id); }
+    if (req.query.assignee) { conditions.push(`assignee = $${i++}`); params.push(req.query.assignee); }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT * FROM tasks ${where} ORDER BY override_priority DESC, priority ASC, created_at ASC`, params);
+    res.json({ tasks: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/tasks", async (req, res) => {
+  try {
+    const { title, description, category, priority, assignee, branch, sprint_id } = req.body;
+    if (!title || !category) return res.status(400).json({ error: "missing_fields", message: "title and category required" });
+    const result = await db.query(`INSERT INTO tasks (title, description, category, priority, assignee, branch, sprint_id, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [title, description || null, category, priority || 3, assignee || null, branch || null, sprint_id || null, req.actor]);
+    logActivity(result.rows[0].id, "task_created", req.actor, { title, category });
+    res.status(201).json({ task: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    if (err.code === "23514") return res.status(400).json({ error: "invalid_value", message: err.message });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/tasks/:id", async (req, res) => {
+  try {
+    const taskRes = await db.query("SELECT * FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskRes.rows.length) return res.status(404).json({ error: "not_found" });
+    const commentsRes = await db.query("SELECT * FROM comments WHERE task_id = $1 ORDER BY created_at ASC", [req.params.id]);
+    const filesRes = await db.query("SELECT * FROM files WHERE task_id = $1 ORDER BY created_at ASC", [req.params.id]);
+    res.json({ task: taskRes.rows[0], comments: commentsRes.rows, files: filesRes.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/tasks/:id", async (req, res) => {
+  try {
+    const allowed = ["title", "description", "category", "status", "priority", "override_priority", "assignee", "branch", "sprint_id"];
+    const sets = [], params = []; let i = 1;
+    const oldRes = await db.query("SELECT * FROM tasks WHERE id = $1", [req.params.id]);
+    if (!oldRes.rows.length) return res.status(404).json({ error: "not_found" });
+    const old = oldRes.rows[0];
+    for (const key of allowed) { if (req.body[key] !== undefined) { sets.push(`${key} = $${i++}`); params.push(req.body[key]); } }
+    if (!sets.length) return res.status(400).json({ error: "no_fields" });
+    sets.push(`updated_at = NOW()`); params.push(req.params.id);
+    const result = await db.query(`UPDATE tasks SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    const changes = {};
+    for (const key of allowed) { if (req.body[key] !== undefined && String(old[key]) !== String(req.body[key])) changes[key] = { from: old[key], to: req.body[key] }; }
+    if (Object.keys(changes).length) logActivity(result.rows[0].id, "task_updated", req.actor, changes);
+    res.json({ task: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    if (err.code === "23514") return res.status(400).json({ error: "invalid_value", message: err.message });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.delete("/api/tasks/:id", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM tasks WHERE id = $1", [req.params.id]);
+    if (result.rowCount === 0) return res.status(404).json({ error: "not_found" });
+    logActivity(null, "task_deleted", req.actor, { task_id: req.params.id });
+    res.status(204).send();
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/tasks/:id/comments", async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content) return res.status(400).json({ error: "missing_fields", message: "content required" });
+    const author = req.body.author || req.actor;
+    const taskCheck = await db.query("SELECT id FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskCheck.rows.length) return res.status(404).json({ error: "task_not_found" });
+    const result = await db.query("INSERT INTO comments (task_id, author, content) VALUES ($1, $2, $3) RETURNING *", [req.params.id, author, content]);
+    logActivity(parseInt(req.params.id), "comment_added", author, { preview: content.slice(0, 100) });
+    res.status(201).json({ comment: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/tasks/:id/files", async (req, res) => {
+  try {
+    const { filename, url_or_content } = req.body;
+    if (!filename || !url_or_content) return res.status(400).json({ error: "missing_fields", message: "filename and url_or_content required" });
+    const uploaded_by = req.body.uploaded_by || req.actor;
+    const taskCheck = await db.query("SELECT id FROM tasks WHERE id = $1", [req.params.id]);
+    if (!taskCheck.rows.length) return res.status(404).json({ error: "task_not_found" });
+    const result = await db.query("INSERT INTO files (task_id, filename, url_or_content, uploaded_by) VALUES ($1, $2, $3, $4) RETURNING *", [req.params.id, filename, url_or_content, uploaded_by]);
+    logActivity(parseInt(req.params.id), "file_attached", uploaded_by, { filename });
+    res.status(201).json({ file: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+// ── Messages ──
+
+app.post("/api/messages", async (req, res) => {
+  try {
+    const { recipient, content, thread_id } = req.body;
+    if (!recipient || !content) return res.status(400).json({ error: "missing_fields", message: "recipient and content required" });
+    const sender = req.actor;
+    const result = await db.query(
+      "INSERT INTO messages (sender, recipient, content, thread_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [sender, recipient, content, thread_id || null]
+    );
+    logActivity(null, "message_sent", sender, { recipient, thread_id, preview: content.slice(0, 100) });
+    res.status(201).json({ message: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/messages", async (req, res) => {
+  try {
+    const conditions = [], params = []; let i = 1;
+    if (req.query.to) { conditions.push(`recipient = $${i++}`); params.push(req.query.to); }
+    if (req.query.from) { conditions.push(`sender = $${i++}`); params.push(req.query.from); }
+    if (req.query.unread === "true") { conditions.push(`read = FALSE`); }
+    if (req.query.thread_id) { conditions.push(`thread_id = $${i++}`); params.push(req.query.thread_id); }
+    const limit = Math.min(parseInt(req.query.limit) || 50, 200);
+    params.push(limit);
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT * FROM messages ${where} ORDER BY created_at ASC LIMIT $${i}`, params);
+    res.json({ messages: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+// Bulk mark read — must come before the parameterized :id route
+app.patch("/api/messages/read", async (req, res) => {
+  try {
+    const { ids, thread_id } = req.body;
+    let result;
+    if (thread_id) {
+      result = await db.query("UPDATE messages SET read = TRUE WHERE thread_id = $1", [thread_id]);
+    } else if (ids && ids.length) {
+      result = await db.query("UPDATE messages SET read = TRUE WHERE id = ANY($1::int[])", [ids]);
+    } else {
+      return res.status(400).json({ error: "missing_fields", message: "ids or thread_id required" });
+    }
+    res.json({ updated: result.rowCount });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/messages/:id/read", async (req, res) => {
+  try {
+    const result = await db.query("UPDATE messages SET read = TRUE WHERE id = $1 RETURNING *", [req.params.id]);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    res.json({ message: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/sprints", async (req, res) => {
+  try { const result = await db.query("SELECT * FROM sprints ORDER BY started_at DESC"); res.json({ sprints: result.rows }); }
+  catch (err) { if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" }); res.status(500).json({ error: "db_error", message: err.message }); }
+});
+
+app.post("/api/sprints", async (req, res) => {
+  try {
+    const { name, target_end } = req.body;
+    if (!name) return res.status(400).json({ error: "missing_fields", message: "name required" });
+    const result = await db.query("INSERT INTO sprints (name, target_end) VALUES ($1, $2) RETURNING *", [name, target_end || null]);
+    logActivity(null, "sprint_created", req.actor, { name });
+    res.status(201).json({ sprint: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/sprints/:id", async (req, res) => {
+  try {
+    const allowed = ["name", "target_end", "status"];
+    const sets = [], params = []; let i = 1;
+    for (const key of allowed) { if (req.body[key] !== undefined) { sets.push(`${key} = $${i++}`); params.push(req.body[key]); } }
+    if (!sets.length) return res.status(400).json({ error: "no_fields" });
+    params.push(req.params.id);
+    const result = await db.query(`UPDATE sprints SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    res.json({ sprint: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/activity", async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 200, 500);
+    const params = [limit];
+    const conditions = [];
+    if (req.query.task_id) { conditions.push("task_id = $2"); params.push(req.query.task_id); }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT a.*, t.title as task_title FROM activity_log a LEFT JOIN tasks t ON a.task_id = t.id ${where} ORDER BY a.created_at DESC LIMIT $1`, params);
+    res.json({ activity: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/health", (req, res) => res.send("ok"));
+app.get("/legacy", (req, res) => res.sendFile(path.join(__dirname, "public", "legacy.html")));
+
+async function boot() {
+  await db.initSchema();
+  const keys = ["TITUS_API_KEY", "ATLAS_API_KEY", "SOCRATES_API_KEY"];
+  for (const k of keys) { if (!process.env[k]) console.warn(`WARNING: ${k} not set`); }
+  app.listen(PORT, () => console.log(`BMP Command Center live on port ${PORT}`));
+}
+
+boot().catch((err) => { console.error("Boot failed:", err); process.exit(1); });
