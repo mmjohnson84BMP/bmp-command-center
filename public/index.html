@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <title>BMP Command Center</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,7 +41,7 @@
   --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4);
   --shadow-hover: 0 8px 24px rgba(200,135,92,0.15), 0 2px 8px rgba(0,0,0,0.3);
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --mono: 'SF Mono', Monaco, 'Cascadia Code', Consolas, monospace;
 }
 
@@ -91,13 +94,13 @@ html, body {
 .login-error { color: var(--red); font-size: 12px; margin-top: 8px; text-align: center; min-height: 18px; }
 
 /* NAV */
-.nav { position: sticky; top: 0; z-index: 100; background: rgba(26,23,20,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 0 24px; display: flex; align-items: center; height: 80px; gap: 16px; border-bottom: 1px solid var(--border); }
-.nav-brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; flex-shrink: 0; }
-.nav-logo { height: 72px; width: auto; }
+.nav { position: sticky; top: 0; z-index: 100; background: rgba(26,23,20,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 0 24px; display: flex; align-items: center; height: 90px; gap: 20px; border-bottom: 1px solid var(--border); }
+.nav-brand { display: flex; align-items: center; gap: 14px; white-space: nowrap; flex-shrink: 0; }
+.nav-logo { height: 100px; width: auto; }
 .nav-brand-label { display: flex; flex-direction: column; line-height: 1; }
-.nav-brand-title { font-weight: 800; font-size: 11px; letter-spacing: 3px; color: var(--text); text-transform: uppercase; }
+.nav-brand-title { font-weight: 800; font-size: 16px; letter-spacing: 3px; color: var(--text); text-transform: uppercase; }
 .nav-tabs { display: flex; gap: 4px; margin: 0 auto; }
-.nav-tab { background: none; border: none; color: var(--text-secondary); font-size: 13px; font-family: var(--font); font-weight: 600; padding: 8px 18px; border-radius: var(--radius-sm); cursor: pointer; transition: all 150ms var(--ease); position: relative; text-transform: uppercase; letter-spacing: 0.5px; }
+.nav-tab { background: none; border: none; color: var(--text-secondary); font-size: 15px; font-family: var(--font); font-weight: 600; padding: 10px 22px; border-radius: var(--radius-sm); cursor: pointer; transition: all 150ms var(--ease); position: relative; text-transform: uppercase; letter-spacing: 0.5px; }
 .nav-tab:hover { color: var(--text); background: rgba(200,135,92,0.06); }
 .nav-tab.active { color: var(--accent); background: rgba(200,135,92,0.08); }
 .nav-tab-badge { position: absolute; top: 2px; right: 2px; background: var(--orange); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
@@ -108,7 +111,7 @@ html, body {
 .btn-logout { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 12px; font-family: var(--font); padding: 4px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 150ms var(--ease); }
 .btn-logout:hover { border-color: var(--red); color: var(--red); }
 .hamburger { display: none; background: none; border: 1px solid var(--border); color: var(--text-secondary); width: 36px; height: 36px; border-radius: var(--radius-sm); cursor: pointer; align-items: center; justify-content: center; font-size: 18px; }
-.mobile-menu { display: none; position: absolute; top: 56px; left: 0; right: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 8px; z-index: 99; }
+.mobile-menu { display: none; position: absolute; top: 90px; left: 0; right: 0; background: var(--card); border-bottom: 1px solid var(--border); padding: 8px; z-index: 99; }
 .mobile-menu.open { display: flex; flex-direction: column; gap: 2px; }
 .mobile-menu .nav-tab { text-align: left; padding: 12px 16px; }
 
@@ -119,7 +122,7 @@ html, body {
 .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow); }
 .card-interactive { transition: all 200ms var(--ease); }
 .card-interactive:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--border-hover); }
-.section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 12px; }
+.section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 14px; }
 
 /* DASHBOARD */
 .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
@@ -407,7 +410,7 @@ var STATUS_META = {
 var RANK_LABELS = { 1: 'CRITICAL', 2: 'HIGH', 3: 'NORMAL', 4: 'LOW', 5: 'MINOR' };
 var PRI_COLORS = { 1: 'var(--red)', 2: 'var(--orange)', 3: 'var(--tan)', 4: 'var(--slate)', 5: 'var(--text-muted)' };
 var PRI_BG = { 1: 'var(--red-bg)', 2: 'var(--orange-bg)', 3: 'var(--tan-bg)', 4: 'var(--slate-bg)', 5: 'rgba(109,99,88,0.12)' };
-var AGENT_AVATARS = { socrates: '\uD83C\uDFDB\uFE0F', atlas: '\uD83C\uDF0D', titus: '\uD83D\uDEE1\uFE0F', will: '\uD83D\uDD31', mike: '\u26A1', browser: '\uD83D\uDDA5\uFE0F' };
+var AGENT_AVATARS = { socrates: '\uD83E\uDDD9', atlas: '\uD83E\uDDED', titus: '\u2694\uFE0F', will: '\uD83D\uDD31', mike: '\uD83D\uDE80', davinci: '\uD83C\uDFA8', browser: '\uD83D\uDDA5\uFE0F' };
 var HUMANS = ['will', 'mike'];
 var ACTIVITY_ICONS = { task_created: '\u2795', task_updated: '\uD83D\uDD27', comment_added: '\uD83D\uDCAC', file_attached: '\uD83D\uDCCE', task_deleted: '\uD83D\uDDD1', sprint_created: '\uD83C\uDFC1', message_sent: '\u2709', channel_created: '\uD83D\uDCE2' };
 
