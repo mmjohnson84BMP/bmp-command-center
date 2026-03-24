@@ -79,7 +79,6 @@ CREATE TABLE IF NOT EXISTS messages (
   sender      TEXT NOT NULL,
   recipient   TEXT,
   content     TEXT NOT NULL,
-  channel_id  INTEGER REFERENCES channels(id) ON DELETE SET NULL,
   thread_id   TEXT,
   read        BOOLEAN NOT NULL DEFAULT FALSE,
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -94,7 +93,6 @@ CREATE INDEX IF NOT EXISTS idx_comments_task   ON comments(task_id);
 CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient, read);
 CREATE INDEX IF NOT EXISTS idx_messages_thread    ON messages(thread_id);
 CREATE INDEX IF NOT EXISTS idx_messages_time      ON messages(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_messages_channel   ON messages(channel_id);
 CREATE INDEX IF NOT EXISTS idx_channels_members   ON channels USING GIN(members);
 `;
 
@@ -113,6 +111,8 @@ const MIGRATIONS = [
   `ALTER TABLE messages ADD COLUMN IF NOT EXISTS channel_id INTEGER REFERENCES channels(id) ON DELETE SET NULL`,
   // Make recipient nullable (channels don't need a recipient)
   `ALTER TABLE messages ALTER COLUMN recipient DROP NOT NULL`,
+  // Index for channel messages
+  `CREATE INDEX IF NOT EXISTS idx_messages_channel ON messages(channel_id)`,
 ];
 
 async function initSchema() {
