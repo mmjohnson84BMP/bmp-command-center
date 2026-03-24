@@ -1056,6 +1056,146 @@ html, body {
   .quick-links { grid-template-columns: 1fr; }
   .nav-brand-label { display: none; }
 }
+
+/* ── Comms ── */
+.comms-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 0;
+  height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+}
+.comms-sidebar {
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px 0 0;
+}
+.comms-sidebar .section-title {
+  padding: 0 16px 12px;
+}
+.thread-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s var(--ease);
+  position: relative;
+}
+.thread-item:hover { background: var(--card-hover); }
+.thread-item.active { background: var(--bg-elevated); border-left: 3px solid var(--accent); }
+.thread-item.unread-thread .thread-names { font-weight: 700; color: var(--text); }
+.thread-avatar { font-size: 1.2rem; min-width: 32px; }
+.thread-body { flex: 1; min-width: 0; }
+.thread-header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 2px; }
+.thread-names { font-size: 0.85rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.thread-time { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.thread-preview { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.unread-badge {
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 2px 6px;
+  min-width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.comms-chat {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  overflow: hidden;
+}
+.comms-empty-chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 8px;
+  color: var(--text-muted);
+}
+.chat-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-bubble {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  max-width: 75%;
+}
+.bubble-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.bubble-avatar { font-size: 1rem; }
+.bubble-sender { font-size: 0.78rem; font-weight: 600; color: var(--tan); }
+.bubble-time { font-size: 0.7rem; color: var(--text-muted); margin-left: auto; }
+.bubble-content { font-size: 0.85rem; color: var(--text); line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.chat-input-bar {
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--card);
+  align-items: flex-end;
+}
+.chat-input {
+  flex: 1;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-family: var(--font);
+  resize: none;
+  min-height: 38px;
+  max-height: 120px;
+  line-height: 1.4;
+}
+.chat-input:focus { outline: none; border-color: var(--accent); }
+.chat-send-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 8px 18px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  height: 38px;
+  white-space: nowrap;
+  transition: opacity 0.15s var(--ease);
+}
+.chat-send-btn:hover { opacity: 0.85; }
+@media (max-width: 700px) {
+  .comms-layout { grid-template-columns: 1fr; }
+  .comms-sidebar { max-height: 220px; border-right: none; border-bottom: 1px solid var(--border); }
+}
 </style>
 </head>
 <body>
@@ -1085,6 +1225,10 @@ var S = {
   createCategory: null,
   attachFormOpen: false,
   selectedSprintId: null,
+  messages: [],
+  selectedThread: null,
+  composeContent: '',
+  actor: 'browser',
   soundOn: false,
   mobileMenuOpen: false,
   loading: true,
@@ -1390,8 +1534,14 @@ function loadActivity() {
   });
 }
 
+function loadMessages() {
+  return API.get('/api/messages').then(function(data) {
+    if (data && data.messages) S.messages = data.messages;
+  });
+}
+
 function loadAll() {
-  return Promise.all([loadOverview(), loadTasks(), loadSprints(), loadActivity()]);
+  return Promise.all([loadOverview(), loadTasks(), loadSprints(), loadActivity(), loadMessages()]);
 }
 
 // ── Render Nav ──
@@ -1424,7 +1574,8 @@ function renderNav() {
   var views = [
     { key: 'overview', label: 'War Room' },
     { key: 'board', label: 'Mission Board' },
-    { key: 'activity', label: 'Battle Log' }
+    { key: 'activity', label: 'Battle Log' },
+    { key: 'comms', label: 'Comms' }
   ];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
@@ -2334,10 +2485,175 @@ function renderCreateModal() {
 }
 
 // ── Main Render ──
+// ── Comms ──
+function getThreads() {
+  var threadMap = {};
+  for (var i = 0; i < S.messages.length; i++) {
+    var m = S.messages[i];
+    var tid = m.thread_id || (m.sender < m.recipient ? m.sender + '_' + m.recipient : m.recipient + '_' + m.sender);
+    if (!threadMap[tid]) threadMap[tid] = { thread_id: tid, messages: [], unread: 0 };
+    threadMap[tid].messages.push(m);
+    if (!m.read) threadMap[tid].unread++;
+  }
+  var threads = Object.values(threadMap);
+  // Sort by last message time desc
+  threads.sort(function(a, b) {
+    var aLast = a.messages[a.messages.length - 1].created_at;
+    var bLast = b.messages[b.messages.length - 1].created_at;
+    return new Date(bLast) - new Date(aLast);
+  });
+  return threads;
+}
+
+function markThreadRead(threadId) {
+  API.patch('/api/messages/read', { thread_id: threadId }).then(function() {
+    loadMessages().then(function() { renderComms(); });
+  });
+}
+
+function sendMessage() {
+  var content = S.composeContent.trim();
+  var thread = S.selectedThread;
+  if (!content || !thread) return;
+  // Pick the participant that is NOT the current actor
+  var parts = thread.split('_');
+  var recipient = parts[0] === S.actor ? (parts[1] || parts[0]) : parts[0];
+  API.post('/api/messages', { recipient: recipient, content: content, thread_id: thread }).then(function(data) {
+    if (data) {
+      S.composeContent = '';
+      loadMessages().then(function() { renderComms(); });
+    }
+  });
+}
+
+function renderComms() {
+  var main = document.getElementById('main');
+  var wrap = el('div', { className: 'view-enter comms-layout' });
+
+  var threads = getThreads();
+
+  // ── Sidebar ──
+  var sidebar = el('div', { className: 'comms-sidebar' });
+  sidebar.appendChild(el('div', { className: 'section-title' }, '\uD83D\uDCAC Comms'));
+
+  if (!threads.length) {
+    var emptyThread = el('div', { className: 'empty-state' });
+    emptyThread.appendChild(el('div', { className: 'empty-icon' }, '\uD83D\uDCAC'));
+    emptyThread.appendChild(el('div', { className: 'empty-heading' }, 'No messages yet'));
+    emptyThread.appendChild(el('div', { className: 'empty-sub' }, 'Agent communications will appear here'));
+    sidebar.appendChild(emptyThread);
+  } else {
+    for (var ti = 0; ti < threads.length; ti++) {
+      (function(thread) {
+        var lastMsg = thread.messages[thread.messages.length - 1];
+        var isActive = S.selectedThread === thread.thread_id;
+        var item = el('div', {
+          className: 'thread-item' + (isActive ? ' active' : '') + (thread.unread > 0 ? ' unread-thread' : ''),
+          onClick: function() {
+            S.selectedThread = thread.thread_id;
+            markThreadRead(thread.thread_id);
+          }
+        });
+        var itemLeft = el('div', { className: 'thread-item-left' });
+        var parts = thread.thread_id ? thread.thread_id.split('_') : ['?'];
+        var avatarStr = parts.map(function(p) { return getAgentAvatar(p); }).join(' ');
+        itemLeft.appendChild(el('div', { className: 'thread-avatar' }, avatarStr));
+        var itemBody = el('div', { className: 'thread-body' });
+        var itemHeader = el('div', { className: 'thread-header' });
+        itemHeader.appendChild(el('span', { className: 'thread-names' }, parts.map(function(p) { return p.charAt(0).toUpperCase() + p.slice(1); }).join(' \u2194 ')));
+        itemHeader.appendChild(el('span', { className: 'thread-time' }, relTime(lastMsg.created_at)));
+        itemBody.appendChild(itemHeader);
+        var preview = el('div', { className: 'thread-preview' }, lastMsg.content.slice(0, 80) + (lastMsg.content.length > 80 ? '\u2026' : ''));
+        itemBody.appendChild(preview);
+        item.appendChild(itemLeft);
+        item.appendChild(itemBody);
+        if (thread.unread > 0) {
+          item.appendChild(el('div', { className: 'unread-badge' }, String(thread.unread)));
+        }
+        sidebar.appendChild(item);
+      })(threads[ti]);
+    }
+  }
+  wrap.appendChild(sidebar);
+
+  // ── Chat Area ──
+  var chatArea = el('div', { className: 'comms-chat' });
+
+  if (!S.selectedThread) {
+    // Auto-select first thread
+    if (threads.length) {
+      S.selectedThread = threads[0].thread_id;
+      markThreadRead(threads[0].thread_id);
+      renderComms();
+      return;
+    }
+    var noneSelected = el('div', { className: 'comms-empty-chat' });
+    noneSelected.appendChild(el('div', { className: 'empty-icon' }, '\u2190'));
+    noneSelected.appendChild(el('div', { className: 'empty-heading' }, 'Select a thread'));
+    chatArea.appendChild(noneSelected);
+  } else {
+    // Find thread messages
+    var activeThread = null;
+    for (var ati = 0; ati < threads.length; ati++) {
+      if (threads[ati].thread_id === S.selectedThread) { activeThread = threads[ati]; break; }
+    }
+    if (activeThread) {
+      // Chat header
+      var chatHeader = el('div', { className: 'chat-header' });
+      var hParts = S.selectedThread.split('_');
+      chatHeader.appendChild(el('span', { className: 'chat-header-names' },
+        hParts.map(function(p) { return getAgentAvatar(p) + ' ' + p.charAt(0).toUpperCase() + p.slice(1); }).join('  \u2194  ')
+      ));
+      chatArea.appendChild(chatHeader);
+
+      // Messages
+      var msgList = el('div', { className: 'chat-messages', id: 'chat-messages' });
+      for (var mi = 0; mi < activeThread.messages.length; mi++) {
+        (function(msg) {
+          var bubble = el('div', { className: 'chat-bubble' });
+          var meta = el('div', { className: 'bubble-meta' });
+          meta.appendChild(el('span', { className: 'bubble-avatar' }, getAgentAvatar(msg.sender)));
+          meta.appendChild(el('span', { className: 'bubble-sender' }, msg.sender.charAt(0).toUpperCase() + msg.sender.slice(1)));
+          meta.appendChild(el('span', { className: 'bubble-time' }, relTime(msg.created_at)));
+          bubble.appendChild(meta);
+          bubble.appendChild(el('div', { className: 'bubble-content' }, msg.content));
+          msgList.appendChild(bubble);
+        })(activeThread.messages[mi]);
+      }
+      chatArea.appendChild(msgList);
+
+      // Input bar
+      var inputBar = el('div', { className: 'chat-input-bar' });
+      var textarea = el('textarea', {
+        className: 'chat-input',
+        placeholder: 'Message this thread\u2026',
+        value: S.composeContent,
+        onInput: function(e) { S.composeContent = e.target.value; },
+        onKeydown: function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+      });
+      var sendBtn = el('button', { className: 'chat-send-btn ripple-host', onClick: function(e) { addRipple(e); sendMessage(); } }, 'Send');
+      inputBar.appendChild(textarea);
+      inputBar.appendChild(sendBtn);
+      chatArea.appendChild(inputBar);
+    }
+  }
+
+  wrap.appendChild(chatArea);
+  main.replaceChildren(wrap);
+
+  // Scroll to bottom of messages after paint
+  requestAnimationFrame(function() {
+    var msgEl = document.getElementById('chat-messages');
+    if (msgEl) msgEl.scrollTop = msgEl.scrollHeight;
+  });
+}
+
+
 function renderMain() {
   if (S.view === 'overview') renderOverview();
   else if (S.view === 'board') renderBoard();
   else if (S.view === 'activity') renderActivity();
+  else if (S.view === 'comms') renderComms();
 }
 
 function render() {
