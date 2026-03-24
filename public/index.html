@@ -93,7 +93,7 @@ html, body {
 /* NAV */
 .nav { position: sticky; top: 0; z-index: 100; background: rgba(26,23,20,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 16px; border-bottom: 1px solid var(--border); }
 .nav-brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; flex-shrink: 0; }
-.nav-logo { height: 36px; width: auto; }
+.nav-logo { height: 52px; width: auto; }
 .nav-brand-label { display: flex; flex-direction: column; line-height: 1; }
 .nav-brand-title { font-weight: 800; font-size: 11px; letter-spacing: 3px; color: var(--text); text-transform: uppercase; }
 .nav-tabs { display: flex; gap: 4px; margin: 0 auto; }
@@ -407,7 +407,8 @@ var STATUS_META = {
 var RANK_LABELS = { 1: 'CRITICAL', 2: 'HIGH', 3: 'NORMAL', 4: 'LOW', 5: 'MINOR' };
 var PRI_COLORS = { 1: 'var(--red)', 2: 'var(--orange)', 3: 'var(--tan)', 4: 'var(--slate)', 5: 'var(--text-muted)' };
 var PRI_BG = { 1: 'var(--red-bg)', 2: 'var(--orange-bg)', 3: 'var(--tan-bg)', 4: 'var(--slate-bg)', 5: 'rgba(109,99,88,0.12)' };
-var AGENT_AVATARS = { socrates: '\uD83C\uDFDB\uFE0F', atlas: '\uD83C\uDF0D', titus: '\uD83D\uDEE1\uFE0F', will: '\uD83D\uDC51', mike: '\u26A1', browser: '\uD83D\uDDA5\uFE0F' };
+var AGENT_AVATARS = { socrates: '\uD83C\uDFDB\uFE0F', atlas: '\uD83C\uDF0D', titus: '\uD83D\uDEE1\uFE0F', will: '\uD83D\uDD31', mike: '\u26A1', browser: '\uD83D\uDDA5\uFE0F' };
+var HUMANS = ['will', 'mike'];
 var ACTIVITY_ICONS = { task_created: '\u2795', task_updated: '\uD83D\uDD27', comment_added: '\uD83D\uDCAC', file_attached: '\uD83D\uDCCE', task_deleted: '\uD83D\uDDD1', sprint_created: '\uD83C\uDFC1', message_sent: '\u2709', channel_created: '\uD83D\uDCE2' };
 
 function getAvatar(name) { return AGENT_AVATARS[(name || '').toLowerCase()] || '\uD83D\uDC64'; }
@@ -433,7 +434,11 @@ function loadAll() {
           var ch = S.channels.find(function(c) { return c.id === m.channel_id; });
           if (ch) {
             var members = typeof ch.members === 'string' ? JSON.parse(ch.members) : ch.members;
-            if (members.some(function(mem) { return mem.toLowerCase() === me; })) S.totalUnread++;
+            var chHumans = members.filter(function(mem) { return HUMANS.indexOf(mem.toLowerCase()) !== -1; });
+            var amHuman = HUMANS.indexOf(me) !== -1;
+            var amMember = members.some(function(mem) { return mem.toLowerCase() === me; });
+            var canSee = amHuman ? (chHumans.length === 0 || amMember) : amMember;
+            if (canSee) S.totalUnread++;
           }
         } else if (m.recipient && m.recipient.toLowerCase() === me) {
           S.totalUnread++;
@@ -506,7 +511,7 @@ function renderNav(container) {
   } }, '\u2630'));
 
   var tabs = el('div', { className: 'nav-tabs' });
-  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Board' }, { key: 'comms', label: 'Comms' }];
+  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'comms', label: 'Conference Room' }];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
       var btn = el('button', { className: 'nav-tab' + (S.view === v.key ? ' active' : ''), onClick: function() { S.view = v.key; render(); } }, v.label);
@@ -597,7 +602,7 @@ function renderDashboard(main) {
   var agentCard = el('div', { className: 'card' });
   agentCard.appendChild(el('div', { className: 'section-title' }, 'Team'));
   var agentRow = el('div', { className: 'agent-row' });
-  [{ name: 'Titus', role: "Will's Strategic AI" }, { name: 'Socrates', role: 'FlowStack CTO' }, { name: 'Atlas', role: "Mike's Chief of Staff" }, { name: 'Will', role: 'Founder' }, { name: 'Mike', role: 'Co-Founder' }].forEach(function(a) {
+  [{ name: 'Will', role: 'Co-Founder' }, { name: 'Mike', role: 'Co-Founder' }, { name: 'Titus', role: "Will's Strategic AI" }, { name: 'Atlas', role: "Mike's Chief of Staff" }, { name: 'Socrates', role: 'FlowStack CTO' }].forEach(function(a) {
     var ac = el('div', { className: 'agent-card' });
     ac.appendChild(el('span', { className: 'agent-avatar' }, getAvatar(a.name)));
     var info = el('div');
@@ -685,7 +690,17 @@ function renderComms(main) {
 
   S.channels.forEach(function(ch) {
     var members = typeof ch.members === 'string' ? JSON.parse(ch.members) : ch.members;
-    if (!members.some(function(m) { return m.toLowerCase() === me; })) return;
+    // Visibility rule: agent-only channels visible to all humans, human channels only visible to member humans
+    var channelHumans = members.filter(function(m) { return HUMANS.indexOf(m.toLowerCase()) !== -1; });
+    var iAmHuman = HUMANS.indexOf(me) !== -1;
+    var iAmMember = members.some(function(m) { return m.toLowerCase() === me; });
+    if (iAmHuman) {
+      // Human: see agent-only channels + channels I'm a member of
+      if (channelHumans.length > 0 && !iAmMember) return;
+    } else {
+      // Agent: only see channels I'm a member of
+      if (!iAmMember) return;
+    }
     var unread = 0, lastMsg = null;
     S.messages.forEach(function(m) { if (m.channel_id === ch.id) { lastMsg = m; if (!m.read && m.sender.toLowerCase() !== me) unread++; } });
     var item = el('div', { className: 'channel-item' + (S.selectedChannelId === ch.id ? ' active' : ''), onClick: function() {
