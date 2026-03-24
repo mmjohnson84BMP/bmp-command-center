@@ -450,6 +450,32 @@ app.get("/api/activity", async (req, res) => {
   }
 });
 
+// ── Heartbeat ──
+
+const heartbeats = {};
+
+app.post("/api/heartbeat", (req, res) => {
+  const agent = req.actor;
+  if (agent === "browser") return res.status(400).json({ error: "no_identity" });
+  heartbeats[agent] = { last_seen: Date.now(), status: req.body.status || "online" };
+  res.json({ agent, recorded: true });
+});
+
+app.get("/api/heartbeat", (req, res) => {
+  const now = Date.now();
+  const agents = {};
+  for (const [name, data] of Object.entries(heartbeats)) {
+    const age = now - data.last_seen;
+    agents[name] = {
+      last_seen: new Date(data.last_seen).toISOString(),
+      seconds_ago: Math.round(age / 1000),
+      online: age < 60000,
+      status: data.status
+    };
+  }
+  res.json({ agents });
+});
+
 app.get("/health", (req, res) => res.send("ok"));
 
 async function boot() {
