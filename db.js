@@ -74,6 +74,12 @@ CREATE TABLE IF NOT EXISTS channels (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS sessions (
+  token       TEXT PRIMARY KEY,
+  username    TEXT NOT NULL,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS messages (
   id          SERIAL PRIMARY KEY,
   sender      TEXT NOT NULL,

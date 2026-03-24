@@ -18,8 +18,8 @@ const USER_PINS = {
   mike: process.env.MIKE_PIN || null,
 };
 
-// Session tokens for browser auth (in-memory, survives until restart)
-const sessions = {};
+// Session cache (DB-backed, cache in memory for speed)
+const sessionCache = {};
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -30,15 +30,35 @@ function resolveActor(req) {
   const apiKey = req.headers["x-api-key"];
   if (apiKey && API_KEYS[apiKey]) return API_KEYS[apiKey];
 
-  // Check session token
+  // Check session token (cache first, then DB)
   const token = req.headers["x-session-token"];
-  if (token && sessions[token]) return sessions[token];
+  if (token && sessionCache[token]) return sessionCache[token];
 
   return "browser";
 }
 
-function apiKeyAuth(req, res, next) {
-  req.actor = resolveActor(req);
+// Async session resolver for when we need DB lookup
+async function resolveActorAsync(req) {
+  const apiKey = req.headers["x-api-key"];
+  if (apiKey && API_KEYS[apiKey]) return API_KEYS[apiKey];
+
+  const token = req.headers["x-session-token"];
+  if (!token) return "browser";
+  if (sessionCache[token]) return sessionCache[token];
+
+  // Cache miss — check DB
+  try {
+    const result = await db.query("SELECT username FROM sessions WHERE token = $1", [token]);
+    if (result.rows.length) {
+      sessionCache[token] = result.rows[0].username;
+      return result.rows[0].username;
+    }
+  } catch (e) {}
+  return "browser";
+}
+
+async function apiKeyAuth(req, res, next) {
+  req.actor = await resolveActorAsync(req);
   next();
 }
 
@@ -52,7 +72,7 @@ function logActivity(taskId, action, actor, details) {
 
 // ── Auth ──
 
-app.post("/api/auth", (req, res) => {
+app.post("/api/auth", async (req, res) => {
   const { username, pin } = req.body;
   if (!username || !pin) return res.status(400).json({ error: "missing_fields" });
 
@@ -63,16 +83,28 @@ app.post("/api/auth", (req, res) => {
   }
 
   const token = crypto.randomBytes(32).toString("hex");
-  sessions[token] = normalizedUser === "will" ? "Will" : "Mike";
+  const displayName = normalizedUser === "will" ? "Will" : "Mike";
 
-  res.json({ token, user: sessions[token] });
+  // Store in DB (survives deploys) and cache
+  try {
+    await db.query("INSERT INTO sessions (token, username) VALUES ($1, $2) ON CONFLICT (token) DO NOTHING", [token, displayName]);
+  } catch (e) { console.error("Session save error:", e.message); }
+  sessionCache[token] = displayName;
+
+  res.json({ token, user: displayName });
 });
 
-app.get("/api/auth/me", (req, res) => {
+app.get("/api/auth/me", async (req, res) => {
   const token = req.headers["x-session-token"];
-  if (token && sessions[token]) {
-    return res.json({ user: sessions[token] });
-  }
+  if (!token) return res.status(401).json({ error: "not_authenticated" });
+  if (sessionCache[token]) return res.json({ user: sessionCache[token] });
+  try {
+    const result = await db.query("SELECT username FROM sessions WHERE token = $1", [token]);
+    if (result.rows.length) {
+      sessionCache[token] = result.rows[0].username;
+      return res.json({ user: result.rows[0].username });
+    }
+  } catch (e) {}
   res.status(401).json({ error: "not_authenticated" });
 });
 
