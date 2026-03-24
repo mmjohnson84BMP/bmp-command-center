@@ -245,6 +245,18 @@ app.patch("/api/messages/read", async (req, res) => {
   }
 });
 
+app.delete("/api/messages/:id", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM messages WHERE id = $1 RETURNING *", [req.params.id]);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    logActivity(null, "message_deleted", req.actor, { message_id: req.params.id });
+    res.json({ deleted: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 app.patch("/api/messages/:id/read", async (req, res) => {
   try {
     const result = await db.query("UPDATE messages SET read = TRUE WHERE id = $1 RETURNING *", [req.params.id]);
