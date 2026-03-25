@@ -427,14 +427,14 @@ function loadAll() {
     API.get('/api/sprints').then(function(d) { S.sprints = d && d.sprints ? d.sprints : []; }),
     API.get('/api/activity?limit=15').then(function(d) { S.activity = d && d.activity ? d.activity : []; }),
     API.get('/api/channels').then(function(d) { S.channels = d && d.channels ? d.channels : []; }),
-    API.get('/api/messages?limit=200').then(function(d) { S.messages = d && d.messages ? d.messages : []; }),
+    API.get('/api/messages?limit=200&for=' + encodeURIComponent(S.user || '')).then(function(d) { S.messages = d && d.messages ? d.messages : []; }),
     API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; })
   ]).then(function() {
     S.totalUnread = 0;
     var me = (S.user || '').toLowerCase();
     for (var i = 0; i < S.messages.length; i++) {
       var m = S.messages[i];
-      if (!m.read && m.sender.toLowerCase() !== me) {
+      if (!m.read_by_me && m.sender.toLowerCase() !== me) {
         if (m.channel_id) {
           var ch = S.channels.find(function(c) { return c.id === m.channel_id; });
           if (ch) {
@@ -715,7 +715,7 @@ function renderComms(main) {
       if (!iAmMember) return;
     }
     var unread = 0, lastMsg = null;
-    S.messages.forEach(function(m) { if (m.channel_id === ch.id) { lastMsg = m; if (!m.read && m.sender.toLowerCase() !== me) unread++; } });
+    S.messages.forEach(function(m) { if (m.channel_id === ch.id) { lastMsg = m; if (!m.read_by_me && m.sender.toLowerCase() !== me) unread++; } });
     var item = el('div', { className: 'channel-item' + (S.selectedChannelId === ch.id ? ' active' : ''), onClick: function() {
       S.selectedChannelId = ch.id;
       API.patch('/api/messages/read', { channel_id: ch.id });

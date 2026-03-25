@@ -100,6 +100,14 @@ CREATE INDEX IF NOT EXISTS idx_messages_recipient ON messages(recipient, read);
 CREATE INDEX IF NOT EXISTS idx_messages_thread    ON messages(thread_id);
 CREATE INDEX IF NOT EXISTS idx_messages_time      ON messages(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_channels_members   ON channels USING GIN(members);
+
+CREATE TABLE IF NOT EXISTS message_reads (
+  message_id  INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+  username    TEXT NOT NULL,
+  read_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (message_id, username)
+);
+CREATE INDEX IF NOT EXISTS idx_message_reads_user ON message_reads(username);
 `;
 
 async function query(text, params) {

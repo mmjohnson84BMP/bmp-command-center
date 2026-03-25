@@ -180,15 +180,24 @@ app.get("/api/messages", async (req, res) => {
   try {
     const conditions = [], params = [];
     let i = 1;
-    if (req.query.channel_id) { conditions.push(`channel_id = $${i++}`); params.push(req.query.channel_id); }
-    if (req.query.to) { conditions.push(`recipient = $${i++}`); params.push(req.query.to); }
-    if (req.query.from) { conditions.push(`sender = $${i++}`); params.push(req.query.from); }
-    if (req.query.unread === "true") { conditions.push(`read = FALSE`); }
-    if (req.query.thread_id) { conditions.push(`thread_id = $${i++}`); params.push(req.query.thread_id); }
+    // Determine who is reading — use ?for= param, or fall back to actor identity
+    const forUser = req.query.for || req.actor;
+    // Add per-user read state via LEFT JOIN
+    params.push(forUser); // $1 is always the reader
+    i = 2;
+    if (req.query.channel_id) { conditions.push(`m.channel_id = $${i++}`); params.push(req.query.channel_id); }
+    if (req.query.to) { conditions.push(`m.recipient = $${i++}`); params.push(req.query.to); }
+    if (req.query.from) { conditions.push(`m.sender = $${i++}`); params.push(req.query.from); }
+    if (req.query.unread === "true") { conditions.push(`mr.message_id IS NULL`); }
+    if (req.query.thread_id) { conditions.push(`m.thread_id = $${i++}`); params.push(req.query.thread_id); }
     const limit = Math.min(parseInt(req.query.limit) || 50, 200);
     params.push(limit);
     const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
-    const result = await db.query(`SELECT * FROM messages ${where} ORDER BY created_at ASC LIMIT $${i}`, params);
+    const result = await db.query(
+      `SELECT m.*, (mr.message_id IS NOT NULL) AS read_by_me
+       FROM messages m
+       LEFT JOIN message_reads mr ON mr.message_id = m.id AND LOWER(mr.username) = LOWER($1)
+       ${where} ORDER BY m.created_at ASC LIMIT $${i}`, params);
     res.json({ messages: result.rows });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
@@ -217,7 +226,9 @@ app.get("/api/messages/unread-summary", async (req, res) => {
 
     for (const ch of myChannels) {
       const countRes = await db.query(
-        "SELECT COUNT(*) as count FROM messages WHERE channel_id = $1 AND read = FALSE AND LOWER(sender) != LOWER($2)",
+        `SELECT COUNT(*) as count FROM messages m
+         WHERE m.channel_id = $1 AND LOWER(m.sender) != LOWER($2)
+         AND NOT EXISTS (SELECT 1 FROM message_reads mr WHERE mr.message_id = m.id AND LOWER(mr.username) = LOWER($2))`,
         [ch.id, forUser]
       );
       const count = parseInt(countRes.rows[0].count);
@@ -229,7 +240,9 @@ app.get("/api/messages/unread-summary", async (req, res) => {
 
     // Also check direct messages (legacy recipient-based)
     const dmRes = await db.query(
-      "SELECT COUNT(*) as count FROM messages WHERE recipient = $1 AND read = FALSE AND channel_id IS NULL",
+      `SELECT COUNT(*) as count FROM messages m
+       WHERE m.recipient = $1 AND m.channel_id IS NULL
+       AND NOT EXISTS (SELECT 1 FROM message_reads mr WHERE mr.message_id = m.id AND LOWER(mr.username) = LOWER($1))`,
       [forUser.toLowerCase()]
     );
     const dmUnread = parseInt(dmRes.rows[0].count);
@@ -245,21 +258,36 @@ app.get("/api/messages/unread-summary", async (req, res) => {
   }
 });
 
-// Bulk mark read
+// Bulk mark read (per-user via message_reads table)
 app.patch("/api/messages/read", async (req, res) => {
   try {
     const { ids, thread_id, channel_id } = req.body;
-    let result;
+    const reader = req.actor;
+    if (reader === "browser") return res.status(400).json({ error: "no_identity", message: "Must be authenticated to mark messages read" });
+
+    let messageIds;
     if (channel_id) {
-      result = await db.query("UPDATE messages SET read = TRUE WHERE channel_id = $1", [channel_id]);
+      const r = await db.query("SELECT id FROM messages WHERE channel_id = $1", [channel_id]);
+      messageIds = r.rows.map(row => row.id);
     } else if (thread_id) {
-      result = await db.query("UPDATE messages SET read = TRUE WHERE thread_id = $1", [thread_id]);
+      const r = await db.query("SELECT id FROM messages WHERE thread_id = $1", [thread_id]);
+      messageIds = r.rows.map(row => row.id);
     } else if (ids && ids.length) {
-      result = await db.query("UPDATE messages SET read = TRUE WHERE id = ANY($1::int[])", [ids]);
+      messageIds = ids;
     } else {
       return res.status(400).json({ error: "missing_fields", message: "ids, thread_id, or channel_id required" });
     }
-    res.json({ updated: result.rowCount });
+
+    if (messageIds.length > 0) {
+      // Upsert into message_reads for this user
+      await db.query(
+        `INSERT INTO message_reads (message_id, username)
+         SELECT unnest($1::int[]), $2
+         ON CONFLICT (message_id, username) DO NOTHING`,
+        [messageIds, reader]
+      );
+    }
+    res.json({ updated: messageIds.length });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
     res.status(500).json({ error: "db_error", message: err.message });
@@ -280,9 +308,15 @@ app.delete("/api/messages/:id", async (req, res) => {
 
 app.patch("/api/messages/:id/read", async (req, res) => {
   try {
-    const result = await db.query("UPDATE messages SET read = TRUE WHERE id = $1 RETURNING *", [req.params.id]);
-    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
-    res.json({ message: result.rows[0] });
+    const reader = req.actor;
+    if (reader === "browser") return res.status(400).json({ error: "no_identity" });
+    const msgCheck = await db.query("SELECT * FROM messages WHERE id = $1", [req.params.id]);
+    if (!msgCheck.rows.length) return res.status(404).json({ error: "not_found" });
+    await db.query(
+      "INSERT INTO message_reads (message_id, username) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+      [req.params.id, reader]
+    );
+    res.json({ message: msgCheck.rows[0], read_by_me: true });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
     res.status(500).json({ error: "db_error", message: err.message });
