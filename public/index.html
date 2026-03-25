@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <title>BMP Command Center</title>
+<script src="/socket.io/socket.io.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -977,26 +978,26 @@ document.addEventListener('keydown', function(e) {
 if (S.authed) { render(); loadAll().then(function() { S.loading = false; render(); }); }
 else { render(); }
 
-setInterval(function() {
+// WebSocket real-time updates — no polling
+var socket = io();
+function smartRefresh() {
   if (!S.authed || S.createModal || S.createChannelModal || S.selectedTaskId) return;
-  if (S.view === 'comms') {
-    // Smart refresh: only update messages, preserve input text
-    var input = document.querySelector('.comms-input');
-    var savedText = input ? input.value : '';
-    var savedScroll = null;
-    var msgArea = document.querySelector('.comms-messages');
-    var wasAtBottom = msgArea ? (msgArea.scrollTop + msgArea.clientHeight >= msgArea.scrollHeight - 30) : true;
-    loadAll().then(function() {
-      render();
-      var newInput = document.querySelector('.comms-input');
-      if (newInput && savedText) { newInput.value = savedText; }
-      var newMsgArea = document.querySelector('.comms-messages');
-      if (newMsgArea && wasAtBottom) { newMsgArea.scrollTop = newMsgArea.scrollHeight; }
-    });
-  } else {
-    loadAll().then(render);
-  }
-}, 30000);
+  var input = document.querySelector('.comms-input');
+  var savedText = input ? input.value : '';
+  var msgArea = document.querySelector('.comms-messages');
+  var wasAtBottom = msgArea ? (msgArea.scrollTop + msgArea.clientHeight >= msgArea.scrollHeight - 30) : true;
+  loadAll().then(function() {
+    render();
+    var newInput = document.querySelector('.comms-input');
+    if (newInput && savedText) { newInput.value = savedText; }
+    var newMsgArea = document.querySelector('.comms-messages');
+    if (newMsgArea && wasAtBottom) { newMsgArea.scrollTop = newMsgArea.scrollHeight; }
+  });
+}
+socket.on('message:new', smartRefresh);
+socket.on('message:deleted', smartRefresh);
+socket.on('task:new', smartRefresh);
+socket.on('task:updated', smartRefresh);
 })();
 </script>
 </body>

@@ -1,9 +1,13 @@
 const express = require("express");
+const http = require("http");
 const path = require("path");
 const crypto = require("crypto");
+const { Server } = require("socket.io");
 const db = require("./db");
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 const PORT = process.env.PORT || 3000;
 
 const API_KEYS = {
@@ -169,6 +173,7 @@ app.post("/api/messages", async (req, res) => {
       [sender, recipient || null, content, channel_id || null, thread_id || null]
     );
     logActivity(null, "message_sent", sender, { channel_id, recipient, preview: content.slice(0, 100) });
+    io.emit("message:new", { message: result.rows[0] });
     res.status(201).json({ message: result.rows[0] });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
@@ -299,6 +304,7 @@ app.delete("/api/messages/:id", async (req, res) => {
     const result = await db.query("DELETE FROM messages WHERE id = $1 RETURNING *", [req.params.id]);
     if (!result.rows.length) return res.status(404).json({ error: "not_found" });
     logActivity(null, "message_deleted", req.actor, { message_id: req.params.id });
+    io.emit("message:deleted", { id: parseInt(req.params.id) });
     res.json({ deleted: result.rows[0] });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
@@ -376,6 +382,7 @@ app.post("/api/tasks", async (req, res) => {
     if (!title) return res.status(400).json({ error: "missing_fields", message: "title required" });
     const result = await db.query(`INSERT INTO tasks (title, description, category, priority, assignee, branch, sprint_id, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`, [title, description || null, category || "improvement", priority || 3, assignee || null, branch || null, sprint_id || null, req.actor]);
     logActivity(result.rows[0].id, "task_created", req.actor, { title, category });
+    io.emit("task:new", { task: result.rows[0] });
     res.status(201).json({ task: result.rows[0] });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
@@ -413,6 +420,7 @@ app.patch("/api/tasks/:id", async (req, res) => {
     const changes = {};
     for (const key of allowed) { if (req.body[key] !== undefined && String(old[key]) !== String(req.body[key])) changes[key] = { from: old[key], to: req.body[key] }; }
     if (Object.keys(changes).length) logActivity(result.rows[0].id, "task_updated", req.actor, changes);
+    io.emit("task:updated", { task: result.rows[0] });
     res.json({ task: result.rows[0] });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
@@ -550,7 +558,7 @@ async function boot() {
   for (const k of keys) { if (!process.env[k]) console.warn(`WARNING: ${k} not set`); }
   if (!process.env.WILL_PIN) console.warn("WARNING: WILL_PIN not set — Will cannot log in");
   if (!process.env.MIKE_PIN) console.warn("WARNING: MIKE_PIN not set — Mike cannot log in");
-  app.listen(PORT, () => console.log(`BMP Command Center live on port ${PORT}`));
+  server.listen(PORT, () => console.log(`BMP Command Center live on port ${PORT}`));
 }
 
 boot().catch((err) => { console.error("Boot failed:", err); process.exit(1); });
