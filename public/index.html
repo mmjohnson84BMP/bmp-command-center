@@ -718,6 +718,18 @@ function renderComms(main) {
     S.messages.forEach(function(m) { if (m.channel_id === ch.id) { lastMsg = m; if (!m.read_by_me && m.sender.toLowerCase() !== me) unread++; } });
     var item = el('div', { className: 'channel-item' + (S.selectedChannelId === ch.id ? ' active' : ''), onClick: function() {
       S.selectedChannelId = ch.id;
+      // Optimistically mark messages read locally so badges clear instantly
+      S.messages.forEach(function(m) { if (m.channel_id === ch.id) m.read_by_me = true; });
+      S.totalUnread = 0;
+      var me2 = (S.user || '').toLowerCase();
+      S.messages.forEach(function(m) {
+        if (!m.read_by_me && m.sender.toLowerCase() !== me2) {
+          if (m.channel_id) {
+            var c2 = S.channels.find(function(c) { return c.id === m.channel_id; });
+            if (c2) { var mem2 = typeof c2.members === 'string' ? JSON.parse(c2.members) : c2.members; var hum2 = mem2.filter(function(x) { return HUMANS.indexOf(x.toLowerCase()) !== -1; }); if (HUMANS.indexOf(me2) !== -1 ? (hum2.length === 0 || mem2.some(function(x) { return x.toLowerCase() === me2; })) : mem2.some(function(x) { return x.toLowerCase() === me2; })) S.totalUnread++; }
+          } else if (m.recipient && m.recipient.toLowerCase() === me2) S.totalUnread++;
+        }
+      });
       API.patch('/api/messages/read', { channel_id: ch.id });
       render();
     } });
