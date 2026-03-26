@@ -196,13 +196,14 @@ app.get("/api/messages", async (req, res) => {
     if (req.query.unread === "true") { conditions.push(`mr.message_id IS NULL`); }
     if (req.query.thread_id) { conditions.push(`m.thread_id = $${i++}`); params.push(req.query.thread_id); }
     const limit = Math.min(parseInt(req.query.limit) || 50, 200);
+    const sortOrder = req.query.sort === 'desc' ? 'DESC' : 'ASC';
     params.push(limit);
     const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
     const result = await db.query(
       `SELECT m.*, (mr.message_id IS NOT NULL) AS read_by_me
        FROM messages m
        LEFT JOIN message_reads mr ON mr.message_id = m.id AND LOWER(mr.username) = LOWER($1)
-       ${where} ORDER BY m.created_at DESC LIMIT $${i}`, params);
+       ${where} ORDER BY m.created_at ${sortOrder} LIMIT $${i}`, params);
     res.json({ messages: result.rows });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
