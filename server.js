@@ -202,7 +202,7 @@ app.get("/api/messages", async (req, res) => {
       `SELECT m.*, (mr.message_id IS NOT NULL) AS read_by_me
        FROM messages m
        LEFT JOIN message_reads mr ON mr.message_id = m.id AND LOWER(mr.username) = LOWER($1)
-       ${where} ORDER BY m.created_at ASC LIMIT $${i}`, params);
+       ${where} ORDER BY m.created_at DESC LIMIT $${i}`, params);
     res.json({ messages: result.rows });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
