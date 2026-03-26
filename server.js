@@ -499,6 +499,40 @@ app.post("/api/sprints", async (req, res) => {
   }
 });
 
+// Sprint scoreboard: completed sprints with task stats
+app.get("/api/sprints/completed", async (req, res) => {
+  try {
+    const sprints = await db.query("SELECT * FROM sprints WHERE status = 'complete' ORDER BY started_at DESC");
+    const results = [];
+    for (const sp of sprints.rows) {
+      const tasksRes = await db.query("SELECT status, category, assignee FROM tasks WHERE sprint_id = $1", [sp.id]);
+      const tasks = tasksRes.rows;
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.status === "complete").length;
+      const byCategory = {};
+      const contributors = new Set();
+      for (const t of tasks) {
+        if (t.category) {
+          if (!byCategory[t.category]) byCategory[t.category] = 0;
+          byCategory[t.category]++;
+        }
+        if (t.assignee) contributors.add(t.assignee);
+      }
+      results.push({
+        ...sp,
+        task_total: total,
+        task_completed: completed,
+        by_category: byCategory,
+        contributors: Array.from(contributors)
+      });
+    }
+    res.json({ sprints: results });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 app.patch("/api/sprints/:id", async (req, res) => {
   try {
     const allowed = ["name", "target_end", "status"];
