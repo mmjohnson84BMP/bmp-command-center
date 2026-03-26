@@ -201,7 +201,7 @@ app.get("/api/messages", async (req, res) => {
     if (req.query.from) { conditions.push(`m.sender = $${i++}`); params.push(req.query.from); }
     if (req.query.unread === "true") { conditions.push(`mr.message_id IS NULL`); }
     if (req.query.thread_id) { conditions.push(`m.thread_id = $${i++}`); params.push(req.query.thread_id); }
-    const limit = Math.min(parseInt(req.query.limit) || 50, 200);
+    const limit = Math.min(parseInt(req.query.limit) || 50, 1000);
     const sortOrder = req.query.sort === 'desc' ? 'DESC' : 'ASC';
     params.push(limit);
     const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
