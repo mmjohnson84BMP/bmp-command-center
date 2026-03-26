@@ -163,8 +163,14 @@ app.patch("/api/channels/:id", async (req, res) => {
 
 app.post("/api/messages", async (req, res) => {
   try {
-    const { content, channel_id, recipient, thread_id } = req.body;
+    const { channel_id, recipient, thread_id } = req.body;
+    // Sanitize content: replace mangled UTF-8 sequences (e.g. Windows curl encoding issues)
+    let content = req.body.content;
     if (!content) return res.status(400).json({ error: "missing_fields", message: "content required" });
+    // Fix common encoding issues: mangled em dash (3 replacement chars) → proper em dash
+    content = content.replace(/\uFFFD{2,3}/g, '\u2014');
+    // Also replace standalone replacement characters
+    content = content.replace(/\uFFFD/g, '-');
     if (!channel_id && !recipient) return res.status(400).json({ error: "missing_fields", message: "channel_id or recipient required" });
 
     const sender = req.actor;
