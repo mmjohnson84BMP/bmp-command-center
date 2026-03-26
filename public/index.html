@@ -592,13 +592,14 @@ function renderDashboard(main) {
   fsCard.appendChild(el('span', { className: 'project-arrow' }, '\u2192'));
   grid.appendChild(fsCard);
 
-  var ccCard = el('a', { className: 'card card-interactive project-card', href: '#', onClick: function(e) { e.preventDefault(); } });
-  ccCard.appendChild(el('div', { className: 'project-icon', style: { background: 'var(--orange-bg)', borderColor: 'rgba(200,135,92,0.3)', color: 'var(--orange)' } }, '\uD83D\uDEE1\uFE0F'));
-  var ccContent = el('div', { className: 'project-content' });
-  ccContent.appendChild(el('div', { className: 'project-title' }, 'Command Center'));
-  ccContent.appendChild(el('div', { className: 'project-desc' }, 'BMP Operations Hub \u2022 You are here'));
-  ccCard.appendChild(ccContent);
-  grid.appendChild(ccCard);
+  var stagingCard = el('a', { className: 'card card-interactive project-card', href: 'https://flowstack-staging.up.railway.app', target: '_blank' });
+  stagingCard.appendChild(el('div', { className: 'project-icon', style: { background: 'var(--tan-bg)', borderColor: 'rgba(191,168,122,0.3)', color: 'var(--tan)' } }, '\uD83D\uDD2C'));
+  var stagingContent = el('div', { className: 'project-content' });
+  stagingContent.appendChild(el('div', { className: 'project-title' }, 'FlowStack'));
+  stagingContent.appendChild(el('div', { className: 'project-desc' }, 'AI Content OS \u2022 Staging'));
+  stagingCard.appendChild(stagingContent);
+  stagingCard.appendChild(el('span', { className: 'project-arrow' }, '\u2192'));
+  grid.appendChild(stagingCard);
   wrap.appendChild(grid);
 
   var ov = S.overview;
