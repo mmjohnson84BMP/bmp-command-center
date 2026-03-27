@@ -485,9 +485,8 @@ function loadAll() {
             var canSee = amHuman ? (chHumans.length === 0 || amMember) : amMember;
             if (canSee) S.totalUnread++;
           }
-        } else if (m.recipient && m.recipient.toLowerCase() === me) {
-          S.totalUnread++;
         }
+        // DMs (no channel_id) excluded from badge — no DM view in UI
       }
     }
   });
@@ -768,7 +767,7 @@ function renderComms(main) {
           if (m.channel_id) {
             var c2 = S.channels.find(function(c) { return c.id === m.channel_id; });
             if (c2) { var mem2 = typeof c2.members === 'string' ? JSON.parse(c2.members) : c2.members; var hum2 = mem2.filter(function(x) { return HUMANS.indexOf(x.toLowerCase()) !== -1; }); if (HUMANS.indexOf(me2) !== -1 ? (hum2.length === 0 || mem2.some(function(x) { return x.toLowerCase() === me2; })) : mem2.some(function(x) { return x.toLowerCase() === me2; })) S.totalUnread++; }
-          } else if (m.recipient && m.recipient.toLowerCase() === me2) S.totalUnread++;
+          }
         }
       });
       API.patch('/api/messages/read', { channel_id: ch.id });
