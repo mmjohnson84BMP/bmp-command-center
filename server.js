@@ -15,6 +15,7 @@ const API_KEYS = {
   [process.env.ATLAS_API_KEY]: "atlas",
   [process.env.SOCRATES_API_KEY]: "socrates",
   [process.env.FORGE_API_KEY]: "forge",
+  [process.env.DAVINCI_API_KEY]: "davinci",
 };
 
 // Simple PIN auth for browser users (Will & Mike)
@@ -600,7 +601,7 @@ app.get("/health", (req, res) => res.send("ok"));
 
 async function boot() {
   await db.initSchema();
-  const keys = ["TITUS_API_KEY", "ATLAS_API_KEY", "SOCRATES_API_KEY", "FORGE_API_KEY"];
+  const keys = ["TITUS_API_KEY", "ATLAS_API_KEY", "SOCRATES_API_KEY", "FORGE_API_KEY", "DAVINCI_API_KEY"];
   for (const k of keys) { if (!process.env[k]) console.warn(`WARNING: ${k} not set`); }
   if (!process.env.WILL_PIN) console.warn("WARNING: WILL_PIN not set — Will cannot log in");
   if (!process.env.MIKE_PIN) console.warn("WARNING: MIKE_PIN not set — Mike cannot log in");
