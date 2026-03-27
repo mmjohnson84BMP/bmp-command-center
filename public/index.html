@@ -460,14 +460,36 @@ function makeChip(status) { var c = el('span', { className: 'chip chip-' + statu
 function makeRank(p) { p = p || 3; return el('span', { className: 'rank-badge rank-' + p }, RANK_LABELS[p] || 'NORMAL'); }
 function relTime(d) { if (!d) return ''; var diff = (Date.now() - new Date(d).getTime()) / 1000; if (diff < 60) return 'just now'; if (diff < 3600) return Math.floor(diff / 60) + 'm ago'; if (diff < 86400) return Math.floor(diff / 3600) + 'h ago'; if (diff < 604800) return Math.floor(diff / 86400) + 'd ago'; return new Date(d).toLocaleDateString(); }
 
+function loadChannelMessages() {
+  // Load messages per channel so no channel gets starved
+  return API.get('/api/channels').then(function(d) {
+    var channels = d && d.channels ? d.channels : [];
+    S.channels = channels;
+    var fetches = channels.map(function(ch) {
+      return API.get('/api/messages?channel_id=' + ch.id + '&limit=50&sort=desc&for=' + encodeURIComponent(S.user || ''));
+    });
+    return Promise.all(fetches).then(function(results) {
+      var allMsgs = [];
+      var hasMore = false;
+      for (var i = 0; i < results.length; i++) {
+        var msgs = results[i] && results[i].messages ? results[i].messages : [];
+        if (msgs.length >= 50) hasMore = true;
+        allMsgs = allMsgs.concat(msgs);
+      }
+      allMsgs.sort(function(a, b) { return new Date(a.created_at) - new Date(b.created_at); });
+      S.messages = allMsgs;
+      S.commsHasMore = hasMore;
+    });
+  });
+}
+
 function loadAll() {
   return Promise.all([
     API.get('/api/overview').then(function(d) { S.overview = d; }),
     API.get('/api/tasks' + (S.selectedSprintId ? '?sprint_id=' + S.selectedSprintId : '')).then(function(d) { S.tasks = d && d.tasks ? d.tasks : []; }),
     API.get('/api/sprints').then(function(d) { S.sprints = d && d.sprints ? d.sprints : []; }),
     API.get('/api/activity?limit=15').then(function(d) { S.activity = d && d.activity ? d.activity : []; }),
-    API.get('/api/channels').then(function(d) { S.channels = d && d.channels ? d.channels : []; }),
-    API.get('/api/messages?limit=50&sort=desc&for=' + encodeURIComponent(S.user || '')).then(function(d) { var msgs = d && d.messages ? d.messages.reverse() : []; S.messages = msgs; S.commsHasMore = msgs.length >= 50; }),
+    loadChannelMessages(),
     API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; })
   ]).then(function() {
     S.totalUnread = 0;
@@ -820,8 +842,8 @@ function renderComms(main) {
           S.commsLoadingOlder = true;
           var indicator = document.getElementById('comms-load-older');
           if (indicator) indicator.textContent = 'Loading older messages...';
-          var currentCount = S.messages.length;
-          API.get('/api/messages?limit=50&offset=' + currentCount + '&sort=desc&for=' + encodeURIComponent(S.user || '')).then(function(d) {
+          var channelMsgCount = S.messages.filter(function(m) { return m.channel_id === activeChannel.id; }).length;
+          API.get('/api/messages?channel_id=' + activeChannel.id + '&limit=50&offset=' + channelMsgCount + '&sort=desc&for=' + encodeURIComponent(S.user || '')).then(function(d) {
             var older = d && d.messages ? d.messages.reverse() : [];
             if (older.length < 50) S.commsHasMore = false;
             if (older.length > 0) {
@@ -849,7 +871,7 @@ function renderComms(main) {
       var input = el('textarea', { className: 'comms-input', placeholder: 'Type a message...', rows: '1' });
       var sendBtn = el('button', { className: 'comms-send', onClick: function() {
         var content = input.value.trim(); if (!content) return;
-        API.post('/api/messages', { content: content, channel_id: activeChannel.id }).then(function() { input.value = ''; loadAll().then(render); });
+        API.post('/api/messages', { content: content, channel_id: activeChannel.id, sender: S.user }).then(function() { input.value = ''; loadAll().then(render); });
       } }, 'Send');
       input.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
       inputBar.appendChild(input);
