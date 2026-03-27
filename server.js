@@ -175,7 +175,8 @@ app.post("/api/messages", async (req, res) => {
     content = content.replace(/\uFFFD/g, '-');
     if (!channel_id && !recipient) return res.status(400).json({ error: "missing_fields", message: "channel_id or recipient required" });
 
-    const sender = req.actor;
+    // Use body sender if caller is authenticated, otherwise fall back to resolved actor
+    const sender = (req.body.sender && req.actor !== "browser") ? req.body.sender : req.actor;
     const result = await db.query(
       "INSERT INTO messages (sender, recipient, content, channel_id, thread_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [sender, recipient || null, content, channel_id || null, thread_id || null]
