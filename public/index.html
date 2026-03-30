@@ -373,6 +373,15 @@ html, body {
 .billing-notes { font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.4; }
 .billing-link-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--accent); background: var(--orange-bg); border: 1px solid rgba(200,135,92,0.2); padding: 3px 10px; border-radius: var(--radius-sm); text-decoration: none; transition: all 150ms var(--ease); }
 .billing-link-btn:hover { background: rgba(200,135,92,0.2); border-color: var(--accent); }
+.billing-burn-banner { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 28px; margin-bottom: 24px; display: flex; align-items: center; gap: 32px; position: relative; overflow: hidden; }
+.billing-burn-banner::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--tan), var(--accent)); opacity: 0.6; }
+.billing-burn-icon { font-size: 28px; flex-shrink: 0; }
+.billing-burn-primary { display: flex; flex-direction: column; gap: 2px; }
+.billing-burn-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
+.billing-burn-amount { font-size: 32px; font-weight: 900; color: var(--tan); letter-spacing: -0.5px; line-height: 1.1; }
+.billing-burn-secondary { display: flex; flex-direction: column; gap: 2px; padding-left: 32px; border-left: 1px solid var(--border); }
+.billing-burn-secondary .billing-burn-amount { font-size: 22px; color: var(--text-secondary); font-weight: 800; }
+.billing-burn-secondary .billing-burn-label { color: var(--text-muted); font-size: 10px; }
 .btn-edit-service { background: none; border: 1px solid var(--border); color: var(--text-muted); width: 26px; height: 26px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: all 150ms var(--ease); }
 .btn-edit-service:hover { border-color: var(--accent); color: var(--accent); background: var(--orange-bg); }
 
@@ -1275,6 +1284,51 @@ function renderBilling(main) {
   header.appendChild(headerLeft);
   header.appendChild(el('button', { className: 'btn-new-task', onClick: function() { openServiceModal(null); } }, '+ Add Service'));
   wrap.appendChild(header);
+
+  // Monthly burn summary banner
+  var totalBurn = 0;
+  var replitBurn = 0;
+  for (var bi = 0; bi < S.services.length; bi++) {
+    var cost = S.services[bi].monthly_cost;
+    if (!cost) continue;
+    var parsed = 0;
+    // Try to extract dollar amount — handle ranges like "$300-400" (use midpoint)
+    var rangeMatch = cost.match(/\$\s*([\d,]+(?:\.\d+)?)\s*[-\u2013]\s*([\d,]+(?:\.\d+)?)/);
+    if (rangeMatch) {
+      var lo = parseFloat(rangeMatch[1].replace(/,/g, ''));
+      var hi = parseFloat(rangeMatch[2].replace(/,/g, ''));
+      parsed = (lo + hi) / 2;
+    } else {
+      // First dollar amount in the string
+      var dollarMatch = cost.match(/\$\s*([\d,]+(?:\.\d+)?)/);
+      if (dollarMatch) {
+        parsed = parseFloat(dollarMatch[1].replace(/,/g, ''));
+      }
+    }
+    // Handle yearly amounts — convert to monthly
+    if (parsed > 0 && /\/yr/i.test(cost) && !/\/mo/i.test(cost.split('/yr')[0])) {
+      parsed = parsed / 12;
+    }
+    totalBurn += parsed;
+    if (S.services[bi].name && /replit/i.test(S.services[bi].name)) {
+      replitBurn += parsed;
+    }
+  }
+  if (totalBurn > 0) {
+    var banner = el('div', { className: 'billing-burn-banner' });
+    banner.appendChild(el('span', { className: 'billing-burn-icon' }, '\uD83D\uDD25'));
+    var primary = el('div', { className: 'billing-burn-primary' });
+    primary.appendChild(el('div', { className: 'billing-burn-label' }, 'Total Monthly Burn'));
+    primary.appendChild(el('div', { className: 'billing-burn-amount' }, '$' + Math.round(totalBurn).toLocaleString() + '/mo'));
+    banner.appendChild(primary);
+    if (replitBurn > 0) {
+      var secondary = el('div', { className: 'billing-burn-secondary' });
+      secondary.appendChild(el('div', { className: 'billing-burn-label' }, 'Without Replit'));
+      secondary.appendChild(el('div', { className: 'billing-burn-amount' }, '$' + Math.round(totalBurn - replitBurn).toLocaleString() + '/mo'));
+      banner.appendChild(secondary);
+    }
+    wrap.appendChild(banner);
+  }
 
   // Group services by category
   var byCategory = {};
