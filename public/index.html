@@ -675,7 +675,7 @@ function renderDashboard(main) {
     var info = el('div');
     var nameRow = el('div', { style: { display: 'flex', alignItems: 'center', gap: '6px' } });
     nameRow.appendChild(el('span', { className: 'agent-name' }, a.name));
-    var hb = S.heartbeats[a.name.toLowerCase()];
+    var hb = S.heartbeats[a.name.toLowerCase()] || S.heartbeats[a.name.toLowerCase().replace(/\s/g, '')];
     if (hb) {
       var dotColor = hb.online ? 'var(--green)' : 'var(--text-muted)';
       var dotTitle = hb.online ? 'Online — ' + hb.seconds_ago + 's ago' : 'Offline — last seen ' + relTime(hb.last_seen);
