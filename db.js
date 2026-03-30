@@ -108,6 +108,23 @@ CREATE TABLE IF NOT EXISTS message_reads (
   PRIMARY KEY (message_id, username)
 );
 CREATE INDEX IF NOT EXISTS idx_message_reads_user ON message_reads(username);
+
+CREATE TABLE IF NOT EXISTS services (
+  id             SERIAL PRIMARY KEY,
+  name           TEXT NOT NULL,
+  category       TEXT NOT NULL,
+  payment_method TEXT,
+  monthly_cost   TEXT,
+  balance        TEXT,
+  status         TEXT NOT NULL DEFAULT 'active',
+  billing_url    TEXT,
+  logo_url       TEXT,
+  notes          TEXT,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_services_category ON services(category);
+CREATE INDEX IF NOT EXISTS idx_services_status   ON services(status);
 `;
 
 async function query(text, params) {
@@ -127,6 +144,29 @@ const MIGRATIONS = [
   `ALTER TABLE messages ALTER COLUMN recipient DROP NOT NULL`,
   // Index for channel messages
   `CREATE INDEX IF NOT EXISTS idx_messages_channel ON messages(channel_id)`,
+  // Seed services table with known services (idempotent — only inserts if table is empty)
+  `INSERT INTO services (name, category, status, notes)
+   SELECT * FROM (VALUES
+     ('Replit', 'Infrastructure', 'active', NULL),
+     ('Claude Code Teams', 'AI/Dev Tools', 'active', 'Plus extra usage'),
+     ('ElevenLabs', 'Narration/Music', 'active', NULL),
+     ('Runway', 'Video Gen', 'active', NULL),
+     ('OpenAI', 'AI/Dev Tools', 'active', NULL),
+     ('Veo (Google)', 'Video Gen', 'active', NULL),
+     ('Gemini (Google)', 'AI/Dev Tools', 'active', NULL),
+     ('Suno', 'Narration/Music', 'active', NULL),
+     ('Higgsfield', 'Video Gen', 'active', NULL),
+     ('Railway', 'Infrastructure', 'active', NULL),
+     ('DistroKid', 'Distribution', 'active', NULL),
+     ('Meta (Facebook Ads)', 'Distribution', 'active', 'Ferron ad spend'),
+     ('DALL-E (OpenAI)', 'Image Gen', 'active', NULL),
+     ('Flux', 'Image Gen', 'active', NULL),
+     ('Midjourney', 'Image Gen', 'unknown', 'Confirm if active'),
+     ('Ideogram', 'Image Gen', 'unknown', 'Confirm if active'),
+     ('GitHub', 'Infrastructure', 'active', NULL),
+     ('Anthropic API', 'AI/Dev Tools', 'active', 'Separate from Claude Code Teams. Powers Slack bots (Titus, Atlas, Socrates)')
+   ) AS seed(name, category, status, notes)
+   WHERE NOT EXISTS (SELECT 1 FROM services LIMIT 1)`,
 ];
 
 async function initSchema() {

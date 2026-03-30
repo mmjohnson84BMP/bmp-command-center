@@ -342,7 +342,41 @@ html, body {
 .hof-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
 .hof-empty-text { font-size: 15px; color: var(--text-muted); }
 
-@media (max-width: 900px) { .board { flex-direction: column; min-height: auto; } .board-col { min-width: 0; } .dash-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } }
+/* BILLING */
+.billing-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.billing-title { font-size: 24px; font-weight: 800; color: var(--tan); letter-spacing: 1px; }
+.billing-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.billing-category { margin-bottom: 20px; animation: cardEntrance 300ms var(--ease) backwards; }
+.billing-cat-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: all 200ms var(--ease); user-select: none; }
+.billing-cat-header:hover { border-color: var(--border-hover); background: var(--card-hover); }
+.billing-cat-arrow { font-size: 12px; color: var(--text-muted); transition: transform 200ms var(--ease); }
+.billing-cat-arrow.open { transform: rotate(90deg); }
+.billing-cat-name { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-secondary); flex: 1; }
+.billing-cat-count { font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.06); color: var(--text-muted); padding: 2px 10px; border-radius: 10px; }
+.billing-cat-body { padding: 8px 0 0 0; }
+.billing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+.billing-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; transition: all 250ms var(--ease); display: flex; flex-direction: column; gap: 10px; }
+.billing-card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.billing-card-top { display: flex; align-items: center; gap: 10px; }
+.billing-card-name { font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+.billing-card-actions { display: flex; gap: 6px; }
+.billing-status { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.billing-status-active { background: var(--green-bg); color: var(--green); border: 1px solid rgba(124,154,110,0.3); }
+.billing-status-needs_update { background: var(--orange-bg); color: var(--orange); border: 1px solid rgba(200,135,92,0.3); }
+.billing-status-overdue { background: var(--red-bg); color: var(--red); border: 1px solid rgba(184,92,76,0.3); }
+.billing-status-unused { background: rgba(109,99,88,0.12); color: var(--text-muted); border: 1px solid rgba(109,99,88,0.3); }
+.billing-status-cancelled { background: rgba(109,99,88,0.08); color: var(--text-muted); border: 1px solid rgba(109,99,88,0.2); text-decoration: line-through; }
+.billing-status-unknown { background: rgba(109,99,88,0.12); color: var(--text-muted); border: 1px solid rgba(109,99,88,0.3); }
+.billing-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--text-secondary); }
+.billing-meta-item { display: flex; align-items: center; gap: 4px; }
+.billing-meta-label { color: var(--text-muted); }
+.billing-notes { font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.4; }
+.billing-link-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; color: var(--accent); background: var(--orange-bg); border: 1px solid rgba(200,135,92,0.2); padding: 3px 10px; border-radius: var(--radius-sm); text-decoration: none; transition: all 150ms var(--ease); }
+.billing-link-btn:hover { background: rgba(200,135,92,0.2); border-color: var(--accent); }
+.btn-edit-service { background: none; border: 1px solid var(--border); color: var(--text-muted); width: 26px; height: 26px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: all 150ms var(--ease); }
+.btn-edit-service:hover { border-color: var(--accent); color: var(--accent); background: var(--orange-bg); }
+
+@media (max-width: 900px) { .board { flex-direction: column; min-height: auto; } .board-col { min-width: 0; } .dash-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } .billing-grid { grid-template-columns: 1fr; } }
 @media (max-width: 768px) { .drawer { width: 100%; } .nav { padding: 0 16px; gap: 8px; } .nav-tabs { display: none; } .hamburger { display: flex; } .main { padding: 16px; } .comms-sidebar { width: 200px; min-width: 200px; } }
 </style>
 </head>
@@ -380,7 +414,11 @@ var S = {
   totalUnread: 0,
   heartbeats: {},
   commsHasMore: true,
-  commsLoadingOlder: false
+  commsLoadingOlder: false,
+  services: [],
+  serviceModal: false,
+  editingServiceId: null,
+  billingCollapsed: {}
 };
 
 var savedToken = localStorage.getItem('cc_session_token');
@@ -490,7 +528,8 @@ function loadAll() {
     API.get('/api/sprints').then(function(d) { S.sprints = d && d.sprints ? d.sprints : []; }),
     API.get('/api/activity?limit=15').then(function(d) { S.activity = d && d.activity ? d.activity : []; }),
     loadChannelMessages(),
-    API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; })
+    API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; }),
+    API.get('/api/services').then(function(d) { S.services = d && d.services ? d.services : []; })
   ]).then(function() {
     S.totalUnread = 0;
     var me = (S.user || '').toLowerCase();
@@ -577,7 +616,7 @@ function renderNav(container) {
   } }, '\u2630'));
 
   var tabs = el('div', { className: 'nav-tabs' });
-  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }];
+  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
       var btn = el('button', { className: 'nav-tab' + (S.view === v.key ? ' active' : ''), onClick: function() { S.view = v.key; render(); } }, v.label);
@@ -1132,6 +1171,210 @@ function renderScoreboard(main) {
   main.replaceChildren(wrap);
 }
 
+var BILLING_CATEGORIES = ['Video Gen', 'Image Gen', 'Narration/Music', 'Infrastructure', 'AI/Dev Tools', 'Distribution'];
+var BILLING_STATUS_LABELS = { active: 'Active', needs_update: 'Needs Update', overdue: 'Overdue', unused: 'Unused', cancelled: 'Cancelled', unknown: 'Unknown' };
+var BILLING_CAT_ICONS = { 'Video Gen': '\uD83C\uDFAC', 'Image Gen': '\uD83D\uDDBC\uFE0F', 'Narration/Music': '\uD83C\uDFB5', 'Infrastructure': '\u2699\uFE0F', 'AI/Dev Tools': '\uD83E\uDD16', 'Distribution': '\uD83D\uDCE1' };
+
+function openServiceModal(service) {
+  S.serviceModal = true;
+  S.editingServiceId = service ? service.id : null;
+  var overlay = document.getElementById('modal-overlay');
+  var modal = document.getElementById('modal');
+  overlay.classList.add('open');
+  clearChildren(modal);
+  modal.appendChild(el('div', { className: 'modal-strip' }));
+  var inner = el('div', { className: 'modal-inner' });
+  inner.appendChild(el('div', { className: 'modal-title' }, service ? 'Edit Service' : 'Add Service'));
+
+  var fields = [
+    { key: 'name', label: 'Service Name', type: 'input', required: true },
+    { key: 'category', label: 'Category', type: 'select', options: BILLING_CATEGORIES },
+    { key: 'status', label: 'Status', type: 'select', options: ['active', 'needs_update', 'overdue', 'unused', 'cancelled', 'unknown'] },
+    { key: 'payment_method', label: 'Payment Method', type: 'input', placeholder: "e.g. Will's card" },
+    { key: 'monthly_cost', label: 'Monthly Cost', type: 'input', placeholder: 'e.g. ~$20/mo' },
+    { key: 'balance', label: 'Balance / Credits', type: 'input', placeholder: 'e.g. $50 remaining' },
+    { key: 'billing_url', label: 'Billing URL', type: 'input', placeholder: 'https://...' },
+    { key: 'logo_url', label: 'Logo URL', type: 'input', placeholder: 'https://...' },
+    { key: 'notes', label: 'Notes', type: 'textarea' }
+  ];
+
+  var inputs = {};
+  for (var fi = 0; fi < fields.length; fi++) {
+    var f = fields[fi];
+    var group = el('div', { className: 'form-group' });
+    group.appendChild(el('label', { className: 'form-label' }, f.label));
+    var inp;
+    if (f.type === 'select') {
+      inp = el('select', { className: 'form-select' });
+      for (var oi = 0; oi < f.options.length; oi++) {
+        var opt = el('option', { value: f.options[oi] }, f.options[oi]);
+        inp.appendChild(opt);
+      }
+      if (service && service[f.key]) inp.value = service[f.key];
+    } else if (f.type === 'textarea') {
+      inp = el('textarea', { className: 'form-textarea', placeholder: f.placeholder || '' });
+      if (service && service[f.key]) inp.value = service[f.key];
+    } else {
+      inp = el('input', { className: 'form-input', type: 'text', placeholder: f.placeholder || '' });
+      if (service && service[f.key]) inp.value = service[f.key];
+    }
+    inputs[f.key] = inp;
+    group.appendChild(inp);
+    inner.appendChild(group);
+  }
+
+  var actions = el('div', { className: 'modal-actions' });
+
+  if (service) {
+    var delBtn = el('button', { className: 'btn-cancel', style: { color: 'var(--red)', borderColor: 'var(--red)' }, onClick: function() {
+      if (!confirm('Delete ' + service.name + '?')) return;
+      API.del('/api/services/' + service.id).then(function(ok) {
+        if (ok) { toast('Service deleted'); closeServiceModal(); API.get('/api/services').then(function(d) { S.services = d && d.services ? d.services : []; render(); }); }
+        else toast('Delete failed', 'error');
+      });
+    } }, 'Delete');
+    actions.appendChild(delBtn);
+  }
+
+  actions.appendChild(el('button', { className: 'btn-cancel', onClick: closeServiceModal }, 'Cancel'));
+  actions.appendChild(el('button', { className: 'btn-create', onClick: function() {
+    var name = inputs.name.value.trim();
+    if (!name) { inputs.name.classList.add('error'); return; }
+    var body = {};
+    var fieldKeys = Object.keys(inputs);
+    for (var ki = 0; ki < fieldKeys.length; ki++) {
+      var val = inputs[fieldKeys[ki]].value.trim();
+      if (val) body[fieldKeys[ki]] = val;
+    }
+    if (!body.category) body.category = BILLING_CATEGORIES[0];
+    var promise = service
+      ? API.patch('/api/services/' + service.id, body)
+      : API.post('/api/services', body);
+    promise.then(function(d) {
+      if (d) { toast(service ? 'Service updated' : 'Service added'); closeServiceModal(); API.get('/api/services').then(function(r) { S.services = r && r.services ? r.services : []; render(); }); }
+      else toast('Save failed', 'error');
+    });
+  } }, service ? 'Save Changes' : 'Add Service'));
+
+  inner.appendChild(actions);
+  modal.appendChild(inner);
+}
+
+function closeServiceModal() {
+  S.serviceModal = false;
+  S.editingServiceId = null;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function renderBilling(main) {
+  var wrap = el('div', { className: 'view-enter' });
+  var header = el('div', { className: 'billing-header' });
+  var headerLeft = el('div');
+  headerLeft.appendChild(el('div', { className: 'billing-title' }, 'Billing & Connections'));
+  headerLeft.appendChild(el('div', { className: 'billing-subtitle' }, 'All active services, subscriptions, and tools'));
+  header.appendChild(headerLeft);
+  header.appendChild(el('button', { className: 'btn-new-task', onClick: function() { openServiceModal(null); } }, '+ Add Service'));
+  wrap.appendChild(header);
+
+  // Group services by category
+  var byCategory = {};
+  for (var si = 0; si < S.services.length; si++) {
+    var svc = S.services[si];
+    if (!byCategory[svc.category]) byCategory[svc.category] = [];
+    byCategory[svc.category].push(svc);
+  }
+
+  for (var ci = 0; ci < BILLING_CATEGORIES.length; ci++) {
+    var cat = BILLING_CATEGORIES[ci];
+    var items = byCategory[cat];
+    if (!items || !items.length) continue;
+
+    var isCollapsed = S.billingCollapsed[cat] === true;
+    var section = el('div', { className: 'billing-category', style: { animationDelay: (ci * 60) + 'ms' } });
+
+    (function(cat, items, isCollapsed) {
+      var catHeader = el('div', { className: 'billing-cat-header', onClick: function() {
+        S.billingCollapsed[cat] = !S.billingCollapsed[cat];
+        render();
+      } });
+      catHeader.appendChild(el('span', { className: 'billing-cat-arrow' + (isCollapsed ? '' : ' open') }, '\u25B6'));
+      catHeader.appendChild(el('span', { style: { fontSize: '16px' } }, BILLING_CAT_ICONS[cat] || '\uD83D\uDCE6'));
+      catHeader.appendChild(el('span', { className: 'billing-cat-name' }, cat));
+      catHeader.appendChild(el('span', { className: 'billing-cat-count' }, String(items.length) + (items.length === 1 ? ' service' : ' services')));
+      section.appendChild(catHeader);
+
+      if (!isCollapsed) {
+        var body = el('div', { className: 'billing-cat-body' });
+        var grid = el('div', { className: 'billing-grid' });
+
+        for (var ii = 0; ii < items.length; ii++) {
+          (function(svc) {
+            var card = el('div', { className: 'billing-card' });
+
+            // Top row: name + status + edit
+            var top = el('div', { className: 'billing-card-top' });
+            top.appendChild(el('span', { className: 'billing-card-name' }, svc.name));
+            var statusClass = 'billing-status billing-status-' + (svc.status || 'active');
+            top.appendChild(el('span', { className: statusClass }, BILLING_STATUS_LABELS[svc.status] || svc.status));
+            var actionsDiv = el('div', { className: 'billing-card-actions' });
+            actionsDiv.appendChild(el('button', { className: 'btn-edit-service', 'data-tooltip': 'Edit', onClick: function() { openServiceModal(svc); } }, '\u270E'));
+            top.appendChild(actionsDiv);
+            card.appendChild(top);
+
+            // Meta row
+            var meta = el('div', { className: 'billing-meta' });
+            if (svc.payment_method) {
+              var pm = el('span', { className: 'billing-meta-item' });
+              pm.appendChild(el('span', { className: 'billing-meta-label' }, '\uD83D\uDCB3'));
+              pm.appendChild(el('span', null, svc.payment_method));
+              meta.appendChild(pm);
+            }
+            if (svc.monthly_cost) {
+              var mc = el('span', { className: 'billing-meta-item' });
+              mc.appendChild(el('span', { className: 'billing-meta-label' }, '\uD83D\uDCB0'));
+              mc.appendChild(el('span', null, svc.monthly_cost));
+              meta.appendChild(mc);
+            }
+            if (svc.balance) {
+              var bal = el('span', { className: 'billing-meta-item' });
+              bal.appendChild(el('span', { className: 'billing-meta-label' }, '\uD83C\uDFE6'));
+              bal.appendChild(el('span', null, svc.balance));
+              meta.appendChild(bal);
+            }
+            if (meta.childNodes.length) card.appendChild(meta);
+
+            // Notes
+            if (svc.notes) {
+              card.appendChild(el('div', { className: 'billing-notes' }, svc.notes));
+            }
+
+            // Billing link
+            if (svc.billing_url) {
+              card.appendChild(el('a', { className: 'billing-link-btn', href: svc.billing_url, target: '_blank', rel: 'noopener' }, '\u2197 Open Billing'));
+            }
+
+            grid.appendChild(card);
+          })(items[ii]);
+        }
+
+        body.appendChild(grid);
+        section.appendChild(body);
+      }
+    })(cat, items, isCollapsed);
+
+    wrap.appendChild(section);
+  }
+
+  if (!S.services.length) {
+    var empty = el('div', { className: 'hof-empty' });
+    empty.appendChild(el('div', { className: 'hof-empty-icon' }, '\uD83D\uDCB3'));
+    empty.appendChild(el('div', { className: 'hof-empty-text' }, 'No services tracked yet. Add your first service to get started.'));
+    wrap.appendChild(empty);
+  }
+
+  main.replaceChildren(wrap);
+}
+
 function render() {
   var app = document.getElementById('app');
   if (!S.authed) { renderLogin(); return; }
@@ -1143,10 +1386,11 @@ function render() {
   else if (S.view === 'board') renderBoard(main);
   else if (S.view === 'scoreboard') renderScoreboard(main);
   else if (S.view === 'comms') renderComms(main);
+  else if (S.view === 'billing') renderBilling(main);
 }
 
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') { if (S.createModal) closeCreateModal(); else if (S.createChannelModal) closeCreateChannelModal(); else if (S.selectedTaskId) closeDrawer(); }
+  if (e.key === 'Escape') { if (S.serviceModal) closeServiceModal(); else if (S.createModal) closeCreateModal(); else if (S.createChannelModal) closeCreateChannelModal(); else if (S.selectedTaskId) closeDrawer(); }
 });
 
 if (S.authed) { render(); loadAll().then(function() { S.loading = false; render(); }); }

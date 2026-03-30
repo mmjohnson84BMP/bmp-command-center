@@ -572,6 +572,73 @@ app.get("/api/activity", async (req, res) => {
   }
 });
 
+// ── Services (Billing & Connections) ──
+
+app.get("/api/services", async (req, res) => {
+  try {
+    const conditions = [], params = [];
+    let i = 1;
+    if (req.query.category) { conditions.push(`category = $${i++}`); params.push(req.query.category); }
+    if (req.query.status) { conditions.push(`status = $${i++}`); params.push(req.query.status); }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const result = await db.query(`SELECT * FROM services ${where} ORDER BY category, name`, params);
+    res.json({ services: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/services", async (req, res) => {
+  try {
+    const { name, category, payment_method, monthly_cost, balance, status, billing_url, logo_url, notes } = req.body;
+    if (!name || !category) return res.status(400).json({ error: "missing_fields", message: "name and category required" });
+    const result = await db.query(
+      `INSERT INTO services (name, category, payment_method, monthly_cost, balance, status, billing_url, logo_url, notes)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+      [name, category, payment_method || null, monthly_cost || null, balance || null, status || 'active', billing_url || null, logo_url || null, notes || null]
+    );
+    logActivity(null, "service_created", req.actor, { name, category });
+    res.status(201).json({ service: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.patch("/api/services/:id", async (req, res) => {
+  try {
+    const allowed = ["name", "category", "payment_method", "monthly_cost", "balance", "status", "billing_url", "logo_url", "notes"];
+    const sets = [], params = [];
+    let i = 1;
+    for (const key of allowed) {
+      if (req.body[key] !== undefined) { sets.push(`${key} = $${i++}`); params.push(req.body[key]); }
+    }
+    if (!sets.length) return res.status(400).json({ error: "no_fields" });
+    sets.push(`updated_at = NOW()`);
+    params.push(req.params.id);
+    const result = await db.query(`UPDATE services SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    logActivity(null, "service_updated", req.actor, { service_id: req.params.id, fields: Object.keys(req.body) });
+    res.json({ service: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.delete("/api/services/:id", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM services WHERE id = $1 RETURNING *", [req.params.id]);
+    if (!result.rows.length) return res.status(404).json({ error: "not_found" });
+    logActivity(null, "service_deleted", req.actor, { name: result.rows[0].name });
+    res.json({ deleted: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 // ── Heartbeat ──
 
 const heartbeats = {};
