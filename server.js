@@ -16,6 +16,7 @@ const API_KEYS = {
   [process.env.SOCRATES_API_KEY]: "socrates",
   [process.env.FORGE_API_KEY]: "forge",
   [process.env.DAVINCI_API_KEY]: "davinci",
+  [process.env.KUBRICK_API_KEY]: "kubrick",
 };
 
 // Simple PIN auth for browser users (Will & Mike)
