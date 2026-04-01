@@ -1448,8 +1448,35 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') { if (S.serviceModal) closeServiceModal(); else if (S.createModal) closeCreateModal(); else if (S.createChannelModal) closeCreateChannelModal(); else if (S.selectedTaskId) closeDrawer(); }
 });
 
-if (S.authed) { render(); loadAll().then(function() { S.loading = false; render(); }); }
+if (S.authed) { render(); loadAll().then(function() { S.loading = false; render(); updateFaviconBadge(); }); }
 else { render(); }
+
+// Favicon notification badge
+var _faviconOriginal = document.querySelector('link[rel="icon"]').href;
+var _faviconBadgeActive = false;
+function updateFaviconBadge() {
+  var hasUnread = S.totalUnread > 0;
+  if (hasUnread === _faviconBadgeActive) return;
+  _faviconBadgeActive = hasUnread;
+  var link = document.querySelector('link[rel="icon"]');
+  if (!hasUnread) { link.href = _faviconOriginal; return; }
+  var img = new Image();
+  img.onload = function() {
+    var c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    var ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, 64, 64);
+    ctx.beginPath();
+    ctx.arc(52, 12, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = '#e74c3c';
+    ctx.fill();
+    ctx.strokeStyle = '#100e0c';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    link.href = c.toDataURL('image/png');
+  };
+  img.src = _faviconOriginal;
+}
 
 // WebSocket real-time updates — no polling
 var socket = io();
@@ -1463,6 +1490,7 @@ function smartRefresh() {
   var wasAtBottom = msgArea ? (msgArea.scrollTop + msgArea.clientHeight >= msgArea.scrollHeight - 30) : true;
   loadAll().then(function() {
     render();
+    updateFaviconBadge();
     var newInput = document.querySelector('.comms-input');
     if (newInput && savedText) { newInput.value = savedText; }
     if (newInput && hadFocus) { newInput.focus(); newInput.selectionStart = newInput.selectionEnd = cursorPos; }
