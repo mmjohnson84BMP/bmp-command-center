@@ -999,6 +999,7 @@ function renderComms(main) {
       });
       API.patch('/api/messages/read', { channel_id: ch.id });
       render();
+      updateFaviconBadge();
     } });
     var hdr = el('div', { className: 'channel-item-header' });
     var chDotColors = { 'agent ops': 'var(--orange)', 'founders': 'var(--green)', 'general': 'var(--tan)', 'design': 'var(--purple)' };
