@@ -920,7 +920,7 @@ function renderComms(main) {
       var input = el('textarea', { className: 'comms-input', placeholder: 'Type a message...', rows: '1' });
       var sendBtn = el('button', { className: 'comms-send', onClick: function() {
         var content = input.value.trim(); if (!content) return;
-        API.post('/api/messages', { content: content, channel_id: activeChannel.id, sender: S.user }).then(function() { input.value = ''; loadAll().then(render); });
+        API.post('/api/messages', { content: content, channel_id: activeChannel.id, sender: S.user }).then(function() { input.value = ''; loadAll().then(function() { render(); var ni = document.querySelector('.comms-input'); if (ni) ni.focus(); }); });
       } }, 'Send');
       input.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
       inputBar.appendChild(input);
