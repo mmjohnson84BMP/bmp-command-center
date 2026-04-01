@@ -147,6 +147,8 @@ body::before {
 .avatar-ring { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; background: #100e0b; border: 2px solid rgba(200,135,92,0.2); transition: border-color 300ms var(--ease), box-shadow 300ms var(--ease); }
 .avatar-ring-sm { width: 32px; height: 32px; font-size: 18px; }
 .avatar-ring-lg { width: 44px; height: 44px; font-size: 24px; }
+.avatar-emblem { transition: filter 300ms var(--ease), transform 300ms var(--ease); }
+.avatar-emblem:hover { filter: brightness(1.1) saturate(1.3); transform: scale(1.05); }
 
 /* DASHBOARD */
 .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
@@ -167,7 +169,7 @@ body::before {
 .agent-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .agent-card { display: flex; align-items: center; gap: 10px; padding: 18px 18px; background: var(--card); border-radius: var(--radius-md); transition: all 300ms var(--ease); }
 .agent-card:hover { background: var(--card-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-.agent-card:hover .avatar-ring { border-color: rgba(200,135,92,0.5); }
+.agent-card:hover .avatar-ring, .agent-card:hover .avatar-emblem { border-color: rgba(200,135,92,0.5); }
 .agent-avatar { font-size: 24px; }
 .agent-name { font-size: 14px; font-weight: 600; }
 .agent-role { font-size: 11px; color: var(--text-muted); }
@@ -538,6 +540,12 @@ var HUMANS = ['will', 'mike'];
 var ACTIVITY_ICONS = { task_created: '\u2795', task_updated: '\uD83D\uDD27', comment_added: '\uD83D\uDCAC', file_attached: '\uD83D\uDCCE', task_deleted: '\uD83D\uDDD1', sprint_created: '\uD83C\uDFC1', message_sent: '\u2709', channel_created: '\uD83D\uDCE2' };
 
 function getAvatar(name) { return AGENT_AVATARS[(name || '').toLowerCase()] || '\uD83D\uDC64'; }
+var AGENT_EMBLEM_URLS = {
+  will: '/avatars/will.png', mike: '/avatars/mike.png', titus: '/avatars/titus.png',
+  atlas: '/avatars/atlas.png', socrates: '/avatars/socrates.png', davinci: '/avatars/davinci.png',
+  'da vinci': '/avatars/davinci.png', forge: '/avatars/forge.png', kubrick: '/avatars/kubrick.png',
+  zimmer: '/avatars/zimmer.png'
+};
 var AVATAR_BG_MAP = {
   will: 'linear-gradient(135deg, #2a1f14, #3d2a18)',
   mike: 'linear-gradient(135deg, #1a2332, #1e2d3f)',
@@ -591,6 +599,33 @@ function getAvatarGlow(name) { return AVATAR_GLOW_MAP[(name || '').toLowerCase()
 function getAvatarBorder(name) { return AVATAR_BORDER_MAP[(name || '').toLowerCase()] || 'rgba(200,135,92,0.2)'; }
 function getAgentColor(name) { return AGENT_COLOR_MAP[(name || '').toLowerCase()] || 'var(--accent)'; }
 function isHuman(name) { return HUMANS.indexOf((name || '').toLowerCase()) !== -1; }
+function makeAvatarEl(name, size) {
+  var sizes = { sm: 22, md: 36, lg: 44, chat: 32 };
+  var px = sizes[size] || sizes.md;
+  var imgPx = Math.round(px * 0.65);
+  var url = AGENT_EMBLEM_URLS[(name || '').toLowerCase()];
+  var container = el('div', {
+    className: 'avatar-emblem',
+    style: {
+      width: px + 'px', height: px + 'px', borderRadius: '50%', display: 'flex',
+      alignItems: 'center', justifyContent: 'center', flexShrink: '0',
+      background: getAvatarBg(name), border: '2px solid ' + getAvatarBorder(name),
+      boxShadow: '0 0 12px ' + getAvatarGlow(name),
+      transition: 'all 300ms cubic-bezier(0.4,0,0.2,1)', overflow: 'hidden'
+    }
+  });
+  if (url) {
+    var img = el('img', {
+      src: url, alt: name || '',
+      style: { width: imgPx + 'px', height: imgPx + 'px', objectFit: 'contain', borderRadius: '50%', filter: 'brightness(0.85) saturate(1.2)' }
+    });
+    container.appendChild(img);
+  } else {
+    container.appendChild(document.createTextNode(getAvatar(name)));
+    container.style.fontSize = Math.round(px * 0.5) + 'px';
+  }
+  return container;
+}
 function makeChip(status) { var c = el('span', { className: 'chip chip-' + status }); c.appendChild(el('span', { className: 'chip-dot' })); c.appendChild(el('span', { className: 'chip-text' }, STATUS_LABELS[status] || status)); return c; }
 function makeRank(p) { p = p || 3; return el('span', { className: 'rank-badge rank-' + p }, RANK_LABELS[p] || 'NORMAL'); }
 function relTime(d) { if (!d) return ''; var diff = (Date.now() - new Date(d).getTime()) / 1000; if (diff < 60) return 'just now'; if (diff < 3600) return Math.floor(diff / 60) + 'm ago'; if (diff < 86400) return Math.floor(diff / 3600) + 'h ago'; if (diff < 604800) return Math.floor(diff / 86400) + 'd ago'; return new Date(d).toLocaleDateString(); }
@@ -724,7 +759,10 @@ function renderNav(container) {
   nav.appendChild(tabs);
 
   var right = el('div', { className: 'nav-right' });
-  right.appendChild(el('div', { className: 'nav-user' }, getAvatar(S.user) + ' ' + (S.user || 'Unknown')));
+  var navUserEl = el('div', { className: 'nav-user', style: { display: 'flex', alignItems: 'center', gap: '6px' } });
+  navUserEl.appendChild(makeAvatarEl(S.user, 'sm'));
+  navUserEl.appendChild(document.createTextNode(S.user || 'Unknown'));
+  right.appendChild(navUserEl);
   right.appendChild(el('button', { className: 'btn-new-task', onClick: function() { openCreateModal(); } }, '+ New Task'));
   right.appendChild(el('button', { className: 'btn-logout', onClick: function() {
     localStorage.removeItem('cc_session_token'); localStorage.removeItem('cc_session_user');
@@ -797,8 +835,7 @@ function renderDashboard(main) {
     for (var pi = 0; pi < Math.min(urgentTasks.length, 5); pi++) {
       (function(t) {
         var item = el('div', { className: 'priority-item', onClick: function() { openDrawer(t.id); } });
-        var avatarEl = el('div', { className: 'avatar-ring avatar-ring-sm', style: { background: getAvatarBg(t.assignee), borderColor: getAvatarBorder(t.assignee), boxShadow: '0 0 10px ' + getAvatarGlow(t.assignee) } }, getAvatar(t.assignee));
-        item.appendChild(avatarEl);
+        item.appendChild(makeAvatarEl(t.assignee, 'md'));
         item.appendChild(makeRank(t.priority));
         item.appendChild(el('span', { className: 'priority-item-title' }, t.title));
         item.appendChild(makeChip(t.status));
@@ -816,8 +853,7 @@ function renderDashboard(main) {
   [{ name: 'Will', role: 'Co-Founder' }, { name: 'Mike', role: 'Co-Founder' }, { name: 'Titus', role: "Will's Strategic AI" }, { name: 'Atlas', role: "Mike's Chief of Staff" }, { name: 'Socrates', role: 'FlowStack CTO' }, { name: 'Da Vinci', role: 'Frontend & Visual QA' }, { name: 'Forge', role: 'Channel Provisioner' }, { name: 'Kubrick', role: 'Creative Director' }, { name: 'Zimmer', role: 'Music Director' }].forEach(function(a) {
     var ac = el('div', { className: 'agent-card' });
     var avatarWrap = el('div', { style: { position: 'relative', display: 'inline-block' } });
-    var avatarEl = el('div', { className: 'avatar-ring avatar-ring-lg', style: { background: getAvatarBg(a.name), borderColor: getAvatarBorder(a.name), boxShadow: '0 0 12px ' + getAvatarGlow(a.name), fontSize: '24px' } }, getAvatar(a.name));
-    avatarWrap.appendChild(avatarEl);
+    avatarWrap.appendChild(makeAvatarEl(a.name, 'lg'));
     var hb = S.heartbeats[a.name.toLowerCase()] || S.heartbeats[a.name.toLowerCase().replace(/\s/g, '')];
     if (hb) {
       var dotColor = hb.online ? '#4ade80' : 'var(--text-muted)';
@@ -845,8 +881,7 @@ function renderDashboard(main) {
       var act = S.activity[aci];
       var actItem = el('div', { className: 'activity-item' });
       var actorColor = getAgentColor(act.actor);
-      actItem.appendChild(el('span', { style: { width: '6px', height: '6px', borderRadius: '50%', background: actorColor, flexShrink: '0' } }));
-      actItem.appendChild(el('span', { className: 'activity-icon' }, ACTIVITY_ICONS[act.action] || '\u2022'));
+      actItem.appendChild(makeAvatarEl(act.actor, 'sm'));
       actItem.appendChild(el('span', { className: 'activity-actor', style: { color: actorColor } }, act.actor));
       actItem.appendChild(el('span', { className: 'activity-desc' }, act.task_title ? (act.action || '').replace(/_/g, ' ') + ': ' + act.task_title : (act.action || '').replace(/_/g, ' ')));
       actItem.appendChild(el('span', { className: 'activity-time' }, relTime(act.created_at)));
@@ -892,7 +927,12 @@ function renderBoard(main) {
       top.appendChild(el('span', { className: 'board-card-title' }, t.title || 'Untitled'));
       card.appendChild(top);
       var metaRow = el('div', { className: 'board-card-meta' });
-      if (t.assignee) metaRow.appendChild(el('span', { className: 'board-card-assignee' }, getAvatar(t.assignee) + ' ' + t.assignee));
+      if (t.assignee) {
+        var assigneeEl = el('span', { className: 'board-card-assignee', style: { display: 'flex', alignItems: 'center', gap: '4px' } });
+        assigneeEl.appendChild(makeAvatarEl(t.assignee, 'sm'));
+        assigneeEl.appendChild(document.createTextNode(t.assignee));
+        metaRow.appendChild(assigneeEl);
+      }
       if (t.category) metaRow.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--text-muted)' } }, t.category));
       if (t.branch) metaRow.appendChild(el('span', { className: 'board-card-branch' }, t.branch));
       card.appendChild(metaRow);
@@ -958,7 +998,13 @@ function renderComms(main) {
     if (unread > 0) hdr.appendChild(el('span', { className: 'channel-item-unread' }, String(unread)));
     item.appendChild(hdr);
     if (lastMsg) item.appendChild(el('div', { className: 'channel-item-preview' }, lastMsg.sender + ': ' + lastMsg.content.slice(0, 50)));
-    item.appendChild(el('div', { className: 'channel-item-members' }, members.map(function(m) { return getAvatar(m); }).join(' ')));
+    var memRow = el('div', { className: 'channel-item-members', style: { display: 'flex', gap: '3px', alignItems: 'center', marginTop: '4px' } });
+    members.forEach(function(m) {
+      var memAvatar = makeAvatarEl(m, 'sm');
+      memAvatar.setAttribute('data-tooltip', m);
+      memRow.appendChild(memAvatar);
+    });
+    item.appendChild(memRow);
     channelList.appendChild(item);
   });
   if (!S.channels.length) channelList.appendChild(el('div', { style: { color: 'var(--text-muted)', fontSize: '13px', padding: '20px', textAlign: 'center' } }, 'No channels yet'));
@@ -972,7 +1018,13 @@ function renderComms(main) {
       var members = typeof activeChannel.members === 'string' ? JSON.parse(activeChannel.members) : activeChannel.members;
       var chatHeader = el('div', { className: 'comms-chat-header' });
       chatHeader.appendChild(el('span', { className: 'comms-chat-name' }, activeChannel.name));
-      chatHeader.appendChild(el('span', { className: 'comms-chat-members' }, members.join(', ')));
+      var chatMembers = el('div', { className: 'comms-chat-members', style: { display: 'flex', gap: '4px', alignItems: 'center' } });
+      members.forEach(function(m) {
+        var chatMemAvatar = makeAvatarEl(m, 'sm');
+        chatMemAvatar.setAttribute('data-tooltip', m);
+        chatMembers.appendChild(chatMemAvatar);
+      });
+      chatHeader.appendChild(chatMembers);
       chatArea.appendChild(chatHeader);
       var msgArea = el('div', { className: 'comms-messages' });
       if (S.commsHasMore) {
@@ -983,7 +1035,7 @@ function renderComms(main) {
       channelMsgs.forEach(function(msg) {
         var senderIsAI = !isHuman(msg.sender);
         var bubble = el('div', { className: 'msg-bubble' + (senderIsAI ? ' msg-bubble-ai' : '') });
-        bubble.appendChild(el('div', { className: 'msg-avatar', style: { background: getAvatarBg(msg.sender), borderColor: getAvatarBorder(msg.sender) } }, getAvatar(msg.sender)));
+        bubble.appendChild(makeAvatarEl(msg.sender, 'chat'));
         var body = el('div', { className: 'msg-body' });
         var header = el('div', { className: 'msg-header' });
         header.appendChild(el('span', { className: 'msg-sender' }, msg.sender));
@@ -1104,9 +1156,9 @@ function openDrawer(taskId) {
     metaSec.appendChild(el('div', { className: 'drawer-label' }, 'Details'));
     var metaGrid = el('div', { className: 'meta-grid' });
     if (task.category) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Category')); metaGrid.appendChild(el('span', { className: 'meta-val' }, task.category)); }
-    if (task.assignee) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Assignee')); metaGrid.appendChild(el('span', { className: 'meta-val' }, getAvatar(task.assignee) + ' ' + task.assignee)); }
+    if (task.assignee) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Assignee')); var assigneeVal = el('span', { className: 'meta-val' }); assigneeVal.appendChild(makeAvatarEl(task.assignee, 'sm')); assigneeVal.appendChild(document.createTextNode(task.assignee)); metaGrid.appendChild(assigneeVal); }
     if (task.branch) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Branch')); metaGrid.appendChild(el('span', { className: 'meta-val mono' }, task.branch)); }
-    if (task.created_by) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Created by')); metaGrid.appendChild(el('span', { className: 'meta-val' }, getAvatar(task.created_by) + ' ' + task.created_by)); }
+    if (task.created_by) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Created by')); var createdByVal = el('span', { className: 'meta-val' }); createdByVal.appendChild(makeAvatarEl(task.created_by, 'sm')); createdByVal.appendChild(document.createTextNode(task.created_by)); metaGrid.appendChild(createdByVal); }
     if (task.created_at) { metaGrid.appendChild(el('span', { className: 'meta-key' }, 'Created')); metaGrid.appendChild(el('span', { className: 'meta-val' }, relTime(task.created_at))); }
     metaSec.appendChild(metaGrid);
     inner.appendChild(metaSec);
@@ -1114,7 +1166,7 @@ function openDrawer(taskId) {
     comSec.appendChild(el('div', { className: 'drawer-label' }, 'Comments (' + comments.length + ')'));
     comments.forEach(function(c) {
       var cm = el('div', { className: 'comment' }); var ch = el('div', { className: 'comment-header' });
-      ch.appendChild(el('span', null, getAvatar(c.author))); ch.appendChild(el('span', { className: 'comment-author' }, c.author)); ch.appendChild(el('span', { className: 'comment-time' }, relTime(c.created_at)));
+      ch.appendChild(makeAvatarEl(c.author, 'sm')); ch.appendChild(el('span', { className: 'comment-author' }, c.author)); ch.appendChild(el('span', { className: 'comment-time' }, relTime(c.created_at)));
       cm.appendChild(ch); cm.appendChild(el('div', { className: 'comment-body' }, c.content)); comSec.appendChild(cm);
     });
     var inputRow = el('div', { className: 'comment-input-row' });
@@ -1277,7 +1329,9 @@ function renderScoreboard(main) {
       if (contribs.length) {
         var contribRow = el('div', { className: 'hof-contributors' });
         contribs.forEach(function(c) {
-          contribRow.appendChild(el('span', { className: 'hof-contributor', 'data-tooltip': c }, getAvatar(c)));
+          var contribAvatar = makeAvatarEl(c, 'sm');
+          contribAvatar.setAttribute('data-tooltip', c);
+          contribRow.appendChild(contribAvatar);
         });
         inner.appendChild(contribRow);
       }
