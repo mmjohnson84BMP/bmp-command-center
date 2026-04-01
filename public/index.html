@@ -1457,12 +1457,15 @@ function smartRefresh() {
   if (!S.authed || S.createModal || S.createChannelModal || S.selectedTaskId) return;
   var input = document.querySelector('.comms-input');
   var savedText = input ? input.value : '';
+  var hadFocus = input && document.activeElement === input;
+  var cursorPos = hadFocus ? input.selectionStart : 0;
   var msgArea = document.querySelector('.comms-messages');
   var wasAtBottom = msgArea ? (msgArea.scrollTop + msgArea.clientHeight >= msgArea.scrollHeight - 30) : true;
   loadAll().then(function() {
     render();
     var newInput = document.querySelector('.comms-input');
     if (newInput && savedText) { newInput.value = savedText; }
+    if (newInput && hadFocus) { newInput.focus(); newInput.selectionStart = newInput.selectionEnd = cursorPos; }
     var newMsgArea = document.querySelector('.comms-messages');
     if (newMsgArea && wasAtBottom) { newMsgArea.scrollTop = newMsgArea.scrollHeight; }
   });
