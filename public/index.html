@@ -503,6 +503,58 @@ body::before {
 .usage-savings-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--green); opacity: 0.8; }
 .usage-savings-detail { font-size: 12px; color: var(--text-muted); margin-left: auto; }
 
+/* Teams Plan Gauge */
+.teams-gauge-hero { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 32px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.teams-gauge-hero.warning-yellow { border-color: rgba(200,175,92,0.5); }
+.teams-gauge-hero.warning-red { border-color: rgba(184,92,76,0.6); animation: pulseRed 2s ease-in-out infinite; }
+@keyframes pulseRed { 0%, 100% { box-shadow: 0 0 0 0 rgba(184,92,76,0); } 50% { box-shadow: 0 0 24px 4px rgba(184,92,76,0.25); } }
+.teams-gauge-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.teams-gauge-title .badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; }
+.teams-gauge-title .badge-green { background: var(--green-bg); color: var(--green); }
+.teams-gauge-title .badge-yellow { background: rgba(200,175,92,0.15); color: #c8af5c; }
+.teams-gauge-title .badge-red { background: var(--red-bg); color: var(--red); }
+.teams-gauge-amount { font-size: 48px; font-weight: 900; letter-spacing: -1px; line-height: 1.1; margin-bottom: 4px; }
+.teams-gauge-amount .limit { font-size: 24px; font-weight: 600; color: var(--text-muted); }
+.teams-gauge-pct { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.teams-gauge-bar { height: 16px; background: var(--bg); border-radius: 8px; overflow: hidden; margin-bottom: 20px; position: relative; }
+.teams-gauge-fill { height: 100%; border-radius: 8px; transition: width 800ms var(--ease); background: linear-gradient(90deg, var(--green), #8fbc7a); }
+.teams-gauge-fill.yellow { background: linear-gradient(90deg, #c8af5c, #d4c47a); }
+.teams-gauge-fill.red { background: linear-gradient(90deg, var(--red), #d46e5e); }
+.teams-gauge-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+.teams-gauge-stat { display: flex; flex-direction: column; gap: 2px; }
+.teams-gauge-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); }
+.teams-gauge-stat-value { font-size: 18px; font-weight: 800; color: var(--text); }
+.teams-gauge-stat-value.green { color: var(--green); }
+.teams-gauge-stat-value.red { color: var(--red); }
+.teams-gauge-stat-value.orange { color: var(--orange); }
+.teams-validated { font-size: 12px; color: var(--text-muted); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.teams-validated strong { color: var(--tan); font-weight: 700; }
+.overage-alert { display: flex; align-items: center; gap: 10px; background: var(--red-bg); border: 1px solid rgba(184,92,76,0.3); border-radius: var(--radius-md); padding: 12px 16px; margin-top: 16px; animation: pulseRed 2s ease-in-out infinite; }
+.overage-alert-icon { font-size: 22px; }
+.overage-alert-text { font-size: 13px; font-weight: 700; color: var(--red); }
+.overage-alert-amount { font-size: 18px; font-weight: 900; color: var(--red); }
+
+/* Section Headers */
+.usage-section-header { font-size: 18px; font-weight: 800; color: var(--tan); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
+.usage-section-header .section-icon { font-size: 20px; }
+.usage-section { margin-bottom: 40px; }
+
+/* API Daily Chart */
+.api-daily-chart { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 20px; }
+.api-daily-bars { display: flex; align-items: flex-end; gap: 4px; height: 140px; padding-top: 8px; }
+.api-daily-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.api-daily-bar { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--orange), #d4955e); min-height: 2px; transition: height 600ms var(--ease); }
+.api-daily-label { font-size: 9px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.api-daily-amount { font-size: 9px; color: var(--text-secondary); font-weight: 700; }
+.api-model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.api-model-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; }
+.api-model-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; }
+.api-model-cost { font-size: 22px; font-weight: 900; color: var(--orange); }
+.api-mtd-banner { background: var(--orange-bg); border: 1px solid rgba(200,135,92,0.25); border-radius: var(--radius-lg); padding: 20px 28px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
+.api-mtd-icon { font-size: 28px; }
+.api-mtd-amount { font-size: 28px; font-weight: 900; color: var(--orange); letter-spacing: -0.5px; }
+.api-mtd-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--orange); opacity: 0.8; }
+
 /* Tighter editorial headings */
 .sprint-name, .hof-title, .billing-title, .billing-burn-amount, .drawer-title, .modal-title, .project-title, .comms-chat-name { letter-spacing: -0.5px; }
 
@@ -551,7 +603,9 @@ var S = {
   billingCollapsed: {},
   usageSummary: [],
   usageReports: [],
-  usageDays: 7
+  usageDays: 7,
+  teamsPlan: null,
+  anthropicUsage: null
 };
 
 var savedToken = localStorage.getItem('cc_session_token');
@@ -1731,24 +1785,25 @@ function renderUsage(main) {
   var header = el('div', { className: 'usage-header' });
   var headerLeft = el('div');
   headerLeft.appendChild(el('div', { className: 'usage-title' }, 'Usage Dashboard'));
-  headerLeft.appendChild(el('div', { className: 'usage-subtitle' }, 'Token burn, cost analysis, and efficiency metrics'));
+  headerLeft.appendChild(el('div', { className: 'usage-subtitle' }, 'Teams Plan / Terminal Sessions / API Billing'));
   // Anthropic sync button
   var syncBtn = el('button', { className: 'btn', style: { marginLeft: '12px', fontSize: '12px', padding: '4px 12px' }, onClick: function() {
     syncBtn.textContent = 'Syncing...';
     API.get('/api/usage/sync?days=' + (S.usageDays || 7)).then(function(d) {
       if (d && d.error) { syncBtn.textContent = 'Sync failed: ' + d.error; return; }
       S.anthropicUsage = d;
-      syncBtn.textContent = 'Synced \u2714';
+      syncBtn.textContent = 'Synced';
       renderUsage(main);
     }).catch(function() { syncBtn.textContent = 'Sync failed'; });
-  }}, '\uD83D\uDD04 Sync from Anthropic');
+  }}, 'Sync Anthropic API');
   headerLeft.appendChild(syncBtn);
   header.appendChild(headerLeft);
   var periodSel = el('select', { className: 'usage-period-select', onChange: function(e) {
     S.usageDays = parseInt(e.target.value);
     Promise.all([
       API.get('/api/usage/summary?days=' + S.usageDays).then(function(d) { S.usageSummary = d && d.summary ? d.summary : []; }),
-      API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; })
+      API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; }),
+      API.get('/api/usage/teams-plan').then(function(d) { S.teamsPlan = d; })
     ]).then(function() { renderUsage(main); });
   }});
   var periods = [{ v: 1, l: 'Last 24h' }, { v: 7, l: 'Last 7 days' }, { v: 14, l: 'Last 14 days' }, { v: 30, l: 'Last 30 days' }];
@@ -1760,13 +1815,18 @@ function renderUsage(main) {
   header.appendChild(periodSel);
   wrap.appendChild(header);
 
+  // Load teams plan if not loaded
+  if (!S.teamsPlan) {
+    API.get('/api/usage/teams-plan').then(function(d) { S.teamsPlan = d; renderUsage(main); });
+  }
+
   var AGENT_META = {
-    titus: { icon: '\u2694\uFE0F', color: 'var(--orange)' },
-    socrates: { icon: '\uD83E\uDDD9', color: 'var(--green)' },
-    atlas: { icon: '\uD83E\uDDED', color: 'var(--slate)' },
-    davinci: { icon: '\uD83C\uDFA8', color: 'var(--purple)' },
-    kubrick: { icon: '\uD83C\uDFAC', color: 'var(--tan)' },
-    forge: { icon: '\uD83D\uDD25', color: 'var(--red)' }
+    titus: { icon: '\u2694\uFE0F', color: 'var(--orange)', label: 'Titus' },
+    socrates: { icon: '\uD83E\uDDD9', color: 'var(--green)', label: 'Socrates' },
+    atlas: { icon: '\uD83E\uDDED', color: 'var(--slate)', label: 'Atlas' },
+    davinci: { icon: '\uD83C\uDFA8', color: 'var(--purple)', label: 'Da Vinci' },
+    kubrick: { icon: '\uD83C\uDFAC', color: 'var(--tan)', label: 'Kubrick' },
+    forge: { icon: '\uD83D\uDD25', color: 'var(--red)', label: 'Forge' }
   };
 
   function fmtTokens(n) {
@@ -1782,78 +1842,190 @@ function renderUsage(main) {
     return (ms / 1000).toFixed(0) + 's';
   }
 
-  // Cache savings banner
-  var totalCacheSaved = 0;
-  var totalCost = 0;
-  for (var si = 0; si < S.usageSummary.length; si++) {
-    var s = S.usageSummary[si];
-    totalCost += parseFloat(s.total_cost_usd) || 0;
-    var cacheTokens = parseInt(s.total_cache_read_tokens) || 0;
-    // Estimate savings: cache reads cost 10% of input, so savings = 90% of what full-price would be
-    // Use sonnet rate as rough average: $3/M input, cache saves $2.70/M
-    var savedPerM = 2.70;
-    totalCacheSaved += (cacheTokens / 1000000) * savedPerM;
-  }
-  if (totalCost > 0 || totalCacheSaved > 0) {
-    var savBanner = el('div', { className: 'usage-savings-banner' });
-    savBanner.appendChild(el('span', { className: 'usage-savings-icon' }, '\uD83D\uDCB0'));
-    var savLeft = el('div');
-    savLeft.appendChild(el('div', { className: 'usage-savings-label' }, 'Total Spend (' + S.usageDays + 'd)'));
-    savLeft.appendChild(el('div', { className: 'usage-savings-amount', style: { color: 'var(--orange)' } }, fmtCost(totalCost)));
-    savBanner.appendChild(savLeft);
-    if (totalCacheSaved > 0.01) {
-      var savRight = el('div', { style: { marginLeft: '32px' } });
-      savRight.appendChild(el('div', { className: 'usage-savings-label' }, 'Cache Savings'));
-      savRight.appendChild(el('div', { className: 'usage-savings-amount' }, fmtCost(totalCacheSaved)));
-      savBanner.appendChild(savRight);
-      savBanner.appendChild(el('div', { className: 'usage-savings-detail' }, 'Cache hit discounts saved ~' + fmtCost(totalCacheSaved) + ' vs full-price input'));
-    }
-    wrap.appendChild(savBanner);
-  }
-
-  // Agent cards
-  var agentGrid = el('div', { className: 'usage-agent-grid' });
-  for (var ai = 0; ai < S.usageSummary.length; ai++) {
-    var ag = S.usageSummary[ai];
-    var agName = ag.agent || 'unknown';
-    var meta = AGENT_META[agName.toLowerCase()] || { icon: '\uD83E\uDD16', color: 'var(--text-muted)' };
-    var card = el('div', { className: 'usage-agent-card' });
-    card.setAttribute('data-agent', agName.toLowerCase());
-
-    var nameRow = el('div', { className: 'usage-agent-name' });
-    nameRow.appendChild(el('span', { className: 'usage-agent-icon' }, meta.icon));
-    nameRow.appendChild(el('span', null, agName.charAt(0).toUpperCase() + agName.slice(1)));
-    card.appendChild(nameRow);
-
-    var stats = el('div', { className: 'usage-agent-stats' });
-    var totalTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0);
-    stats.appendChild(createStat('Total Tokens', fmtTokens(totalTokens)));
-    stats.appendChild(createStat('Total Cost', fmtCost(ag.total_cost_usd), 'cost'));
-    stats.appendChild(createStat('Sessions', String(parseInt(ag.session_count) || 0)));
-    stats.appendChild(createStat('Avg/Session', fmtCost(ag.avg_cost_per_session), 'cost'));
-    card.appendChild(stats);
-
-    var cacheRate = parseFloat(ag.cache_hit_rate) || 0;
-    var cacheSection = el('div', { className: 'usage-cache-bar' });
-    cacheSection.appendChild(el('div', { className: 'usage-cache-bar-label' }, 'Cache Hit Rate: ' + cacheRate.toFixed(1) + '%'));
-    var track = el('div', { className: 'usage-cache-track' });
-    track.appendChild(el('div', { className: 'usage-cache-fill', style: { width: Math.min(cacheRate, 100) + '%' } }));
-    cacheSection.appendChild(track);
-    card.appendChild(cacheSection);
-
-    agentGrid.appendChild(card);
-  }
-  wrap.appendChild(agentGrid);
-
   function createStat(label, value, cls) {
     var stat = el('div', { className: 'usage-stat' });
     stat.appendChild(el('div', { className: 'usage-stat-label' }, label));
     stat.appendChild(el('div', { className: 'usage-stat-value' + (cls ? ' ' + cls : '') }, value));
     return stat;
   }
+  function createLegend(label, color) {
+    var item = el('div', { className: 'usage-legend-item' });
+    item.appendChild(el('div', { className: 'usage-legend-dot', style: { background: color } }));
+    item.appendChild(el('span', null, label));
+    return item;
+  }
+  function createGaugeStat(label, value, cls) {
+    var stat = el('div', { className: 'teams-gauge-stat' });
+    stat.appendChild(el('div', { className: 'teams-gauge-stat-label' }, label));
+    stat.appendChild(el('div', { className: 'teams-gauge-stat-value' + (cls ? ' ' + cls : '') }, value));
+    return stat;
+  }
 
-  // Token comparison chart
+  // ════════════════════════════════════════════════
+  // SECTION 1: TEAMS PLAN GAUGE (HERO)
+  // ════════════════════════════════════════════════
+  var teamsSection = el('div', { className: 'usage-section' });
+  var teamsHdr = el('div', { className: 'usage-section-header' });
+  teamsHdr.appendChild(el('span', { className: 'section-icon' }, '\uD83C\uDFAF'));
+  teamsHdr.appendChild(el('span', null, 'Teams Plan'));
+  teamsSection.appendChild(teamsHdr);
+
+  if (S.teamsPlan) {
+    var plan = S.teamsPlan.plan || {};
+    var est = S.teamsPlan.estimated || {};
+    var spendLimit = parseFloat(plan.spend_limit) || 1000;
+    var estimatedSpend = parseFloat(est.estimated_spend) || 0;
+    var pctUsed = spendLimit > 0 ? (estimatedSpend / spendLimit * 100) : 0;
+    var sessionCount = parseInt(est.session_count) || 0;
+
+    var now = new Date();
+    var dayOfMonth = now.getDate();
+    var daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    var daysLeft = daysInMonth - dayOfMonth;
+    var weeksLeft = Math.max(daysLeft / 7, 0.14);
+    var burnPerDay = dayOfMonth > 0 ? estimatedSpend / dayOfMonth : 0;
+    var projectedMonthEnd = burnPerDay * daysInMonth;
+    var weeklyBudgetRemaining = daysLeft > 0 ? (spendLimit - estimatedSpend) / weeksLeft : 0;
+    var overageAmount = projectedMonthEnd > spendLimit ? projectedMonthEnd - spendLimit : 0;
+
+    var totalTokensAllSessions = 0;
+    var totalHoursEstimate = 0;
+    for (var ti = 0; ti < S.usageSummary.length; ti++) {
+      totalTokensAllSessions += (parseInt(S.usageSummary[ti].total_input_tokens) || 0) + (parseInt(S.usageSummary[ti].total_output_tokens) || 0);
+      totalHoursEstimate += (parseInt(S.usageSummary[ti].avg_duration) || 0) * (parseInt(S.usageSummary[ti].session_count) || 0) / 3600000;
+    }
+    var fiveHourRate = totalHoursEstimate > 0 ? fmtTokens(Math.round(totalTokensAllSessions / totalHoursEstimate * 5)) : '--';
+
+    var gaugeColor = pctUsed < 60 ? 'green' : (pctUsed < 80 ? 'yellow' : 'red');
+    var heroClass = 'teams-gauge-hero' + (gaugeColor === 'yellow' ? ' warning-yellow' : (gaugeColor === 'red' ? ' warning-red' : ''));
+    var hero = el('div', { className: heroClass });
+
+    var titleRow = el('div', { className: 'teams-gauge-title' });
+    titleRow.appendChild(el('span', null, 'Estimated Monthly Spend'));
+    var badgeCls = 'badge badge-' + gaugeColor;
+    var badgeText = pctUsed < 60 ? 'ON TRACK' : (pctUsed < 80 ? 'WATCH' : 'DANGER');
+    titleRow.appendChild(el('span', { className: badgeCls }, badgeText));
+    hero.appendChild(titleRow);
+
+    var amountRow = el('div', { className: 'teams-gauge-amount', style: { color: gaugeColor === 'green' ? 'var(--green)' : (gaugeColor === 'yellow' ? '#c8af5c' : 'var(--red)') } });
+    amountRow.appendChild(document.createTextNode(fmtCost(estimatedSpend) + ' '));
+    amountRow.appendChild(el('span', { className: 'limit' }, '/ ' + fmtCost(spendLimit) + ' limit'));
+    hero.appendChild(amountRow);
+    hero.appendChild(el('div', { className: 'teams-gauge-pct', style: { color: gaugeColor === 'green' ? 'var(--green)' : (gaugeColor === 'yellow' ? '#c8af5c' : 'var(--red)') } }, Math.round(pctUsed) + '% used \u00B7 Day ' + dayOfMonth + ' of ' + daysInMonth));
+
+    var gaugeBar = el('div', { className: 'teams-gauge-bar' });
+    var fillCls = 'teams-gauge-fill' + (gaugeColor !== 'green' ? ' ' + gaugeColor : '');
+    gaugeBar.appendChild(el('div', { className: fillCls, style: { width: Math.min(pctUsed, 100) + '%' } }));
+    hero.appendChild(gaugeBar);
+
+    var statsGrid = el('div', { className: 'teams-gauge-stats' });
+    statsGrid.appendChild(createGaugeStat('Burn Rate', fmtCost(burnPerDay) + '/day', 'orange'));
+    statsGrid.appendChild(createGaugeStat('Projected Month-End', fmtCost(projectedMonthEnd), projectedMonthEnd > spendLimit ? 'red' : 'green'));
+    statsGrid.appendChild(createGaugeStat('Weekly Budget Left', fmtCost(Math.max(weeklyBudgetRemaining, 0)), weeklyBudgetRemaining < 0 ? 'red' : ''));
+    statsGrid.appendChild(createGaugeStat('5hr Token Rate', fiveHourRate, ''));
+    statsGrid.appendChild(createGaugeStat('Sessions (MTD)', String(sessionCount), ''));
+    statsGrid.appendChild(createGaugeStat('Seats', String(plan.seats || 2), ''));
+    hero.appendChild(statsGrid);
+
+    if (plan.validated_spend) {
+      var valLine = el('div', { className: 'teams-validated' });
+      var valDate = plan.validated_at ? new Date(plan.validated_at).toLocaleDateString() : 'unknown';
+      valLine.appendChild(document.createTextNode('Last validated: '));
+      valLine.appendChild(el('strong', null, fmtCost(plan.validated_spend)));
+      valLine.appendChild(document.createTextNode(' on ' + valDate));
+      hero.appendChild(valLine);
+    }
+
+    if (overageAmount > 0) {
+      var alertBox = el('div', { className: 'overage-alert' });
+      alertBox.appendChild(el('div', { className: 'overage-alert-icon' }, '\u26A0\uFE0F'));
+      var alertInner = el('div');
+      alertInner.appendChild(el('div', { className: 'overage-alert-text' }, 'PROJECTED OVERAGE'));
+      alertInner.appendChild(el('div', { className: 'overage-alert-amount' }, '+' + fmtCost(overageAmount) + ' over limit'));
+      alertBox.appendChild(alertInner);
+      hero.appendChild(alertBox);
+    }
+
+    teamsSection.appendChild(hero);
+  } else {
+    var tpLoading = el('div', { className: 'hof-empty', style: { padding: '20px' } });
+    tpLoading.appendChild(el('div', { className: 'hof-empty-text' }, 'Loading teams plan data...'));
+    teamsSection.appendChild(tpLoading);
+  }
+  wrap.appendChild(teamsSection);
+
+  // ════════════════════════════════════════════════
+  // SECTION 2: TERMINAL SESSIONS (self-reported)
+  // ════════════════════════════════════════════════
+  var termSection = el('div', { className: 'usage-section' });
+  var termHdr = el('div', { className: 'usage-section-header' });
+  termHdr.appendChild(el('span', { className: 'section-icon' }, '\uD83D\uDDA5\uFE0F'));
+  termHdr.appendChild(el('span', null, 'Terminal Agents'));
+  termSection.appendChild(termHdr);
+
   if (S.usageSummary.length > 0) {
+    // Cache savings banner
+    var totalCacheSaved = 0;
+    var totalCost = 0;
+    for (var si = 0; si < S.usageSummary.length; si++) {
+      var s = S.usageSummary[si];
+      totalCost += parseFloat(s.total_cost_usd) || 0;
+      var cacheTokens = parseInt(s.total_cache_read_tokens) || 0;
+      totalCacheSaved += (cacheTokens / 1000000) * 2.70;
+    }
+    if (totalCost > 0 || totalCacheSaved > 0) {
+      var savBanner = el('div', { className: 'usage-savings-banner' });
+      savBanner.appendChild(el('span', { className: 'usage-savings-icon' }, '\uD83D\uDCB0'));
+      var savLeft = el('div');
+      savLeft.appendChild(el('div', { className: 'usage-savings-label' }, 'Terminal Spend (' + S.usageDays + 'd)'));
+      savLeft.appendChild(el('div', { className: 'usage-savings-amount', style: { color: 'var(--orange)' } }, fmtCost(totalCost)));
+      savBanner.appendChild(savLeft);
+      if (totalCacheSaved > 0.01) {
+        var savRight = el('div', { style: { marginLeft: '32px' } });
+        savRight.appendChild(el('div', { className: 'usage-savings-label' }, 'Cache Savings'));
+        savRight.appendChild(el('div', { className: 'usage-savings-amount' }, fmtCost(totalCacheSaved)));
+        savBanner.appendChild(savRight);
+      }
+      termSection.appendChild(savBanner);
+    }
+
+    // Agent cards
+    var agentGrid = el('div', { className: 'usage-agent-grid' });
+    for (var ai = 0; ai < S.usageSummary.length; ai++) {
+      var ag = S.usageSummary[ai];
+      var agName = ag.agent || 'unknown';
+      var meta = AGENT_META[agName.toLowerCase()] || { icon: '\uD83E\uDD16', color: 'var(--text-muted)', label: agName };
+      var card = el('div', { className: 'usage-agent-card' });
+      card.setAttribute('data-agent', agName.toLowerCase());
+
+      var nameRow = el('div', { className: 'usage-agent-name' });
+      nameRow.appendChild(el('span', { className: 'usage-agent-icon' }, meta.icon));
+      nameRow.appendChild(el('span', null, meta.label || agName.charAt(0).toUpperCase() + agName.slice(1)));
+      card.appendChild(nameRow);
+
+      var stats = el('div', { className: 'usage-agent-stats' });
+      var totalTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0);
+      stats.appendChild(createStat('Total Tokens', fmtTokens(totalTokens)));
+      stats.appendChild(createStat('Est. Cost', fmtCost(ag.total_cost_usd), 'cost'));
+      stats.appendChild(createStat('Sessions', String(parseInt(ag.session_count) || 0)));
+      stats.appendChild(createStat('Avg/Session', fmtCost(ag.avg_cost_per_session), 'cost'));
+      stats.appendChild(createStat('Avg Tools', String(parseFloat(ag.avg_tool_calls || 0).toFixed(1))));
+      stats.appendChild(createStat('Avg Duration', fmtDuration(ag.avg_duration)));
+      card.appendChild(stats);
+
+      var cacheRate = parseFloat(ag.cache_hit_rate) || 0;
+      var cacheBar = el('div', { className: 'usage-cache-bar' });
+      cacheBar.appendChild(el('div', { className: 'usage-cache-bar-label' }, 'Cache Hit Rate: ' + cacheRate.toFixed(1) + '%'));
+      var cacheTrack = el('div', { className: 'usage-cache-track' });
+      cacheTrack.appendChild(el('div', { className: 'usage-cache-fill', style: { width: Math.min(cacheRate, 100) + '%' } }));
+      cacheBar.appendChild(cacheTrack);
+      card.appendChild(cacheBar);
+
+      agentGrid.appendChild(card);
+    }
+    termSection.appendChild(agentGrid);
+
+    // Token comparison chart
     var chartSection = el('div', { className: 'usage-chart-section' });
     chartSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Token Usage by Agent'));
     var legend = el('div', { className: 'usage-legend' });
@@ -1874,10 +2046,6 @@ function renderUsage(main) {
       var out = parseInt(r.total_output_tokens) || 0;
       var cch = parseInt(r.total_cache_read_tokens) || 0;
       var total = inp + out + cch;
-      var pctInp = maxTokens > 0 ? (inp / maxTokens * 100) : 0;
-      var pctOut = maxTokens > 0 ? (out / maxTokens * 100) : 0;
-      var pctCch = maxTokens > 0 ? (cch / maxTokens * 100) : 0;
-
       var row = el('div', { className: 'usage-bar-row' });
       row.appendChild(el('div', { className: 'usage-bar-agent' }, r.agent));
       var barTrack = el('div', { className: 'usage-bar-track' });
@@ -1890,89 +2058,184 @@ function renderUsage(main) {
       row.appendChild(el('div', { className: 'usage-bar-amount' }, fmtTokens(total)));
       chartSection.appendChild(row);
     }
-    wrap.appendChild(chartSection);
-  }
+    termSection.appendChild(chartSection);
 
-  function createLegend(label, color) {
-    var item = el('div', { className: 'usage-legend-item' });
-    item.appendChild(el('div', { className: 'usage-legend-dot', style: { background: color } }));
-    item.appendChild(el('span', null, label));
-    return item;
-  }
-
-  // Cost breakdown section
-  if (S.usageSummary.length > 0) {
-    var costSection = el('div', { className: 'usage-cost-section' });
-    costSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Cost Breakdown by Agent'));
-    var costLegend = el('div', { className: 'usage-legend' });
-    costLegend.appendChild(createLegend('Input Cost', 'var(--orange)'));
-    costLegend.appendChild(createLegend('Output Cost', 'var(--tan)'));
-    costLegend.appendChild(createLegend('Cache Creation', 'var(--green)'));
-    costSection.appendChild(costLegend);
-
-    var maxCost = 0;
-    for (var ki = 0; ki < S.usageSummary.length; ki++) {
-      var c = parseFloat(S.usageSummary[ki].total_cost_usd) || 0;
-      if (c > maxCost) maxCost = c;
+    // Session history table
+    if (S.usageReports.length > 0) {
+      var tableSection = el('div', { className: 'usage-chart-section' });
+      tableSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Recent Sessions'));
+      var table = el('table', { className: 'usage-table' });
+      var thead = el('thead');
+      var hrow = el('tr');
+      var cols = ['Agent', 'Model', 'Input', 'Output', 'Cache', 'Cost', 'Duration', 'Tools', 'Time'];
+      for (var hi = 0; hi < cols.length; hi++) hrow.appendChild(el('th', null, cols[hi]));
+      thead.appendChild(hrow);
+      table.appendChild(thead);
+      var tbody = el('tbody');
+      for (var ri = 0; ri < S.usageReports.length; ri++) {
+        var rpt = S.usageReports[ri];
+        var tr = el('tr');
+        var agLow = (rpt.agent || '').toLowerCase();
+        var badge = el('span', { className: 'agent-badge agent-badge-' + agLow }, rpt.agent || '-');
+        var td0 = el('td'); td0.appendChild(badge); tr.appendChild(td0);
+        tr.appendChild(el('td', null, rpt.model || '-'));
+        tr.appendChild(el('td', null, fmtTokens(rpt.input_tokens)));
+        tr.appendChild(el('td', null, fmtTokens(rpt.output_tokens)));
+        tr.appendChild(el('td', null, fmtTokens(rpt.cache_read_tokens)));
+        tr.appendChild(el('td', { style: { fontWeight: '700', color: 'var(--orange)' } }, fmtCost(rpt.cost_usd)));
+        tr.appendChild(el('td', null, fmtDuration(rpt.duration_ms)));
+        tr.appendChild(el('td', null, String(rpt.tool_calls || 0)));
+        var ts = rpt.created_at ? new Date(rpt.created_at) : null;
+        tr.appendChild(el('td', { style: { color: 'var(--text-muted)', fontSize: '12px' } }, ts ? ts.toLocaleString() : '-'));
+        tbody.appendChild(tr);
+      }
+      table.appendChild(tbody);
+      tableSection.appendChild(table);
+      termSection.appendChild(tableSection);
     }
-    for (var ki = 0; ki < S.usageSummary.length; ki++) {
-      var ag = S.usageSummary[ki];
-      var agCost = parseFloat(ag.total_cost_usd) || 0;
-      var costRow = el('div', { className: 'usage-cost-row' });
-      var agMeta = AGENT_META[(ag.agent || '').toLowerCase()] || {};
-      costRow.appendChild(el('div', { className: 'usage-cost-agent', style: { color: agMeta.color || 'var(--text)' } }, ag.agent));
-      var costBars = el('div', { className: 'usage-cost-bars' });
-      var pct = maxCost > 0 ? (agCost / maxCost * 100) : 0;
-      costBars.appendChild(el('div', { className: 'usage-cost-bar input-cost', style: { width: Math.max(pct * 0.4, 1) + '%' } }));
-      costBars.appendChild(el('div', { className: 'usage-cost-bar output-cost', style: { width: Math.max(pct * 0.5, 1) + '%' } }));
-      costBars.appendChild(el('div', { className: 'usage-cost-bar cache-cost', style: { width: Math.max(pct * 0.1, 1) + '%' } }));
-      costRow.appendChild(costBars);
-      costRow.appendChild(el('div', { className: 'usage-cost-total' }, fmtCost(agCost)));
-      costSection.appendChild(costRow);
-    }
-    wrap.appendChild(costSection);
+  } else {
+    var emptyTerm = el('div', { className: 'hof-empty', style: { padding: '20px' } });
+    emptyTerm.appendChild(el('div', { className: 'hof-empty-icon' }, '\uD83D\uDDA5\uFE0F'));
+    emptyTerm.appendChild(el('div', { className: 'hof-empty-text' }, 'No terminal session data yet. Agents will report metrics as they operate.'));
+    termSection.appendChild(emptyTerm);
   }
+  wrap.appendChild(termSection);
 
-  // Session history table
-  if (S.usageReports.length > 0) {
-    var tableSection = el('div', { className: 'usage-chart-section' });
-    tableSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Recent Sessions'));
-    var table = el('table', { className: 'usage-table' });
-    var thead = el('thead');
-    var hrow = el('tr');
-    var cols = ['Agent', 'Model', 'Input', 'Output', 'Cache', 'Cost', 'Duration', 'Tools', 'Time'];
-    for (var hi = 0; hi < cols.length; hi++) hrow.appendChild(el('th', null, cols[hi]));
-    thead.appendChild(hrow);
-    table.appendChild(thead);
-    var tbody = el('tbody');
-    for (var ri = 0; ri < S.usageReports.length; ri++) {
-      var rpt = S.usageReports[ri];
-      var tr = el('tr');
-      var agLow = (rpt.agent || '').toLowerCase();
-      var badge = el('span', { className: 'agent-badge agent-badge-' + agLow }, rpt.agent || '-');
-      var td0 = el('td'); td0.appendChild(badge); tr.appendChild(td0);
-      tr.appendChild(el('td', null, rpt.model || '-'));
-      tr.appendChild(el('td', null, fmtTokens(rpt.input_tokens)));
-      tr.appendChild(el('td', null, fmtTokens(rpt.output_tokens)));
-      tr.appendChild(el('td', null, fmtTokens(rpt.cache_read_tokens)));
-      tr.appendChild(el('td', { style: { fontWeight: '700', color: 'var(--orange)' } }, fmtCost(rpt.cost_usd)));
-      tr.appendChild(el('td', null, fmtDuration(rpt.duration_ms)));
-      tr.appendChild(el('td', null, String(rpt.tool_calls || 0)));
-      var ts = rpt.created_at ? new Date(rpt.created_at) : null;
-      tr.appendChild(el('td', { style: { color: 'var(--text-muted)', fontSize: '12px' } }, ts ? ts.toLocaleString() : '-'));
-      tbody.appendChild(tr);
-    }
-    table.appendChild(tbody);
-    tableSection.appendChild(table);
-    wrap.appendChild(tableSection);
-  }
+  // ════════════════════════════════════════════════
+  // SECTION 3: API USAGE (Anthropic Admin API)
+  // ════════════════════════════════════════════════
+  var apiSection = el('div', { className: 'usage-section' });
+  var apiHdr = el('div', { className: 'usage-section-header' });
+  apiHdr.appendChild(el('span', { className: 'section-icon' }, '\uD83D\uDD11'));
+  apiHdr.appendChild(el('span', null, 'API Agents'));
+  apiSection.appendChild(apiHdr);
 
-  if (!S.usageSummary.length && !S.usageReports.length) {
-    var empty = el('div', { className: 'hof-empty' });
-    empty.appendChild(el('div', { className: 'hof-empty-icon' }, '\uD83D\uDCCA'));
-    empty.appendChild(el('div', { className: 'hof-empty-text' }, 'No usage data yet. Agents will report session metrics as they operate.'));
-    wrap.appendChild(empty);
+  if (S.anthropicUsage && S.anthropicUsage.usage) {
+    var usageData = S.anthropicUsage.usage;
+    var costData = S.anthropicUsage.costs;
+    var buckets = usageData.data || [];
+
+    var dailyMap = {};
+    var modelMap = {};
+    var keyMap = {};
+    var apiTotalCost = 0;
+
+    for (var bi = 0; bi < buckets.length; bi++) {
+      var b = buckets[bi];
+      var day = (b.bucket_start || '').slice(0, 10);
+      var model = b.model || 'unknown';
+      var keyId = b.api_key_id || 'unknown';
+      var inputCost = ((parseInt(b.input_tokens) || 0) + (parseInt(b.cache_creation_input_tokens) || 0)) / 1000000;
+      var outputCost = (parseInt(b.output_tokens) || 0) / 1000000;
+      var cacheReadCost = (parseInt(b.cache_read_input_tokens) || 0) / 1000000;
+      var rate = { input: 3, output: 15, cache_read: 0.3 };
+      var ml = model.toLowerCase();
+      if (ml.includes('opus')) rate = { input: 15, output: 75, cache_read: 1.5 };
+      else if (ml.includes('haiku')) rate = { input: 0.80, output: 4, cache_read: 0.08 };
+      var dayCost = inputCost * rate.input + outputCost * rate.output + cacheReadCost * rate.cache_read;
+      apiTotalCost += dayCost;
+
+      if (!dailyMap[day]) dailyMap[day] = 0;
+      dailyMap[day] += dayCost;
+
+      var modelShort = model.replace(/^claude-/, '').replace(/-\d{8}$/, '');
+      if (!modelMap[modelShort]) modelMap[modelShort] = 0;
+      modelMap[modelShort] += dayCost;
+
+      if (!keyMap[keyId]) keyMap[keyId] = 0;
+      keyMap[keyId] += dayCost;
+    }
+
+    if (costData && costData.data) {
+      var costBuckets = costData.data;
+      var costModelMap = {};
+      var costTotal = 0;
+      for (var cbi = 0; cbi < costBuckets.length; cbi++) {
+        var cb = costBuckets[cbi];
+        var costAmt = parseFloat(cb.cost_usd) || 0;
+        var cModel = (cb.model || 'unknown').replace(/^claude-/, '').replace(/-\d{8}$/, '');
+        if (!costModelMap[cModel]) costModelMap[cModel] = 0;
+        costModelMap[cModel] += costAmt;
+        costTotal += costAmt;
+      }
+      if (costTotal > 0) {
+        apiTotalCost = costTotal;
+        modelMap = costModelMap;
+      }
+    }
+
+    // MTD banner
+    var mtdBanner = el('div', { className: 'api-mtd-banner' });
+    mtdBanner.appendChild(el('div', { className: 'api-mtd-icon' }, '\uD83D\uDCB8'));
+    var mtdLeft = el('div');
+    mtdLeft.appendChild(el('div', { className: 'api-mtd-label' }, 'API Spend (' + (S.usageDays || 7) + 'd)'));
+    mtdLeft.appendChild(el('div', { className: 'api-mtd-amount' }, fmtCost(apiTotalCost)));
+    mtdBanner.appendChild(mtdLeft);
+    apiSection.appendChild(mtdBanner);
+
+    // Daily cost bar chart
+    var apiDays = Object.keys(dailyMap).sort();
+    if (apiDays.length > 0) {
+      var dailyChart = el('div', { className: 'api-daily-chart' });
+      dailyChart.appendChild(el('div', { className: 'usage-chart-title' }, 'Daily API Cost'));
+      var maxDaily = 0;
+      for (var di = 0; di < apiDays.length; di++) { if (dailyMap[apiDays[di]] > maxDaily) maxDaily = dailyMap[apiDays[di]]; }
+      var barsWrap = el('div', { className: 'api-daily-bars' });
+      for (var di = 0; di < apiDays.length; di++) {
+        var dayVal = dailyMap[apiDays[di]];
+        var barPct = maxDaily > 0 ? (dayVal / maxDaily * 100) : 0;
+        var col = el('div', { className: 'api-daily-bar-col' });
+        col.appendChild(el('div', { className: 'api-daily-amount' }, fmtCost(dayVal)));
+        col.appendChild(el('div', { className: 'api-daily-bar', style: { height: Math.max(barPct, 2) + '%' } }));
+        col.appendChild(el('div', { className: 'api-daily-label' }, apiDays[di].slice(5)));
+        barsWrap.appendChild(col);
+      }
+      dailyChart.appendChild(barsWrap);
+      apiSection.appendChild(dailyChart);
+    }
+
+    // Per-model breakdown
+    var models = Object.keys(modelMap).sort(function(a, b) { return modelMap[b] - modelMap[a]; });
+    if (models.length > 0) {
+      var modelGrid = el('div', { className: 'api-model-grid' });
+      for (var mi = 0; mi < models.length; mi++) {
+        var mCard = el('div', { className: 'api-model-card' });
+        mCard.appendChild(el('div', { className: 'api-model-name' }, models[mi]));
+        mCard.appendChild(el('div', { className: 'api-model-cost' }, fmtCost(modelMap[models[mi]])));
+        modelGrid.appendChild(mCard);
+      }
+      apiSection.appendChild(modelGrid);
+    }
+
+    // Per-API-key breakdown
+    var apiKeys = Object.keys(keyMap).sort(function(a, b) { return keyMap[b] - keyMap[a]; });
+    if (apiKeys.length > 0) {
+      var keySection = el('div', { className: 'usage-chart-section' });
+      keySection.appendChild(el('div', { className: 'usage-chart-title' }, 'Cost by API Key'));
+      var maxKeyCost = 0;
+      for (var ki = 0; ki < apiKeys.length; ki++) { if (keyMap[apiKeys[ki]] > maxKeyCost) maxKeyCost = keyMap[apiKeys[ki]]; }
+      for (var ki = 0; ki < apiKeys.length; ki++) {
+        var kId = apiKeys[ki];
+        var kCost = keyMap[kId];
+        var kPct = maxKeyCost > 0 ? (kCost / maxKeyCost * 100) : 0;
+        var kRow = el('div', { className: 'usage-cost-row' });
+        var kLabel = kId.length > 20 ? kId.slice(0, 8) + '...' + kId.slice(-4) : kId;
+        kRow.appendChild(el('div', { className: 'usage-cost-agent', style: { width: '120px', fontSize: '11px' } }, kLabel));
+        var kBars = el('div', { className: 'usage-cost-bars' });
+        kBars.appendChild(el('div', { className: 'usage-cost-bar input-cost', style: { width: Math.max(kPct, 2) + '%' } }));
+        kRow.appendChild(kBars);
+        kRow.appendChild(el('div', { className: 'usage-cost-total' }, fmtCost(kCost)));
+        keySection.appendChild(kRow);
+      }
+      apiSection.appendChild(keySection);
+    }
+  } else {
+    var emptyApi = el('div', { className: 'hof-empty', style: { padding: '20px' } });
+    emptyApi.appendChild(el('div', { className: 'hof-empty-icon' }, '\uD83D\uDD11'));
+    emptyApi.appendChild(el('div', { className: 'hof-empty-text' }, 'Click "Sync Anthropic API" to load API billing data.'));
+    apiSection.appendChild(emptyApi);
   }
+  wrap.appendChild(apiSection);
 
   main.replaceChildren(wrap);
 }
