@@ -427,10 +427,86 @@ body::before {
 .btn-edit-service { background: none; border: 1px solid var(--border); color: var(--text-muted); width: 26px; height: 26px; border-radius: var(--radius-sm); cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; transition: all 300ms var(--ease); }
 .btn-edit-service:hover { border-color: var(--accent); color: var(--accent); background: var(--orange-bg); }
 
+/* Usage Dashboard */
+.usage-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.usage-title { font-size: 24px; font-weight: 800; color: var(--tan); letter-spacing: -0.5px; }
+.usage-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+.usage-period-select { background: var(--card); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 13px; padding: 8px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+.usage-period-select:focus { outline: none; border-color: var(--accent); }
+
+.usage-agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.usage-agent-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; transition: all 300ms var(--ease); position: relative; overflow: hidden; }
+.usage-agent-card:hover { border-color: var(--border-hover); transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+.usage-agent-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+.usage-agent-card[data-agent="titus"]::before { background: var(--orange); }
+.usage-agent-card[data-agent="socrates"]::before { background: var(--green); }
+.usage-agent-card[data-agent="atlas"]::before { background: var(--slate); }
+.usage-agent-card[data-agent="davinci"]::before { background: var(--purple); }
+.usage-agent-card[data-agent="kubrick"]::before { background: var(--tan); }
+.usage-agent-card[data-agent="forge"]::before { background: var(--red); }
+
+.usage-agent-name { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+.usage-agent-icon { font-size: 18px; }
+.usage-agent-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.usage-stat { display: flex; flex-direction: column; gap: 2px; }
+.usage-stat-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); }
+.usage-stat-value { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.usage-stat-value.cost { color: var(--orange); }
+.usage-stat-value.savings { color: var(--green); }
+
+.usage-cache-bar { margin-top: 14px; }
+.usage-cache-bar-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 4px; }
+.usage-cache-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.usage-cache-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), #8fbc7a); animation: progressFill 600ms var(--ease); }
+
+.usage-chart-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px; }
+.usage-chart-title { font-size: 15px; font-weight: 700; color: var(--text-secondary); margin-bottom: 16px; }
+.usage-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.usage-bar-agent { width: 80px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-align: right; text-transform: capitalize; }
+.usage-bar-track { flex: 1; height: 24px; background: var(--bg); border-radius: 6px; overflow: hidden; position: relative; }
+.usage-bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); min-width: 2px; animation: progressFill 800ms var(--ease); }
+.usage-bar-fill.input { background: linear-gradient(90deg, var(--orange), #d4955e); }
+.usage-bar-fill.output { background: linear-gradient(90deg, var(--tan), #cbb88a); }
+.usage-bar-fill.cache { background: linear-gradient(90deg, var(--green), #8fbc7a); }
+.usage-bar-amount { width: 80px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+
+.usage-cost-section { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px; }
+.usage-cost-row { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.usage-cost-row:last-child { border-bottom: none; margin-bottom: 0; }
+.usage-cost-agent { width: 80px; font-size: 13px; font-weight: 700; text-transform: capitalize; }
+.usage-cost-bars { flex: 1; display: flex; gap: 4px; height: 20px; }
+.usage-cost-bar { height: 100%; border-radius: 4px; min-width: 2px; }
+.usage-cost-bar.input-cost { background: var(--orange); }
+.usage-cost-bar.output-cost { background: var(--tan); }
+.usage-cost-bar.cache-cost { background: var(--green); }
+.usage-cost-total { width: 80px; text-align: right; font-size: 14px; font-weight: 800; color: var(--orange); }
+
+.usage-legend { display: flex; gap: 20px; margin-bottom: 12px; }
+.usage-legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); font-weight: 600; }
+.usage-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+.usage-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.usage-table th { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.usage-table td { font-size: 13px; color: var(--text-secondary); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+.usage-table tr:hover td { background: rgba(200,135,92,0.04); }
+.usage-table .agent-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: capitalize; }
+.agent-badge-titus { background: var(--orange-bg); color: var(--orange); }
+.agent-badge-socrates { background: var(--green-bg); color: var(--green); }
+.agent-badge-atlas { background: var(--slate-bg); color: var(--slate); }
+.agent-badge-davinci { background: var(--purple-bg); color: var(--purple); }
+.agent-badge-kubrick { background: var(--tan-bg); color: var(--tan); }
+.agent-badge-forge { background: var(--red-bg); color: var(--red); }
+
+.usage-savings-banner { background: var(--green-bg); border: 1px solid rgba(124,154,110,0.25); border-radius: var(--radius-lg); padding: 20px 28px; margin-bottom: 28px; display: flex; align-items: center; gap: 20px; }
+.usage-savings-icon { font-size: 28px; }
+.usage-savings-amount { font-size: 28px; font-weight: 900; color: var(--green); letter-spacing: -0.5px; }
+.usage-savings-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--green); opacity: 0.8; }
+.usage-savings-detail { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
 /* Tighter editorial headings */
 .sprint-name, .hof-title, .billing-title, .billing-burn-amount, .drawer-title, .modal-title, .project-title, .comms-chat-name { letter-spacing: -0.5px; }
 
-@media (max-width: 900px) { .board { flex-direction: column; min-height: auto; } .board-col { min-width: 0; } .dash-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } .billing-grid { grid-template-columns: 1fr; } .agent-row { grid-template-columns: 1fr 1fr; } .sprint-hero-layout { flex-direction: column; } .sprint-hero-right { flex-wrap: wrap; } }
+@media (max-width: 900px) { .board { flex-direction: column; min-height: auto; } .board-col { min-width: 0; } .dash-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } .billing-grid { grid-template-columns: 1fr; } .usage-agent-grid { grid-template-columns: 1fr; } .agent-row { grid-template-columns: 1fr 1fr; } .sprint-hero-layout { flex-direction: column; } .sprint-hero-right { flex-wrap: wrap; } .usage-table { font-size: 11px; } .usage-table th, .usage-table td { padding: 6px 8px; } }
 @media (max-width: 768px) { .drawer { width: 100%; } .nav { padding: 0 16px; gap: 8px; } .nav-tabs { display: none; } .hamburger { display: flex; } .main { padding: 16px; } .comms-sidebar { width: 200px; min-width: 200px; } .agent-row { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -472,7 +548,10 @@ var S = {
   services: [],
   serviceModal: false,
   editingServiceId: null,
-  billingCollapsed: {}
+  billingCollapsed: {},
+  usageSummary: [],
+  usageReports: [],
+  usageDays: 7
 };
 
 var savedToken = localStorage.getItem('cc_session_token');
@@ -703,7 +782,9 @@ function loadAll() {
     API.get('/api/activity?limit=15').then(function(d) { S.activity = d && d.activity ? d.activity : []; }),
     loadChannelMessages(),
     API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; }),
-    API.get('/api/services').then(function(d) { S.services = d && d.services ? d.services : []; })
+    API.get('/api/services').then(function(d) { S.services = d && d.services ? d.services : []; }),
+    API.get('/api/usage/summary?days=' + S.usageDays).then(function(d) { S.usageSummary = d && d.summary ? d.summary : []; }),
+    API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; })
   ]).then(function() {
     S.totalUnread = 0;
     var me = (S.user || '').toLowerCase();
@@ -790,7 +871,7 @@ function renderNav(container) {
   } }, '\u2630'));
 
   var tabs = el('div', { className: 'nav-tabs' });
-  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }];
+  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }, { key: 'usage', label: 'Usage' }];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
       var btn = el('button', { className: 'nav-tab' + (S.view === v.key ? ' active' : ''), onClick: function() { S.view = v.key; render(); } }, v.label);
@@ -1645,6 +1726,246 @@ function renderBilling(main) {
   main.replaceChildren(wrap);
 }
 
+function renderUsage(main) {
+  var wrap = el('div', { className: 'view-enter' });
+  var header = el('div', { className: 'usage-header' });
+  var headerLeft = el('div');
+  headerLeft.appendChild(el('div', { className: 'usage-title' }, 'Usage Dashboard'));
+  headerLeft.appendChild(el('div', { className: 'usage-subtitle' }, 'Token burn, cost analysis, and efficiency metrics'));
+  header.appendChild(headerLeft);
+  var periodSel = el('select', { className: 'usage-period-select', onChange: function(e) {
+    S.usageDays = parseInt(e.target.value);
+    Promise.all([
+      API.get('/api/usage/summary?days=' + S.usageDays).then(function(d) { S.usageSummary = d && d.summary ? d.summary : []; }),
+      API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; })
+    ]).then(function() { renderUsage(main); });
+  }});
+  var periods = [{ v: 1, l: 'Last 24h' }, { v: 7, l: 'Last 7 days' }, { v: 14, l: 'Last 14 days' }, { v: 30, l: 'Last 30 days' }];
+  for (var pi = 0; pi < periods.length; pi++) {
+    var opt = el('option', { value: String(periods[pi].v) }, periods[pi].l);
+    if (periods[pi].v === S.usageDays) opt.selected = true;
+    periodSel.appendChild(opt);
+  }
+  header.appendChild(periodSel);
+  wrap.appendChild(header);
+
+  var AGENT_META = {
+    titus: { icon: '\u2694\uFE0F', color: 'var(--orange)' },
+    socrates: { icon: '\uD83E\uDDD9', color: 'var(--green)' },
+    atlas: { icon: '\uD83E\uDDED', color: 'var(--slate)' },
+    davinci: { icon: '\uD83C\uDFA8', color: 'var(--purple)' },
+    kubrick: { icon: '\uD83C\uDFAC', color: 'var(--tan)' },
+    forge: { icon: '\uD83D\uDD25', color: 'var(--red)' }
+  };
+
+  function fmtTokens(n) {
+    n = parseInt(n) || 0;
+    if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return String(n);
+  }
+  function fmtCost(n) { return '$' + (parseFloat(n) || 0).toFixed(2); }
+  function fmtDuration(ms) {
+    ms = parseInt(ms) || 0;
+    if (ms >= 60000) return (ms / 60000).toFixed(1) + 'm';
+    return (ms / 1000).toFixed(0) + 's';
+  }
+
+  // Cache savings banner
+  var totalCacheSaved = 0;
+  var totalCost = 0;
+  for (var si = 0; si < S.usageSummary.length; si++) {
+    var s = S.usageSummary[si];
+    totalCost += parseFloat(s.total_cost_usd) || 0;
+    var cacheTokens = parseInt(s.total_cache_read_tokens) || 0;
+    // Estimate savings: cache reads cost 10% of input, so savings = 90% of what full-price would be
+    // Use sonnet rate as rough average: $3/M input, cache saves $2.70/M
+    var savedPerM = 2.70;
+    totalCacheSaved += (cacheTokens / 1000000) * savedPerM;
+  }
+  if (totalCost > 0 || totalCacheSaved > 0) {
+    var savBanner = el('div', { className: 'usage-savings-banner' });
+    savBanner.appendChild(el('span', { className: 'usage-savings-icon' }, '\uD83D\uDCB0'));
+    var savLeft = el('div');
+    savLeft.appendChild(el('div', { className: 'usage-savings-label' }, 'Total Spend (' + S.usageDays + 'd)'));
+    savLeft.appendChild(el('div', { className: 'usage-savings-amount', style: { color: 'var(--orange)' } }, fmtCost(totalCost)));
+    savBanner.appendChild(savLeft);
+    if (totalCacheSaved > 0.01) {
+      var savRight = el('div', { style: { marginLeft: '32px' } });
+      savRight.appendChild(el('div', { className: 'usage-savings-label' }, 'Cache Savings'));
+      savRight.appendChild(el('div', { className: 'usage-savings-amount' }, fmtCost(totalCacheSaved)));
+      savBanner.appendChild(savRight);
+      savBanner.appendChild(el('div', { className: 'usage-savings-detail' }, 'Cache hit discounts saved ~' + fmtCost(totalCacheSaved) + ' vs full-price input'));
+    }
+    wrap.appendChild(savBanner);
+  }
+
+  // Agent cards
+  var agentGrid = el('div', { className: 'usage-agent-grid' });
+  for (var ai = 0; ai < S.usageSummary.length; ai++) {
+    var ag = S.usageSummary[ai];
+    var agName = ag.agent || 'unknown';
+    var meta = AGENT_META[agName.toLowerCase()] || { icon: '\uD83E\uDD16', color: 'var(--text-muted)' };
+    var card = el('div', { className: 'usage-agent-card' });
+    card.setAttribute('data-agent', agName.toLowerCase());
+
+    var nameRow = el('div', { className: 'usage-agent-name' });
+    nameRow.appendChild(el('span', { className: 'usage-agent-icon' }, meta.icon));
+    nameRow.appendChild(el('span', null, agName.charAt(0).toUpperCase() + agName.slice(1)));
+    card.appendChild(nameRow);
+
+    var stats = el('div', { className: 'usage-agent-stats' });
+    var totalTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0);
+    stats.appendChild(createStat('Total Tokens', fmtTokens(totalTokens)));
+    stats.appendChild(createStat('Total Cost', fmtCost(ag.total_cost_usd), 'cost'));
+    stats.appendChild(createStat('Sessions', String(parseInt(ag.session_count) || 0)));
+    stats.appendChild(createStat('Avg/Session', fmtCost(ag.avg_cost_per_session), 'cost'));
+    card.appendChild(stats);
+
+    var cacheRate = parseFloat(ag.cache_hit_rate) || 0;
+    var cacheSection = el('div', { className: 'usage-cache-bar' });
+    cacheSection.appendChild(el('div', { className: 'usage-cache-bar-label' }, 'Cache Hit Rate: ' + cacheRate.toFixed(1) + '%'));
+    var track = el('div', { className: 'usage-cache-track' });
+    track.appendChild(el('div', { className: 'usage-cache-fill', style: { width: Math.min(cacheRate, 100) + '%' } }));
+    cacheSection.appendChild(track);
+    card.appendChild(cacheSection);
+
+    agentGrid.appendChild(card);
+  }
+  wrap.appendChild(agentGrid);
+
+  function createStat(label, value, cls) {
+    var stat = el('div', { className: 'usage-stat' });
+    stat.appendChild(el('div', { className: 'usage-stat-label' }, label));
+    stat.appendChild(el('div', { className: 'usage-stat-value' + (cls ? ' ' + cls : '') }, value));
+    return stat;
+  }
+
+  // Token comparison chart
+  if (S.usageSummary.length > 0) {
+    var chartSection = el('div', { className: 'usage-chart-section' });
+    chartSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Token Usage by Agent'));
+    var legend = el('div', { className: 'usage-legend' });
+    legend.appendChild(createLegend('Input', 'var(--orange)'));
+    legend.appendChild(createLegend('Output', 'var(--tan)'));
+    legend.appendChild(createLegend('Cache Read', 'var(--green)'));
+    chartSection.appendChild(legend);
+
+    var maxTokens = 0;
+    for (var ci = 0; ci < S.usageSummary.length; ci++) {
+      var r = S.usageSummary[ci];
+      var total = (parseInt(r.total_input_tokens) || 0) + (parseInt(r.total_output_tokens) || 0) + (parseInt(r.total_cache_read_tokens) || 0);
+      if (total > maxTokens) maxTokens = total;
+    }
+    for (var ci = 0; ci < S.usageSummary.length; ci++) {
+      var r = S.usageSummary[ci];
+      var inp = parseInt(r.total_input_tokens) || 0;
+      var out = parseInt(r.total_output_tokens) || 0;
+      var cch = parseInt(r.total_cache_read_tokens) || 0;
+      var total = inp + out + cch;
+      var pctInp = maxTokens > 0 ? (inp / maxTokens * 100) : 0;
+      var pctOut = maxTokens > 0 ? (out / maxTokens * 100) : 0;
+      var pctCch = maxTokens > 0 ? (cch / maxTokens * 100) : 0;
+
+      var row = el('div', { className: 'usage-bar-row' });
+      row.appendChild(el('div', { className: 'usage-bar-agent' }, r.agent));
+      var barTrack = el('div', { className: 'usage-bar-track' });
+      var barContainer = el('div', { style: { display: 'flex', height: '100%', width: (maxTokens > 0 ? (total / maxTokens * 100) : 0) + '%' } });
+      if (inp > 0) barContainer.appendChild(el('div', { className: 'usage-bar-fill input', style: { width: (inp / total * 100) + '%' } }));
+      if (out > 0) barContainer.appendChild(el('div', { className: 'usage-bar-fill output', style: { width: (out / total * 100) + '%' } }));
+      if (cch > 0) barContainer.appendChild(el('div', { className: 'usage-bar-fill cache', style: { width: (cch / total * 100) + '%' } }));
+      barTrack.appendChild(barContainer);
+      row.appendChild(barTrack);
+      row.appendChild(el('div', { className: 'usage-bar-amount' }, fmtTokens(total)));
+      chartSection.appendChild(row);
+    }
+    wrap.appendChild(chartSection);
+  }
+
+  function createLegend(label, color) {
+    var item = el('div', { className: 'usage-legend-item' });
+    item.appendChild(el('div', { className: 'usage-legend-dot', style: { background: color } }));
+    item.appendChild(el('span', null, label));
+    return item;
+  }
+
+  // Cost breakdown section
+  if (S.usageSummary.length > 0) {
+    var costSection = el('div', { className: 'usage-cost-section' });
+    costSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Cost Breakdown by Agent'));
+    var costLegend = el('div', { className: 'usage-legend' });
+    costLegend.appendChild(createLegend('Input Cost', 'var(--orange)'));
+    costLegend.appendChild(createLegend('Output Cost', 'var(--tan)'));
+    costLegend.appendChild(createLegend('Cache Creation', 'var(--green)'));
+    costSection.appendChild(costLegend);
+
+    var maxCost = 0;
+    for (var ki = 0; ki < S.usageSummary.length; ki++) {
+      var c = parseFloat(S.usageSummary[ki].total_cost_usd) || 0;
+      if (c > maxCost) maxCost = c;
+    }
+    for (var ki = 0; ki < S.usageSummary.length; ki++) {
+      var ag = S.usageSummary[ki];
+      var agCost = parseFloat(ag.total_cost_usd) || 0;
+      var costRow = el('div', { className: 'usage-cost-row' });
+      var agMeta = AGENT_META[(ag.agent || '').toLowerCase()] || {};
+      costRow.appendChild(el('div', { className: 'usage-cost-agent', style: { color: agMeta.color || 'var(--text)' } }, ag.agent));
+      var costBars = el('div', { className: 'usage-cost-bars' });
+      var pct = maxCost > 0 ? (agCost / maxCost * 100) : 0;
+      costBars.appendChild(el('div', { className: 'usage-cost-bar input-cost', style: { width: Math.max(pct * 0.4, 1) + '%' } }));
+      costBars.appendChild(el('div', { className: 'usage-cost-bar output-cost', style: { width: Math.max(pct * 0.5, 1) + '%' } }));
+      costBars.appendChild(el('div', { className: 'usage-cost-bar cache-cost', style: { width: Math.max(pct * 0.1, 1) + '%' } }));
+      costRow.appendChild(costBars);
+      costRow.appendChild(el('div', { className: 'usage-cost-total' }, fmtCost(agCost)));
+      costSection.appendChild(costRow);
+    }
+    wrap.appendChild(costSection);
+  }
+
+  // Session history table
+  if (S.usageReports.length > 0) {
+    var tableSection = el('div', { className: 'usage-chart-section' });
+    tableSection.appendChild(el('div', { className: 'usage-chart-title' }, 'Recent Sessions'));
+    var table = el('table', { className: 'usage-table' });
+    var thead = el('thead');
+    var hrow = el('tr');
+    var cols = ['Agent', 'Model', 'Input', 'Output', 'Cache', 'Cost', 'Duration', 'Tools', 'Time'];
+    for (var hi = 0; hi < cols.length; hi++) hrow.appendChild(el('th', null, cols[hi]));
+    thead.appendChild(hrow);
+    table.appendChild(thead);
+    var tbody = el('tbody');
+    for (var ri = 0; ri < S.usageReports.length; ri++) {
+      var rpt = S.usageReports[ri];
+      var tr = el('tr');
+      var agLow = (rpt.agent || '').toLowerCase();
+      var badge = el('span', { className: 'agent-badge agent-badge-' + agLow }, rpt.agent || '-');
+      var td0 = el('td'); td0.appendChild(badge); tr.appendChild(td0);
+      tr.appendChild(el('td', null, rpt.model || '-'));
+      tr.appendChild(el('td', null, fmtTokens(rpt.input_tokens)));
+      tr.appendChild(el('td', null, fmtTokens(rpt.output_tokens)));
+      tr.appendChild(el('td', null, fmtTokens(rpt.cache_read_tokens)));
+      tr.appendChild(el('td', { style: { fontWeight: '700', color: 'var(--orange)' } }, fmtCost(rpt.cost_usd)));
+      tr.appendChild(el('td', null, fmtDuration(rpt.duration_ms)));
+      tr.appendChild(el('td', null, String(rpt.tool_calls || 0)));
+      var ts = rpt.created_at ? new Date(rpt.created_at) : null;
+      tr.appendChild(el('td', { style: { color: 'var(--text-muted)', fontSize: '12px' } }, ts ? ts.toLocaleString() : '-'));
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    tableSection.appendChild(table);
+    wrap.appendChild(tableSection);
+  }
+
+  if (!S.usageSummary.length && !S.usageReports.length) {
+    var empty = el('div', { className: 'hof-empty' });
+    empty.appendChild(el('div', { className: 'hof-empty-icon' }, '\uD83D\uDCCA'));
+    empty.appendChild(el('div', { className: 'hof-empty-text' }, 'No usage data yet. Agents will report session metrics as they operate.'));
+    wrap.appendChild(empty);
+  }
+
+  main.replaceChildren(wrap);
+}
+
 function render() {
   var app = document.getElementById('app');
   if (!S.authed) { renderLogin(); return; }
@@ -1657,6 +1978,7 @@ function render() {
   else if (S.view === 'scoreboard') renderScoreboard(main);
   else if (S.view === 'comms') renderComms(main);
   else if (S.view === 'billing') renderBilling(main);
+  else if (S.view === 'usage') renderUsage(main);
 }
 
 document.addEventListener('keydown', function(e) {
@@ -1717,6 +2039,7 @@ socket.on('message:new', smartRefresh);
 socket.on('message:deleted', smartRefresh);
 socket.on('task:new', smartRefresh);
 socket.on('task:updated', smartRefresh);
+socket.on('usage:new', smartRefresh);
 })();
 </script>
 </body>

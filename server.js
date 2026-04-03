@@ -640,6 +640,99 @@ app.delete("/api/services/:id", async (req, res) => {
   }
 });
 
+// ── Usage Reports ──
+
+const COST_RATES = {
+  opus: { input: 15, output: 75, cache_read: 1.5 },
+  sonnet: { input: 3, output: 15, cache_read: 0.3 },
+  haiku: { input: 0.80, output: 4, cache_read: 0.08 }
+};
+
+function calculateCost(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens) {
+  var tier = 'sonnet'; // default
+  if (model) {
+    var m = model.toLowerCase();
+    if (m.includes('opus')) tier = 'opus';
+    else if (m.includes('haiku')) tier = 'haiku';
+    else if (m.includes('sonnet')) tier = 'sonnet';
+  }
+  var rates = COST_RATES[tier];
+  var cost = ((input_tokens || 0) / 1000000) * rates.input
+    + ((output_tokens || 0) / 1000000) * rates.output
+    + ((cache_creation_tokens || 0) / 1000000) * rates.input
+    + ((cache_read_tokens || 0) / 1000000) * rates.cache_read;
+  return Math.round(cost * 10000) / 10000;
+}
+
+app.post("/api/usage", async (req, res) => {
+  try {
+    const { agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls } = req.body;
+    if (!agent) return res.status(400).json({ error: "missing_fields", message: "agent required" });
+    const cost_usd = calculateCost(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens);
+    const result = await db.query(
+      `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+      [agent, session_id || null, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
+    );
+    logActivity(null, "usage_reported", agent, { session_id, model, cost_usd });
+    io.emit("usage:new", { report: result.rows[0] });
+    res.status(201).json({ report: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/usage", async (req, res) => {
+  try {
+    const conditions = [], params = [];
+    let i = 1;
+    if (req.query.agent) { conditions.push(`agent = $${i++}`); params.push(req.query.agent); }
+    if (req.query.days) {
+      conditions.push(`created_at >= NOW() - INTERVAL '1 day' * $${i++}`);
+      params.push(parseInt(req.query.days));
+    }
+    const where = conditions.length ? "WHERE " + conditions.join(" AND ") : "";
+    const limit = Math.min(parseInt(req.query.limit) || 200, 1000);
+    params.push(limit);
+    const result = await db.query(`SELECT * FROM usage_reports ${where} ORDER BY created_at DESC LIMIT $${i}`, params);
+    res.json({ reports: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.get("/api/usage/summary", async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const result = await db.query(
+      `SELECT agent,
+        SUM(input_tokens) AS total_input_tokens,
+        SUM(output_tokens) AS total_output_tokens,
+        SUM(cache_creation_tokens) AS total_cache_creation_tokens,
+        SUM(cache_read_tokens) AS total_cache_read_tokens,
+        SUM(cost_usd) AS total_cost_usd,
+        COUNT(*) AS session_count,
+        ROUND(AVG(cost_usd), 4) AS avg_cost_per_session,
+        CASE WHEN SUM(input_tokens + cache_read_tokens) > 0
+          THEN ROUND(SUM(cache_read_tokens)::numeric / SUM(input_tokens + cache_read_tokens) * 100, 1)
+          ELSE 0 END AS cache_hit_rate,
+        ROUND(AVG(tool_calls), 1) AS avg_tool_calls,
+        ROUND(AVG(duration_ms)) AS avg_duration
+      FROM usage_reports
+      WHERE created_at >= NOW() - INTERVAL '1 day' * $1
+      GROUP BY agent
+      ORDER BY total_cost_usd DESC`,
+      [days]
+    );
+    res.json({ summary: result.rows, days });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 // ── Heartbeat ──
 
 const heartbeats = {};

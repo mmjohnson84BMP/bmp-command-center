@@ -125,6 +125,23 @@ CREATE TABLE IF NOT EXISTS services (
 );
 CREATE INDEX IF NOT EXISTS idx_services_category ON services(category);
 CREATE INDEX IF NOT EXISTS idx_services_status   ON services(status);
+
+CREATE TABLE IF NOT EXISTS usage_reports (
+  id SERIAL PRIMARY KEY,
+  agent VARCHAR(50) NOT NULL,
+  session_id VARCHAR(100),
+  model VARCHAR(50),
+  input_tokens INTEGER DEFAULT 0,
+  output_tokens INTEGER DEFAULT 0,
+  cache_creation_tokens INTEGER DEFAULT 0,
+  cache_read_tokens INTEGER DEFAULT 0,
+  duration_ms INTEGER DEFAULT 0,
+  tool_calls INTEGER DEFAULT 0,
+  cost_usd NUMERIC(10,4) DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_usage_agent ON usage_reports(agent);
+CREATE INDEX IF NOT EXISTS idx_usage_created ON usage_reports(created_at DESC);
 `;
 
 async function query(text, params) {
