@@ -931,7 +931,7 @@ app.get("/api/usage/teams-plan", async (req, res) => {
 
 app.post("/api/usage/teams-plan", async (req, res) => {
   try {
-    const { month, validated_spend, spend_limit, reset_date, seats, will_spend, mike_spend, api_credit_balance } = req.body;
+    const { month, validated_spend, spend_limit, reset_date, seats } = req.body;
     if (!month) return res.status(400).json({ error: "missing_fields", message: "month required" });
     // Upsert: check if record exists for this month
     const existing = await db.query("SELECT id FROM teams_plan_tracking WHERE month = $1", [month]);
@@ -943,16 +943,13 @@ app.post("/api/usage/teams-plan", async (req, res) => {
       if (spend_limit !== undefined) { sets.push(`spend_limit = $${pi}::numeric`); params.push(spend_limit); pi++; }
       if (reset_date !== undefined) { sets.push(`reset_date = $${pi}::date`); params.push(reset_date); pi++; }
       if (seats !== undefined) { sets.push(`seats = $${pi}::integer`); params.push(seats); pi++; }
-      if (will_spend !== undefined) { sets.push(`will_spend = $${pi}::numeric`); params.push(will_spend); pi++; }
-      if (mike_spend !== undefined) { sets.push(`mike_spend = $${pi}::numeric`); params.push(mike_spend); pi++; }
-      if (api_credit_balance !== undefined) { sets.push(`api_credit_balance = $${pi}::numeric`); params.push(api_credit_balance); pi++; }
       if (sets.length === 0) return res.status(400).json({ error: "no_fields" });
       result = await db.query(`UPDATE teams_plan_tracking SET ${sets.join(", ")} WHERE month = $1 RETURNING *`, params);
     } else {
       result = await db.query(
-        `INSERT INTO teams_plan_tracking (month, spend_limit, validated_spend, validated_at, seats, reset_date, will_spend, mike_spend, api_credit_balance)
-         VALUES ($1, $2::numeric, $3::numeric, CASE WHEN $3 IS NOT NULL THEN NOW() ELSE NULL END, $4::integer, $5::date, $6::numeric, $7::numeric, $8::numeric) RETURNING *`,
-        [month, spend_limit || 1000, validated_spend || null, seats || 2, reset_date || null, will_spend || null, mike_spend || null, api_credit_balance || null]
+        `INSERT INTO teams_plan_tracking (month, spend_limit, validated_spend, validated_at, seats, reset_date)
+         VALUES ($1, $2::numeric, $3::numeric, CASE WHEN $3 IS NOT NULL THEN NOW() ELSE NULL END, $4::integer, $5::date) RETURNING *`,
+        [month, spend_limit || 1000, validated_spend || null, seats || 2, reset_date || null]
       );
     }
     logActivity(null, "teams_plan_updated", req.actor, { month, validated_spend, spend_limit });
