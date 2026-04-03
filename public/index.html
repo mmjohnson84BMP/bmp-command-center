@@ -1732,6 +1732,17 @@ function renderUsage(main) {
   var headerLeft = el('div');
   headerLeft.appendChild(el('div', { className: 'usage-title' }, 'Usage Dashboard'));
   headerLeft.appendChild(el('div', { className: 'usage-subtitle' }, 'Token burn, cost analysis, and efficiency metrics'));
+  // Anthropic sync button
+  var syncBtn = el('button', { className: 'btn', style: { marginLeft: '12px', fontSize: '12px', padding: '4px 12px' }, onClick: function() {
+    syncBtn.textContent = 'Syncing...';
+    API.get('/api/usage/sync?days=' + (S.usageDays || 7)).then(function(d) {
+      if (d && d.error) { syncBtn.textContent = 'Sync failed: ' + d.error; return; }
+      S.anthropicUsage = d;
+      syncBtn.textContent = 'Synced \u2714';
+      renderUsage(main);
+    }).catch(function() { syncBtn.textContent = 'Sync failed'; });
+  }}, '\uD83D\uDD04 Sync from Anthropic');
+  headerLeft.appendChild(syncBtn);
   header.appendChild(headerLeft);
   var periodSel = el('select', { className: 'usage-period-select', onChange: function(e) {
     S.usageDays = parseInt(e.target.value);

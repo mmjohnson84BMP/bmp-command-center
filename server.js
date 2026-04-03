@@ -733,6 +733,48 @@ app.get("/api/usage/summary", async (req, res) => {
   }
 });
 
+// ── Anthropic Usage Sync ──
+
+const ANTHROPIC_API_KEY_MAP = {
+  // Map API key IDs to agent names — update when you know the key IDs
+  // Format: "sk-ant-api03-...first8chars": "agent_name"
+};
+
+app.get("/api/usage/sync", async (req, res) => {
+  const adminKey = process.env.ANTHROPIC_ADMIN_KEY;
+  if (!adminKey) return res.status(503).json({ error: "ANTHROPIC_ADMIN_KEY not configured" });
+
+  try {
+    const days = parseInt(req.query.days) || 7;
+    const now = new Date();
+    const start = new Date(now - days * 86400000);
+    const startISO = start.toISOString().replace(/\.\d+Z$/, "Z");
+    const endISO = now.toISOString().replace(/\.\d+Z$/, "Z");
+
+    // Pull usage grouped by api_key and model, hourly buckets
+    const usageUrl = `https://api.anthropic.com/v1/organizations/usage_report/messages?starting_at=${startISO}&ending_at=${endISO}&bucket_width=1d&group_by[]=api_key&group_by[]=model`;
+    const usageRes = await fetch(usageUrl, {
+      headers: { "x-api-key": adminKey, "anthropic-version": "2023-06-01" }
+    });
+    if (!usageRes.ok) {
+      const errText = await usageRes.text();
+      return res.status(usageRes.status).json({ error: "anthropic_api_error", detail: errText });
+    }
+    const usageData = await usageRes.json();
+
+    // Pull cost report
+    const costUrl = `https://api.anthropic.com/v1/organizations/cost_report?starting_at=${startISO}&ending_at=${endISO}&group_by[]=model`;
+    const costRes = await fetch(costUrl, {
+      headers: { "x-api-key": adminKey, "anthropic-version": "2023-06-01" }
+    });
+    const costData = costRes.ok ? await costRes.json() : null;
+
+    res.json({ usage: usageData, costs: costData, period: { start: startISO, end: endISO, days } });
+  } catch (err) {
+    res.status(500).json({ error: "sync_error", message: err.message });
+  }
+});
+
 // ── Heartbeat ──
 
 const heartbeats = {};
