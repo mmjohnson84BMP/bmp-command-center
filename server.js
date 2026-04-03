@@ -937,20 +937,18 @@ app.post("/api/usage/teams-plan", async (req, res) => {
     const existing = await db.query("SELECT id FROM teams_plan_tracking WHERE month = $1", [month]);
     let result;
     if (existing.rows.length) {
-      result = await db.query(
-        `UPDATE teams_plan_tracking SET
-          validated_spend = COALESCE($2, validated_spend),
-          validated_at = CASE WHEN $2 IS NOT NULL THEN NOW() ELSE validated_at END,
-          spend_limit = COALESCE($3, spend_limit),
-          reset_date = COALESCE($4, reset_date),
-          seats = COALESCE($5, seats)
-        WHERE month = $1 RETURNING *`,
-        [month, validated_spend || null, spend_limit || null, reset_date || null, seats || null]
-      );
+      const sets = [], params = [month];
+      let pi = 2;
+      if (validated_spend !== undefined) { sets.push(`validated_spend = $${pi}::numeric, validated_at = NOW()`); params.push(validated_spend); pi++; }
+      if (spend_limit !== undefined) { sets.push(`spend_limit = $${pi}::numeric`); params.push(spend_limit); pi++; }
+      if (reset_date !== undefined) { sets.push(`reset_date = $${pi}::date`); params.push(reset_date); pi++; }
+      if (seats !== undefined) { sets.push(`seats = $${pi}::integer`); params.push(seats); pi++; }
+      if (sets.length === 0) return res.status(400).json({ error: "no_fields" });
+      result = await db.query(`UPDATE teams_plan_tracking SET ${sets.join(", ")} WHERE month = $1 RETURNING *`, params);
     } else {
       result = await db.query(
         `INSERT INTO teams_plan_tracking (month, spend_limit, validated_spend, validated_at, seats, reset_date)
-         VALUES ($1, $2, $3, CASE WHEN $3 IS NOT NULL THEN NOW() ELSE NULL END, $4, $5) RETURNING *`,
+         VALUES ($1, $2::numeric, $3::numeric, CASE WHEN $3 IS NOT NULL THEN NOW() ELSE NULL END, $4::integer, $5::date) RETURNING *`,
         [month, spend_limit || 1000, validated_spend || null, seats || 2, reset_date || null]
       );
     }
