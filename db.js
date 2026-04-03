@@ -218,6 +218,23 @@ const MIGRATIONS = [
       (COALESCE(cache_creation_tokens, 0)::numeric / 1000000) * (CASE WHEN LOWER(model) LIKE '%opus%' THEN 15 ELSE 3 END - CASE WHEN LOWER(model) LIKE '%opus%' THEN 3.75 ELSE 0.75 END)
       + (COALESCE(cache_read_tokens, 0)::numeric / 1000000) * (CASE WHEN LOWER(model) LIKE '%opus%' THEN 15 ELSE 3 END - CASE WHEN LOWER(model) LIKE '%opus%' THEN 1.50 ELSE 0.30 END)
     , 4)`,
+  // Calibration settings for usage dashboard
+  `CREATE TABLE IF NOT EXISTS usage_calibration (
+    id SERIAL PRIMARY KEY,
+    plan_type VARCHAR(20) DEFAULT 'team',
+    session_budget NUMERIC(10,2) DEFAULT 27.00,
+    weekly_budget NUMERIC(10,2) DEFAULT 10.00,
+    overage_cap NUMERIC(10,2) DEFAULT 1000.00,
+    reset_day VARCHAR(10) DEFAULT 'monday',
+    reset_hour INTEGER DEFAULT 14,
+    timezone VARCHAR(50) DEFAULT 'America/Los_Angeles',
+    session_correction_factor NUMERIC(8,4) DEFAULT 1.0000,
+    weekly_correction_factor NUMERIC(8,4) DEFAULT 1.0000,
+    last_session_pct NUMERIC(5,2),
+    last_weekly_pct NUMERIC(5,2),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+  )`,
+  `INSERT INTO usage_calibration (plan_type) SELECT 'team' WHERE NOT EXISTS (SELECT 1 FROM usage_calibration LIMIT 1)`,
 ];
 
 async function initSchema() {

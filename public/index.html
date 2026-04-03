@@ -605,7 +605,9 @@ var S = {
   usageReports: [],
   usageDays: 7,
   teamsPlan: null,
-  anthropicUsage: null
+  anthropicUsage: null,
+  calibration: null,
+  usageDashboard: null
 };
 
 var savedToken = localStorage.getItem('cc_session_token');
@@ -1782,6 +1784,15 @@ function renderBilling(main) {
 
 function renderUsage(main) {
   var wrap = el('div', { className: 'view-enter' });
+
+  // Load calibration + dashboard data if not loaded
+  if (!S.calibration) {
+    API.get('/api/usage/calibrate').then(function(d) { S.calibration = d && d.calibration ? d.calibration : {}; renderUsage(main); });
+  }
+  if (!S.usageDashboard) {
+    API.get('/api/usage/dashboard?days=30').then(function(d) { S.usageDashboard = d; renderUsage(main); });
+  }
+
   var header = el('div', { className: 'usage-header' });
   var headerLeft = el('div');
   headerLeft.appendChild(el('div', { className: 'usage-title' }, 'Usage Dashboard'));
@@ -1862,8 +1873,100 @@ function renderUsage(main) {
   }
 
   // ════════════════════════════════════════════════
-  // SECTION 1: TEAMS PLAN GAUGE (HERO)
+  // QUICK SYNC + HERO GAUGES
   // ════════════════════════════════════════════════
+  var cal = S.calibration || { session_budget: 27, weekly_budget: 10, overage_cap: 1000, session_correction_factor: 1, weekly_correction_factor: 1 };
+  var dash = S.usageDashboard || { totals: {}, by_seat: [], by_agent: [], daily: [] };
+  var dt = dash.totals || {};
+
+  // Quick Sync bar
+  var syncBar = el('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '12px 16px', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' } });
+  syncBar.appendChild(el('span', { style: { fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' } }, 'Quick Sync'));
+  syncBar.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--text-muted)' } }, 'Enter % from /usage:'));
+  var syncSessInput = el('input', { type: 'number', placeholder: 'Session %', style: { width: '80px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: '4px', padding: '4px 8px', fontSize: '13px', fontFamily: 'var(--mono)' } });
+  var syncWeekInput = el('input', { type: 'number', placeholder: 'Weekly %', style: { width: '80px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: '4px', padding: '4px 8px', fontSize: '13px', fontFamily: 'var(--mono)' } });
+  var syncBtn = el('button', { className: 'btn', style: { fontSize: '12px', padding: '4px 12px' }, onClick: function() {
+    var sp = parseFloat(syncSessInput.value), wp = parseFloat(syncWeekInput.value);
+    if (!sp && !wp) return;
+    var body = {};
+    if (sp > 0) body.session_pct = sp;
+    if (wp > 0) body.weekly_pct = wp;
+    syncBtn.textContent = 'Syncing...';
+    API.post('/api/usage/calibrate', body).then(function(d) {
+      S.calibration = d && d.calibration ? d.calibration : S.calibration;
+      syncBtn.textContent = 'Synced';
+      renderUsage(main);
+    }).catch(function() { syncBtn.textContent = 'Failed'; });
+  }}, 'Sync');
+  syncBar.appendChild(syncSessInput);
+  syncBar.appendChild(syncWeekInput);
+  syncBar.appendChild(syncBtn);
+  if (cal.last_weekly_pct) {
+    syncBar.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' } },
+      'Last: ' + (cal.session_correction_factor || 1).toFixed(2) + 'x sess / ' + (cal.weekly_correction_factor || 1).toFixed(2) + 'x week'));
+  }
+  wrap.appendChild(syncBar);
+
+  // 3-column hero gauges
+  var heroGrid = el('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' } });
+
+  // Compute gauge values
+  var totalCost = parseFloat(dt.cost_usd) || 0;
+  var sessFactor = parseFloat(cal.session_correction_factor) || 1;
+  var weekFactor = parseFloat(cal.weekly_correction_factor) || 1;
+  var sessBudget = parseFloat(cal.session_budget) || 27;
+  var weekBudget = parseFloat(cal.weekly_budget) || 10;
+  var overageCap = parseFloat(cal.overage_cap) || 1000;
+
+  // Get validated overage from teams plan
+  var validatedOverage = 0;
+  if (S.teamsPlan && S.teamsPlan.plan && S.teamsPlan.plan.validated_spend) {
+    validatedOverage = parseFloat(S.teamsPlan.plan.validated_spend) || 0;
+  }
+  var estimatedOverage = S.teamsPlan && S.teamsPlan.estimated ? parseFloat(S.teamsPlan.estimated.estimated_spend) || 0 : totalCost;
+
+  function makeGaugeCard(title, value, budget, unit, colorClass, subtitle) {
+    var card = el('div', { className: 'teams-gauge-hero' + (colorClass === 'red' ? ' warning-red' : colorClass === 'yellow' ? ' warning-yellow' : '') });
+    var pct = budget > 0 ? Math.min(100, Math.round(value / budget * 100)) : 0;
+    card.appendChild(el('div', { className: 'teams-gauge-title' }, [
+      el('span', null, title),
+      el('span', { className: 'badge badge-' + (pct > 80 ? 'red' : pct > 50 ? 'yellow' : 'green') }, pct + '%')
+    ]));
+    card.appendChild(el('div', { className: 'teams-gauge-amount', style: { color: pct > 80 ? 'var(--red)' : pct > 50 ? '#c8af5c' : 'var(--green)' } }, [
+      document.createTextNode(fmtCost(value) + ' '),
+      el('span', { className: 'limit' }, '/ ' + fmtCost(budget) + (unit ? ' ' + unit : ''))
+    ]));
+    var gaugeBar = el('div', { className: 'teams-gauge-bar' });
+    var fillCls = 'teams-gauge-fill' + (pct > 80 ? ' red' : pct > 50 ? ' yellow' : '');
+    gaugeBar.appendChild(el('div', { className: fillCls, style: { width: Math.min(pct, 100) + '%' } }));
+    card.appendChild(gaugeBar);
+    if (subtitle) card.appendChild(el('div', { style: { fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' } }, subtitle));
+    return card;
+  }
+
+  // Session gauge — latest session cost vs session budget
+  var latestSessionCost = 0;
+  if (S.usageReports.length) latestSessionCost = parseFloat(S.usageReports[0].cost_usd) || 0;
+  var adjSessionCost = latestSessionCost * sessFactor;
+  heroGrid.appendChild(makeGaugeCard('Current Session', adjSessionCost, sessBudget, '5h window', adjSessionCost/sessBudget > 0.8 ? 'red' : 'green', 'Correction: ' + sessFactor.toFixed(2) + 'x'));
+
+  // Weekly gauge
+  var adjWeeklyCost = totalCost * weekFactor;
+  var now = new Date();
+  var resetDays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  var resetDayIdx = resetDays.indexOf((cal.reset_day || 'monday').toLowerCase());
+  var daysUntilReset = (resetDayIdx - now.getDay() + 7) % 7;
+  if (daysUntilReset === 0) daysUntilReset = 7;
+  heroGrid.appendChild(makeGaugeCard('Weekly Usage', adjWeeklyCost, weekBudget, 'weekly', adjWeeklyCost/weekBudget > 0.8 ? 'red' : 'green', 'Resets in ' + daysUntilReset + ' days'));
+
+  // Overage cap gauge
+  var displayOverage = validatedOverage > 0 ? validatedOverage : estimatedOverage;
+  heroGrid.appendChild(makeGaugeCard('Overage Cap', displayOverage, overageCap, 'cap', displayOverage/overageCap > 0.8 ? 'red' : 'yellow',
+    validatedOverage > 0 ? 'Validated from billing' : 'Estimated from token cost'));
+
+  wrap.appendChild(heroGrid);
+
+  // Keep teams section for backwards compat but simplify
   var teamsSection = el('div', { className: 'usage-section' });
   var teamsHdr = el('div', { className: 'usage-section-header' });
   teamsHdr.appendChild(el('span', { className: 'section-icon' }, '\uD83C\uDFAF'));

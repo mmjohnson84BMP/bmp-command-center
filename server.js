@@ -962,6 +962,82 @@ app.post("/api/usage/teams-plan", async (req, res) => {
   }
 });
 
+// ── Calibration ──
+
+app.get("/api/usage/calibrate", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM usage_calibration ORDER BY id LIMIT 1");
+    const cal = result.rows[0] || { plan_type: "team", session_budget: 27, weekly_budget: 10, overage_cap: 1000, reset_day: "monday", reset_hour: 14, timezone: "America/Los_Angeles", session_correction_factor: 1, weekly_correction_factor: 1 };
+    res.json({ calibration: cal });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/usage/calibrate", async (req, res) => {
+  try {
+    const { session_pct, weekly_pct, plan_type, session_budget, weekly_budget, overage_cap, reset_day, reset_hour, timezone } = req.body;
+
+    // Get current calibration
+    let calRes = await db.query("SELECT * FROM usage_calibration ORDER BY id LIMIT 1");
+    let cal = calRes.rows[0];
+    if (!cal) {
+      await db.query("INSERT INTO usage_calibration (plan_type) VALUES ('team')");
+      calRes = await db.query("SELECT * FROM usage_calibration ORDER BY id LIMIT 1");
+      cal = calRes.rows[0];
+    }
+
+    const sets = [], params = [];
+    let i = 1;
+
+    // If Quick Sync percentages provided, calculate correction factors
+    if (session_pct !== undefined || weekly_pct !== undefined) {
+      // Get this week's cost from usage_reports
+      const weekCostRes = await db.query(
+        "SELECT COALESCE(SUM(cost_usd), 0) as cost FROM usage_reports WHERE created_at >= NOW() - INTERVAL '7 days'"
+      );
+      const weekCost = parseFloat(weekCostRes.rows[0].cost) || 0;
+
+      if (weekly_pct !== undefined && weekly_pct > 0) {
+        const ourWeeklyPct = cal.weekly_budget > 0 ? (weekCost / parseFloat(cal.weekly_budget)) * 100 : 0;
+        const wFactor = ourWeeklyPct > 0 ? weekly_pct / ourWeeklyPct : 1;
+        sets.push(`weekly_correction_factor = $${i++}`); params.push(Math.round(wFactor * 10000) / 10000);
+        sets.push(`last_weekly_pct = $${i++}`); params.push(weekly_pct);
+      }
+      if (session_pct !== undefined && session_pct > 0) {
+        // Session cost is harder — use latest session's cost
+        const sessCostRes = await db.query(
+          "SELECT COALESCE(cost_usd, 0) as cost FROM usage_reports ORDER BY created_at DESC LIMIT 1"
+        );
+        const sessCost = parseFloat(sessCostRes.rows[0]?.cost) || 0;
+        const ourSessionPct = cal.session_budget > 0 ? (sessCost / parseFloat(cal.session_budget)) * 100 : 0;
+        const sFactor = ourSessionPct > 0 ? session_pct / ourSessionPct : 1;
+        sets.push(`session_correction_factor = $${i++}`); params.push(Math.round(sFactor * 10000) / 10000);
+        sets.push(`last_session_pct = $${i++}`); params.push(session_pct);
+      }
+    }
+
+    // Direct setting updates
+    if (plan_type) { sets.push(`plan_type = $${i++}`); params.push(plan_type); }
+    if (session_budget) { sets.push(`session_budget = $${i++}`); params.push(session_budget); }
+    if (weekly_budget) { sets.push(`weekly_budget = $${i++}`); params.push(weekly_budget); }
+    if (overage_cap) { sets.push(`overage_cap = $${i++}`); params.push(overage_cap); }
+    if (reset_day) { sets.push(`reset_day = $${i++}`); params.push(reset_day); }
+    if (reset_hour !== undefined) { sets.push(`reset_hour = $${i++}`); params.push(reset_hour); }
+    if (timezone) { sets.push(`timezone = $${i++}`); params.push(timezone); }
+
+    if (sets.length === 0) return res.status(400).json({ error: "no_fields" });
+    sets.push("updated_at = NOW()");
+    params.push(cal.id);
+    const result = await db.query(`UPDATE usage_calibration SET ${sets.join(", ")} WHERE id = $${i} RETURNING *`, params);
+    res.json({ calibration: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 // ── Heartbeat ──
 
 const heartbeats = {};
