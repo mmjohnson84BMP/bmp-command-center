@@ -235,6 +235,10 @@ const MIGRATIONS = [
     updated_at TIMESTAMPTZ DEFAULT NOW()
   )`,
   `INSERT INTO usage_calibration (plan_type) SELECT 'team' WHERE NOT EXISTS (SELECT 1 FROM usage_calibration LIMIT 1)`,
+  // Per-seat validated spend on teams_plan_tracking
+  `ALTER TABLE teams_plan_tracking ADD COLUMN IF NOT EXISTS will_spend NUMERIC(10,2)`,
+  `ALTER TABLE teams_plan_tracking ADD COLUMN IF NOT EXISTS mike_spend NUMERIC(10,2)`,
+  `ALTER TABLE teams_plan_tracking ADD COLUMN IF NOT EXISTS api_credit_balance NUMERIC(10,2)`,
 ];
 
 async function initSchema() {

@@ -2043,7 +2043,20 @@ function renderUsage(main) {
       valLine.appendChild(document.createTextNode('Last validated: '));
       valLine.appendChild(el('strong', null, fmtCost(plan.validated_spend)));
       valLine.appendChild(document.createTextNode(' on ' + valDate));
+      if (plan.api_credit_balance) {
+        valLine.appendChild(document.createTextNode(' \u00B7 API credit: ' + fmtCost(plan.api_credit_balance)));
+      }
       hero.appendChild(valLine);
+    }
+
+    // Per-seat validated breakdown
+    if (plan.will_spend || plan.mike_spend) {
+      var seatGrid = el('div', { className: 'teams-gauge-stats', style: { marginTop: '12px', borderTop: '1px solid var(--border)', paddingTop: '12px' } });
+      var willPct = plan.will_spend && spendLimit > 0 ? Math.round(parseFloat(plan.will_spend) / spendLimit * 100) : 0;
+      var mikePct = plan.mike_spend && spendLimit > 0 ? Math.round(parseFloat(plan.mike_spend) / spendLimit * 100) : 0;
+      if (plan.will_spend) seatGrid.appendChild(createGaugeStat('Will (Titus + Da Vinci)', fmtCost(plan.will_spend) + ' (' + willPct + '%)', ''));
+      if (plan.mike_spend) seatGrid.appendChild(createGaugeStat('Mike (Socrates + Atlas)', fmtCost(plan.mike_spend) + ' (' + mikePct + '%)', ''));
+      hero.appendChild(seatGrid);
     }
 
     if (overageAmount > 0) {
