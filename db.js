@@ -140,6 +140,8 @@ CREATE TABLE IF NOT EXISTS usage_reports (
   cost_usd NUMERIC(10,4) DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+-- Clean duplicates before creating unique index
+DELETE FROM usage_reports a USING usage_reports b WHERE a.id < b.id AND a.session_id IS NOT NULL AND a.session_id = b.session_id;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usage_session ON usage_reports(session_id) WHERE session_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_usage_agent ON usage_reports(agent);
 CREATE INDEX IF NOT EXISTS idx_usage_created ON usage_reports(created_at DESC);
