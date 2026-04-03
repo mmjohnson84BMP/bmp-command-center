@@ -840,7 +840,10 @@ function loadAll() {
     API.get('/api/heartbeat').then(function(d) { S.heartbeats = d && d.agents ? d.agents : {}; }),
     API.get('/api/services').then(function(d) { S.services = d && d.services ? d.services : []; }),
     API.get('/api/usage/summary?days=' + S.usageDays).then(function(d) { S.usageSummary = d && d.summary ? d.summary : []; }),
-    API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; })
+    API.get('/api/usage?days=' + S.usageDays + '&limit=50').then(function(d) { S.usageReports = d && d.reports ? d.reports : []; }),
+    API.get('/api/usage/teams-plan').then(function(d) { S.teamsPlan = d; }),
+    API.get('/api/usage/calibrate').then(function(d) { S.calibration = d && d.calibration ? d.calibration : null; }),
+    API.get('/api/usage/dashboard?days=30').then(function(d) { S.usageDashboard = d; })
   ]).then(function() {
     S.totalUnread = 0;
     var me = (S.user || '').toLowerCase();
@@ -1910,20 +1913,23 @@ function renderUsage(main) {
   // 3-column hero gauges
   var heroGrid = el('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' } });
 
-  // Compute gauge values
-  var totalCost = parseFloat(dt.cost_usd) || 0;
+  // Compute gauge values from usageSummary (same source as Terminal Spend)
+  var totalCost = 0;
+  for (var tci = 0; tci < S.usageSummary.length; tci++) { totalCost += parseFloat(S.usageSummary[tci].total_cost_usd) || 0; }
+  // Fallback to dashboard totals if summary empty
+  if (totalCost === 0) totalCost = parseFloat(dt.cost_usd) || 0;
   var sessFactor = parseFloat(cal.session_correction_factor) || 1;
   var weekFactor = parseFloat(cal.weekly_correction_factor) || 1;
   var sessBudget = parseFloat(cal.session_budget) || 27;
   var weekBudget = parseFloat(cal.weekly_budget) || 10;
   var overageCap = parseFloat(cal.overage_cap) || 1000;
 
-  // Get validated overage from teams plan
+  // Get validated overage from teams plan, fall back to totalCost
   var validatedOverage = 0;
   if (S.teamsPlan && S.teamsPlan.plan && S.teamsPlan.plan.validated_spend) {
     validatedOverage = parseFloat(S.teamsPlan.plan.validated_spend) || 0;
   }
-  var estimatedOverage = S.teamsPlan && S.teamsPlan.estimated ? parseFloat(S.teamsPlan.estimated.estimated_spend) || 0 : totalCost;
+  var estimatedOverage = totalCost;
 
   function makeGaugeCard(title, value, budget, unit, colorClass, subtitle) {
     var card = el('div', { className: 'teams-gauge-hero' + (colorClass === 'red' ? ' warning-red' : colorClass === 'yellow' ? ' warning-yellow' : '') });

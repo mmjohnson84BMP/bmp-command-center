@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface": "#161310",
+                        "surface-container-low": "#1e1b18",
+                        "surface-container-highest": "#383431",
+                        "outline-variant": "#52443c",
+                        "primary": "#ffb688",
+                        "primary-container": "#c8875c",
+                        "on-primary": "#502402",
+                        "tertiary-container": "#809e72",
+                        "on-surface": "#e9e1dc",
+                        "on-surface-variant": "#d7c3b8",
+                    },
+                    fontFamily: { "body": ["Inter"] },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #161310; color: #e9e1dc; font-family: 'Inter', sans-serif; }
+        .roster-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .roster-card:hover { transform: translateY(-4px); background-color: #383431; box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5); }
+    </style>
+</head>
+<body class="antialiased p-12">
+<header class="mb-12 max-w-5xl mx-auto">
+<h1 class="text-4xl md:text-5xl font-black tracking-tighter text-[#e9e1dc] mb-2 uppercase">Operational Roster</h1>
+<div class="flex items-center space-x-4">
+<span class="h-[1px] w-12 bg-[#ffb688]"></span>
+<p class="text-xs tracking-[0.3em] font-bold text-[#ffb688] uppercase">BMP Command Center</p>
+</div>
+</header>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+<!-- Will -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Will" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRRzJ7UN3WJniy9HNuH5XGdsN9gVeaakoNDX1MhyGQjcSjkfJH36FOv3G9iEPSEXRmXdngW7FQ4Di2NmqEevVDBY1QRAjqXAmA10tmmZiKm7YQAOw9290plfMoUckQLBnXVz20go-Jc19-wfD5x-ozrKRW-04cEif85v9ZJdEuS6zKge70nTUrUFl3_oRN3FA0RzFkGAzhUemFFr_mFILeU9GsdxTdfoKbyk8mHw5yziR6ElqdzHbiz_5Ps4B5j4LWSnp5IwpJrxih"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Will</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Co-Founder, Product Visionary</p>
+</div>
+</div>
+<!-- Mike -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Mike" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDWfONHv2lH06yUYxT9y_f8EHFyB_DIlysnGEjwDqaJ8c94aTQ_FFayQUMc3SzzW9Tx6NHzabYl567zOVb3gpNVRoglCjZG9xDBXFx2DdhzCXarIIjocROdgo6qTP-NEKPWcCC-sqf03asMWERD8y3zb56pfsNIQrSQNnbnaV8LqCRxfGJEC6ikIwBpjYbvb1t8eGNzw_9ZAOexPHYInjy-Bje2Bc_3R2sIYIsj_6cRdf-8tVVDz1Yfbhxi6T-DR75YNV-qyJ6r5vl"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Mike</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Co-Founder, Technical</p>
+</div>
+</div>
+<!-- Titus -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Titus" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPjXZASrRkFf4o3shH_o5nTZrMJkJFLz3JD_Oix-0bxplxMK3BTcFIj6haeJDVih9MqKoYJn7-t9QjZ2QrAfq1t-gsuahsf01MApZh9Pnn2WYdaUDHTpxynHAru6zZvdKLXf5WhwoY-RCbrIpuWiJfMYXWEhRXsMv4GYGcMmYYMXeecckowJpg8mDhsZA0W-rJNkuQ9Q0u0oBLmMdAdKHlJIlh-A475B6K0M2IrFD2yWyLXJbrkGVJBLXr_EsZ5doLESJ0bYN1Oiah"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Titus</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Will's Strategic AI</p>
+</div>
+</div>
+<!-- Atlas -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Atlas" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUU0pkLozdB0TSxL9B3yBYbnLuiWqzoBFP6WfufBlkQgVuyHpxoq6x42BhT-vfLWi5-HIIrPZ9FqA_EGQspzc9xaxD6Ou6tMqzcZFKYMTNTu9Wzxv5B1yE5vHPb9j4ZLVBP_e0M4pu7APVYYrN0NlyMg2bVzEA6cn6bwgJYXCfke-viV9tCP1e37KIIaLGdVXvb31aafGTwsi_Yv4sBCPr1bP9p-DOclTVXLHWPk_VD8FfmAbJUKb3Ta_-QCtEbw6-dnmwRk0UDs_r"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Atlas</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Mike's Chief of Staff</p>
+</div>
+</div>
+<!-- Socrates -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Socrates" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE1GJvxkC17_QirafsRRy4fjYfuh2jI9T8BzcoXK7WsUNUcWHwlJ3KhNr-6AiAB2wyF-PfiXLR92eeV6-liRNSE2YftJOqK0ZVFxHHFZoEf1xHnHC-sdiZatuPOnYaItjbRSXubxLHpKrgXbuuk3D6Wy90pEBHe9oDI15KnqSglrjza1OL8p3xHKE5hXnsHUiO9BcOJtp6Y3nErACPgPimQymU_BqIc01RRTqwnPLpWSkgQ6bppTI7qRKBvZLAAPBY1CiIeXR3RUKQ"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Socrates</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">FlowStack CTO</p>
+</div>
+</div>
+<!-- Da Vinci -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Da Vinci" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYnFcW1MEX1Qf7JQxH_RAomipfEZQS_QFHYJx8KN2ls09QlFw6WPNvh69xS75V_CEabSNZ_Yacl3Bd-vD9PGAoIdgGjxvwat8VQsEow5J4mlEhWzmZ40-E2D4tcHfy4ipxXuBNFXvyfvieReZqrrnY1DjaqRjie2a2uJ85NzZlHhiS9vOq4AWRm_zJBk5PtQ1q8q-5NeZfI1SKuDAwCEtAxhDYK9KvEYG2RUb7r-PGBCH9yfNzqxBcXk_EGbKP8p_mWCuFa49RCqUa"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Da Vinci</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Frontend & Visual QA</p>
+</div>
+</div>
+<!-- Forge -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Forge" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF3_rOL9gSPnJGyacs-P_9UsMoznCrblIa0Lm4W2FW-DH-_Ihe73nrMyXPrE2zFsXUqmUMq3cT6cH2AEhAUZwYVvgV5C-OddJOc2ShL2mJvgV-_pygjI38C-Wiz7JuDQ11vnQ4I-wR2Jr_cMeoBgZB2FCG8ibnlz8YA6Q_MKiVV8tFo43VvN0VAS7emWye29T4UfL3eKcMNDwvPv2LvbWITrJQAXlymWtQNxzTmGXdx3XBIjp2AZrd6Pfkp_yWLe22qb-Cs8IPXss4"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Forge</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Channel Provisioner</p>
+</div>
+</div>
+<!-- Kubrick -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Kubrick" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2UNIXc3OcOw_sR8E12Sh47OuTjQ5fVgF2yzAsm3pD3wUOhoctEuge320D0iySaPPSEhm3s6ebOZEW1jRDyXUIw829-FrInLzKu4ZGWDH23f46NGZ4qAldB9P_0AGLsK7W8GctqsYTg-kQbYM5crKkrGINlBL7-1w0rw8xj22HT6bxqsQLVjyWiBwhPgZwkfYv2qgAxF7_MzvrSLX0R-HDBCW6B5q1-GQzI-ulDCkna3aiJIFyW63pPhB0Kvn8ZmYfH9ISdWeoiBJJ"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Kubrick</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Creative Director</p>
+</div>
+</div>
+<!-- Zimmer -->
+<div class="roster-card bg-[#1e1b18] rounded-xl p-6 flex items-center space-x-5 group">
+<div class="relative">
+<div class="w-16 h-16 rounded-full border-2 border-primary/20 p-1 group-hover:border-primary/50 transition-colors">
+<img alt="Zimmer" class="w-full h-full rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcf-srotmN42L3LcWGXzwMBlqZO6ivttmWSVq-alU-JkGSBnd9V2rMdbgyhKVCc2vKeewgJLycWUU1_G_RT7zRoeD-6njlnKWT2OHbYjEzDiqajiprEuy1AZXFCYqdqjdy-t2qs52blMuWg6vKa51VgEWNG9c-6-4dQrHZNNox9qEhNKXBPqLmGovTXZ-JLzqyZ7BNvb14NvWNrFb1xvK6MFdjy6oYtvRt4u8Bi3f-zRFOiASi6gQCBXnec2qPwwPhgPSDlkNoHRSb"/>
+</div>
+<div class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container rounded-full border-2 border-[#1e1b18] shadow-[0_0_10px_rgba(128,158,114,0.5)]"></div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-[#e9e1dc]">Zimmer</h3>
+<p class="text-[12px] text-[#e9e1dc]/60">Music Director</p>
+</div>
+</div>
+</div>
+</body></html>

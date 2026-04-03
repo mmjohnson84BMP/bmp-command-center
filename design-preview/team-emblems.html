@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Operational Roster - Symbolic Emblems</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: { extend: { fontFamily: { "body": ["Inter"] } } },
+}
+</script>
+<style>
+body { background-color: #161310; color: #e9e1dc; font-family: 'Inter', sans-serif; }
+.emblem-transition {
+  filter: grayscale(100%) brightness(0.7);
+  transition: filter 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-hover:hover .emblem-transition {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.05);
+}
+.card-hover {
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  border: 1px solid transparent;
+}
+.card-hover:hover {
+  background-color: #2d2926;
+  border-color: rgba(255, 182, 136, 0.2);
+}
+</style>
+</head>
+<body class="antialiased p-12">
+<header class="mb-12 max-w-5xl mx-auto">
+<h1 class="text-4xl font-black tracking-tighter italic uppercase" style="color:#ffb688">Operational Roster</h1>
+<div class="flex items-center gap-3 mt-2">
+<div class="h-[2px] w-12" style="background:#c8875c"></div>
+<p class="text-sm font-medium uppercase tracking-widest" style="color:#c8875c">BMP Command Center</p>
+</div>
+</header>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+<!-- Will -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(255,182,136,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#311300] to-[#6b3a16] p-3">
+<img alt="Will — Compass Rose" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-tlpSAc1LNRBJJOfsUBNdh2kKkEipOq8g2zu6fQu9OpNO0zAnecjb6xFF8JrkM6hFmOeiYvQFXD1e1dem_ens5XWui6BSVtaeiAQUTaPQqb1OmyDwwjsWMSOAELiaKf_TN112-15WfEETed_ZecGHcD3ZL4WdSZzh027UJFKi0sy6faa6oscOANAx3YECDPor09hUkY79tmkvynjqiRQO85aNbqORAjkmQjU_vK2I4lpbEL_MfxqLsfczD9FdvM1ZTlQHSmazMJkT"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Will</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Product Visionary</span>
+</div>
+
+<!-- Mike -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(141,209,222,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#001f24] to-[#004f58] p-3">
+<img alt="Mike — Clockwork Gears" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0v5QYDBaB4T-hpiInyLItWpwGNRpVi4SbElnywtlfLrKVNSaeSzU24PgLC4BkyIa_K81WbZ5tV60Q2M0ZkcUhe54Cnq5vJR92oSqOoiQYX2g9vsdfXOkUVxKZ2ZBzlY5dzn_n-CmYGROL8Mhw2hLWGkoov8FQWTO7TBERBQoNiN76TywBA7Dkp13B4ry4vvH1r87uutSA7AOlOZfET8EboYa-HFu0BAEqACmdZAqnk9pCmKE5XrcRPHhWo5uSTiq_VAxNZqpkW-fH"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Mike</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Technical Lead</span>
+</div>
+
+<!-- Titus -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(255,182,136,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#690005] to-[#93000a] p-3">
+<img alt="Titus — Sword & Knight" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2PsUuchrgrxE9w5fVXBEawyZaWm6q9kunpRpQgO0bFDkf9mrRfAMoREKtIyUIeaUMWrgcPUMdL4l9bIaUx8Jdk-ugjBEQNE1R5qWTKWdJYetGW-DdpfkUON7O_EwupiKQY76QB-cbSxR9rtSe9Jge5vHUlQHyWzm-Mw5YQ0vzPDg6rVCc_ZkZSn4ZwsM9Zx06Al0fnKHC609z9xFlEeCmawZ0Huce2nks33fpio6N9Ddx27EgQqoczVEERPx588RmXdlHov-PXtgn"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Titus</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Strategic AI</span>
+</div>
+
+<!-- Atlas -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(141,209,222,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#00343b] to-[#5ba0ac] p-3">
+<img alt="Atlas — Armillary Sphere" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKglAll7ywpoaTHx_80mhzimzStlZcVga8eTRKwMarHY8CA3NdblHCmllWWHP3aX74EyZcbeFN1H7Ssk27XBPenB00HET1SOFnWrzFRke_CIC7nFaZAFPDFkeN75ZT4aNqfvChydK7qr1PgWwHaPbErrsndTBhIDLLXdaWnEFklfDId4Etr0ZihcjX_6vyNekjDD50OTBqIL1lM9I9ohaJYMyKt8_gPdkkkh3mWfji1J288LVfr6z0DBFYyvf2XFZa3EvWM-PPlW44"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Atlas</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Chief of Staff</span>
+</div>
+
+<!-- Socrates -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(255,182,136,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#311300] to-[#52443c] p-3">
+<img alt="Socrates — Owl on Circuit Board" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOaCxto6u6fXccqOMup1o4v-BfbMhXqENk4XDd3I-lKFQZB4kC103R8rXyZ9ON1e4_Agg-u0VjklVdecw7l-DWwcLheGIuHhT7BDiRiQ3RfE9Zn6OxnsziDTZ6z7GIeNvd-r-m7zcCuGbh4bThO5Acm8UdCxQHMgkJage3bX5mr741o9lQY13aXbnEB73RlbHYpD28WJa_PErZAkF1SSTFIHgHXlOw4lHPMGCST_A7_jBQbidzCI9nGibdmxqf9_QsPEU13SttNcUZ"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Socrates</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">FlowStack CTO</span>
+</div>
+
+<!-- Da Vinci -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(255,182,136,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#ffdbc7] to-[#c8875c] p-3">
+<img alt="Da Vinci — Golden Ratio Spiral" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0ioVSTdrlbqp_6a8jF551dKn4nb_aoLXeVcxa_nHHUVWehVOzsJ9aw6CSiCyTZwocSudvzoMbPd4eg232R5zFsjbKts1XIa11hqbE-PsZj_zXhWe9ZABIlI0q3q0hbt-ZDLeHx-t4APptrdb8mX5B2-cu0NaO0Kk-SA-DwzWUS8cLp3SL1lx_jnV-UNoNqB7IUx1W3d39VpdY8EJg2BIB75cuot2WzRCKj_0J7j3u6UW8pbPz-Y1kaelr0na4veEvyFh3h4lHzmCM"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Da Vinci</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Frontend & Visual QA</span>
+</div>
+
+<!-- Forge -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(255,182,136,0.15)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#4d2301] to-[#ffb688] p-3">
+<img alt="Forge — Blazing Anvil" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ3MpC-5_1h9JcrqnD81yq-3DYf_mDTDXlodK7-5IsopL6ucnZ1-BE3mCchv0Qo6zC29gW0MJqTah28oMD17Xya-EWiIRaSXhhic87gjUSio0ietEnsFuva0pmoS_2wkt2RdZLPIqfwMLGbNBs_YUfoKzN-vXvufkL5ieJxB4PF4gvVzz9YXtFyM1m0b9m-svMnXXPEmy63r0JC5o6gg0NF3AeYzY5JARup-kfyHy8yVV51TcxVBDwCPTDnC7883mVq40n2kO0V3LP"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Forge</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Channel Provisioner</span>
+</div>
+
+<!-- Kubrick -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(141,209,222,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#161310] to-[#383430] p-3">
+<img alt="Kubrick — Camera Lens Eye" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgPMdQDgn8NvFj4Ir-fXnOYES-F0Zxm0PCcLad5cfN6iM5Ap5aUTCvIWLroziatWBchii-5Nzbpm8GD8n5BzkeRTNTzEdze0Xf9vmUaDlUn0ma-quLRHb3PSkWoORRzGOlO8_QBRNSjw6yxMZi6g8tEzROFAb7mu0RU3ll36hVBF8kO2tWYMJoZixN9Nsl7XKyLXdZa-POlNnDxiinXWAoTeQ8cj6-IPdOpW2raQPLRIL_4V2IPQsaXR1iQA4y6du5lkRKr9OeWZKj"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Kubrick</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Creative Director</span>
+</div>
+
+<!-- Zimmer -->
+<div class="card-hover bg-[#1e1b18] rounded-xl p-8 flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full overflow-hidden bg-[#100e0b] mb-6 shadow-[0_0_30px_rgba(141,209,222,0.1)] flex items-center justify-center border border-[#52443c]/10">
+<div class="w-full h-full emblem-transition flex items-center justify-center bg-gradient-to-tr from-[#311300] to-[#c8875c] p-3">
+<img alt="Zimmer — Sound Wave Crown" class="w-full h-full object-contain rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtqvRcKkFhSyUvcuVHGFh1y021eFdmiveN04Opcz4hmCs6vIy4-wTIT2rcjv-txlWAwnz40z-RJdn0YrDGcdIkJer6Q4qTfGukAPZS5znsXQ_5NKOyJY4KtErLVpgWchjq2W1htn01z7b3DyxlLmC20HJhWXQ31CoXdkV0auCWFfPl3V-OEhTJ1fOpc0W8hnvoKuVZWDTBGdUShd113Cd1NcCFsOwC5nWO2Wu6pCJhyGepiGcQoGHia1nIt3TcWs1NIe-33JuWNaLL"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[14px] font-bold">Zimmer</span>
+<div class="w-1.5 h-1.5 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+</div>
+<span class="text-[12px] uppercase tracking-widest font-medium" style="color:#d7c3b8">Music Director</span>
+</div>
+
+</div>
+</body></html>

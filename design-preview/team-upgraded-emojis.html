@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BMP Command Center - Operational Roster</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .emblem-grayscale {
+            filter: grayscale(100%);
+            transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-container:hover .emblem-grayscale {
+            filter: grayscale(0%);
+        }
+        .glass-overlay {
+            backdrop-filter: blur(20px);
+            background: rgba(60, 56, 53, 0.6);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary-fixed-variant": "#334d29",
+                        "on-secondary-container": "#cab284",
+                        "on-secondary": "#3d2e0b",
+                        "on-secondary-fixed": "#251a00",
+                        "surface-container-lowest": "#100e0b",
+                        "on-primary-fixed": "#311300",
+                        "error-container": "#93000a",
+                        "tertiary-fixed": "#cbecba",
+                        "primary-container": "#c8875c",
+                        "tertiary": "#b0d0a0",
+                        "surface-dim": "#161310",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#88512b",
+                        "secondary-fixed": "#f9e0ae",
+                        "error": "#ffb4ab",
+                        "surface-tint": "#ffb688",
+                        "on-tertiary-container": "#1b3412",
+                        "on-secondary-fixed-variant": "#55451f",
+                        "surface-container-high": "#2d2926",
+                        "surface-bright": "#3c3835",
+                        "on-primary": "#502402",
+                        "surface-container-low": "#1e1b18",
+                        "surface": "#161310",
+                        "surface-container": "#221f1c",
+                        "surface-variant": "#383431",
+                        "outline": "#9f8d83",
+                        "inverse-on-surface": "#33302c",
+                        "inverse-surface": "#e9e1dc",
+                        "on-surface": "#e9e1dc",
+                        "on-error": "#690005",
+                        "surface-container-highest": "#383431",
+                        "secondary": "#dcc494",
+                        "on-primary-fixed-variant": "#6b3a16",
+                        "primary-fixed": "#ffdbc7",
+                        "primary": "#ffb688",
+                        "primary-fixed-dim": "#ffb688",
+                        "on-tertiary-fixed": "#082103",
+                        "secondary-container": "#55451f",
+                        "on-surface-variant": "#d7c3b8",
+                        "on-background": "#e9e1dc",
+                        "background": "#161310",
+                        "tertiary-container": "#809e72",
+                        "tertiary-fixed-dim": "#b0d0a0",
+                        "on-tertiary": "#1d3614",
+                        "on-primary-container": "#4d2301",
+                        "secondary-fixed-dim": "#dcc494",
+                        "outline-variant": "#52443c"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30 min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col py-8 z-40 bg-[#1e1b18] shadow-2xl shadow-[#100e0b] w-64 md:flex hidden">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="radar">radar</span>
+</div>
+<div>
+<h2 class="text-lg font-bold text-[#e9e1dc] leading-tight">Earthbound</h2>
+<p class="text-[11px] font-medium tracking-widest uppercase Inter text-on-surface-variant/60">Station Alpha-9</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-1 px-4">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300 hover:bg-[#383431]" href="#">
+<span class="material-symbols-outlined" data-icon="radar">radar</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Operations</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#ffb688] font-bold border-r-2 border-[#ffb688] bg-gradient-to-r from-[#ffb688]/5 to-transparent translate-x-1 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Roster</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300 hover:bg-[#383431]" href="#">
+<span class="material-symbols-outlined" data-icon="database">database</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Archives</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300 hover:bg-[#383431]" href="#">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Network</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300 hover:bg-[#383431]" href="#">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Security</span>
+</a>
+</nav>
+<div class="px-4 mt-auto pt-6 border-t border-outline-variant/10 flex flex-col gap-1">
+<button class="w-full mb-4 py-3 rounded-xl bg-gradient-to-br from-primary to-primary-container text-on-primary font-bold text-xs tracking-wider uppercase shadow-lg shadow-primary/10">
+                Initialize Protocol
+            </button>
+<a class="flex items-center gap-4 px-4 py-2 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Support</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 rounded-xl text-[#e9e1dc]/40 hover:text-[#e9e1dc]/80 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-[11px] font-medium tracking-widest uppercase">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen flex flex-col relative">
+<!-- TopNavBar Shell -->
+<header class="sticky top-0 z-50 bg-[#161310] backdrop-blur-xl bg-opacity-80 flex justify-between items-center w-full px-8 py-4 max-w-[1920px] mx-auto shadow-[0_40px_60px_-15px_rgba(16,14,11,0.1)]">
+<div class="flex items-center gap-8">
+<h1 class="text-2xl font-bold tracking-tighter bg-gradient-to-br from-[#ffb688] to-[#c8875c] bg-clip-text text-transparent">BMP Command Center</h1>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-[#e9e1dc]/60 hover:text-[#e9e1dc] transition-colors text-[11px] font-medium tracking-widest uppercase" href="#">Dashboard</a>
+<a class="text-[#ffb688] border-b-2 border-[#ffb688] pb-1 text-[11px] font-medium tracking-widest uppercase" href="#">Personnel</a>
+<a class="text-[#e9e1dc]/60 hover:text-[#e9e1dc] transition-colors text-[11px] font-medium tracking-widest uppercase" href="#">Surveillance</a>
+<a class="text-[#e9e1dc]/60 hover:text-[#e9e1dc] transition-colors text-[11px] font-medium tracking-widest uppercase" href="#">Telemetry</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-on-surface-variant/40 text-sm" data-icon="search">search</span>
+<input class="bg-surface-container-highest border-none rounded-full py-2 pl-10 pr-4 text-xs w-48 focus:ring-1 focus:ring-primary/40 transition-all" placeholder="Search system..." type="text"/>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#383431]/30 transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-[#383431]/30 transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Chief Commander Profile" data-alt="portrait of a focused military commander in dark techwear with tactical displays reflecting in background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6RO9SKvFJD2d9qAP6Wj58UylP0tAk5-IpiW0d2g7tlERN8kziG_Zn1CJ0TR0h43epxxQ_mvxJ52bcbuFY9cngGKkl6ZYrORC-Bqbbdx4MdTD_tQ0PVmii1bA_PFu_uosvRKYtkuct81w6Rg5D7FnTZHRK7-jN9LKD3l7flRBEK-mPZQSuXD8JHpROocgL22OC2Hrt99CYT7fYYChfxi3BjnseBrfSKCC_f5Os8P_toaJy0oGT_bAYF41KXVsBxO8tJiAdOu_cjoFk"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="flex-1 p-8 lg:p-12">
+<!-- Section Header -->
+<div class="mb-12">
+<p class="text-[11px] font-medium tracking-[0.2em] uppercase text-on-surface-variant/60 mb-2">BMP Command Center</p>
+<h2 class="text-4xl lg:text-5xl font-black italic tracking-tight text-primary">OPERATIONAL ROSTER</h2>
+</div>
+<!-- Bento/Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl">
+<!-- Card 1: Will -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Trident Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="vibrant abstract trident icon symbol with neon orange highlights on dark obsidian background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiMNvfPpiZ1yXG4E6WTJMV00FqKyi9UulZxG-ShfYDNxFfwUVWh4rOL3UsXjmzBmxljs6OwsqlyrNEvdP8XHJk-QKOYylW6OA1_nq0p7nfhvRhEra-4p046d_PwqoniZLLIj_bQYIk8Xor6TeM-WCHTusInFMGBIAouENg42OvWS7RLFM2QEdzpRjVzzmmlJN1mHvbXdqvHGNcjN1z9LkYLfrH9IdEooPQR5-5lopRHcQ-ZeLKwzTqEtO1tqAJSZFKLW-H2sG-4XfC"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">WILL</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Product Visionary</p>
+</div>
+</div>
+<!-- Card 2: Mike -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Rocket Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="stylized rocket ship logo launching into deep space with warm amber engine glow and geometric detailing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDvrl1-juL7UmhxYUcmSuLlOvppPVaJYfxzBZpoLPI1EHfmkLNv0TJ61D7CPwDPZfT7sLBxJhdHXwS7e8I6xChILMWvWWLUuk8_z6IMvhTALv7wy9atZ5NCfTijgwS_9lOLJBZwErjGuLx0ithzuUaEfuISIBX81zWcjzeelloz4qqXD9Wyo8eWr9B--XwuSc24edZ5pBMbZDStgYQVeNbXn3rltl6XnRsrqIbylMaWIgweQ2szIwSRx6yDT3TFgKmQ-Jq4qmovnBAa"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">MIKE</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Technical Lead</p>
+</div>
+</div>
+<!-- Card 3: Titus -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Crossed Swords Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="crossed swords heraldry emblem in burnt copper with futuristic digital circuits integrated into the blades" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNHvAGi53c96oYFasyBf5EVpGPdxg8M2GbW34H0ehJHCDPIX4vXpbxwqzWVwx8oJT4LwiSfjeAA-htUURuRfZnef_tiWRXNnMs2HgZ0Eo4hN6ocI6PW7bRqxKhpj4zkWyZjsBJuLlw2RN5zsmHFNKfaZ5kDhC7DBX4p_WLhV3jVluWwp5dtJskbChVpcUaQAFjTz8icPODmR330P7aH8yHgv2vZyKAVJOm4NAbJVC3Mxmv3VZKpcFKQWMx1xQxKlcDeUmpSTjVBqVD"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">TITUS</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Strategic AI</p>
+</div>
+</div>
+<!-- Card 4: Atlas -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Compass Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="minimalist golden compass emblem with navigational markings glowing on a dark charcoal surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPuiaIZYmLn0NGZ288u3K6F93Az2OYhEyxlza29QDtQ_kGwPFbvnXhGXOgqDFPnwf-Miz8yXZ2-ZiTwDDt9IbfX-G5GJkPghmI9BwmOxwYmbEzIoGD5z4opbdgy7jfFmDmkU-X1umaomOl2IilYRs9XqTVheW3Dm0CfMeNe21jikgK8KDG6CUhgMgjYTy70WY2CClMCecSDKazOAq_48KmxvghFiqt53E8c_q3iIwB7U0d2IbTnpWis8zbXATXkju2JFtAVWqBXbzH"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">ATLAS</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Chief of Staff</p>
+</div>
+</div>
+<!-- Card 5: Socrates -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Wizard Staff Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="ornate wooden wizard staff emblem with a glowing crystalline core radiating soft warm light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4HDyLA4qMIAlQgFqabKLadU1WBSm0RuxaptC195h-ByMFMUDv3eGoyoFgIPU3YRvc2g6hWvQuKwuYKLOx8kN-sOja5N16Z4W0qMFxCNeg1nQsuqkgm8eTdJ5xIGdJfubQUTUcuHrzMeC-GNq25NadHLYfAsI2uT4RN7e6iKS_zQUkKln59KJsrUl3OCBBkNFXW_OIHDyJxVXRcqHiaHQeoDaDydoO6Pi2PLlyrJ6nOeVngCOw-x2Kqf87GH6iKOV_cHoTzYvuJuYN"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">SOCRATES</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">CTO / Philosopher</p>
+</div>
+</div>
+<!-- Card 6: Da Vinci -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Artist Palette Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="artistic painter palette emblem with vibrant dabs of sunset orange and earthy brown colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8Xu3mBYeQMzP3xFSI112kAKEyTIFyvS-k3QRIN_Oh1-zVBAyJLX83R5ogcizeKwHThf5f4_TqfDn1YWX6CXvUzIEO0cwyupCTttCuQ27FfLxilIFKFJ7-MqZ-iaR-FpeBjWitGjPOR1oQSndiC2my6mct22_W5sm6M4UaoS__MS73ABS9p9L4CmGN5wTJRw1zEQUwHTw9uYY532NFSruxsyFSG8CPQj7Paduu3W5EoEjukevYELOmFurUnYu5sGBctf3pxGXwwO4D"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">DA VINCI</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Frontend &amp; Visual QA</p>
+</div>
+</div>
+<!-- Card 7: Forge -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Hammer Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="heavy iron blacksmith hammer emblem resting on an anvil with subtle orange sparks flying" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2CleSAfO_r3YKNqxIC2cw_EDHu_-XXHc29M6AUlLuLOKIrHkRTPpy-AXczy-2k-Fx_IE8LB-LUlmVJY3fCbbVzsigTUXoUz5p8LrohzVTuow3HL6qYLeIYDwca6RaR2DWibFHBl9xXNqlGYMvO0SOqPwCwIyME2L0btbm05QkeQIwSXjQbaF6_xBGAbZwzlaYxvq1b4t5SpkAAijg4UbN6vXG_1lrd4qJJJMsYAHmdgf3uVwTN22pBsDIggCzL_HO-Qu4AuQNQQiB"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">FORGE</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Channel Provisioner</p>
+</div>
+</div>
+<!-- Card 8: Kubrick -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Clapperboard Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="vintage cinema clapperboard emblem with sharp white text and polished orange wood accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDafZVGA2TT3O0a9Z66b2k7KHuRm7QdkgSww0bnGwTipanY4dDvqqsY_Gc5qWFaC9XthSJjijt9lzkk58nm_K8j5OiIXeJBrQGGByh6wu1bxr1GFpYRmW0ABh9VpcKDlQqKgM7YBr1mn_JmSd50DmL6OOoSmd6kwHYO_uUSi197RlhRB9q4NXQXcYD-mc_oxH4otze9Nyvpc0L5ivDqd65KIcnIzeoTO7H40xVJ55m5U7dYevCGTQNjeicaNo2snEbf0PtfbxGHy3bv"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">KUBRICK</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Creative Director</p>
+</div>
+</div>
+<!-- Card 9: Zimmer -->
+<div class="card-container group bg-surface-container-low p-8 rounded-xl relative overflow-hidden transition-all duration-500 hover:translate-y-[-4px] hover:shadow-[0_40px_60px_-15px_rgba(255,182,136,0.05)]">
+<div class="flex flex-col items-center text-center">
+<div class="relative w-32 h-32 mb-6 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-tr from-primary/40 via-transparent to-primary/40 group-hover:rotate-180 transition-transform duration-1000"></div>
+<div class="w-28 h-28 rounded-full bg-surface-container-lowest flex items-center justify-center overflow-hidden">
+<img alt="Music Notes Emblem" class="emblem-grayscale w-20 h-20 object-contain" data-alt="elegant musical note symbols floating in a spherical arrangement with soft golden glow effects" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjbOXtg3iylFjyXFNMYj78wx9kaGpaI1sDEXqBSm-j0nBTgl_UkA1lTo8myyhz7M1wlvZa1pA9iGFrxxW6pGE4Kezy4tBwq7HRujhwmKXQ00BKlHL04idzBf2Q6KVn0oRBV_4wdMQYSSBNekz3SbHOMIIPWpC8mDoXVHvkLt19c4RmgKwe8Q77IB1BGdPu1VLdwixkZdrJ2dAWYwyGF0Ka1p2Thuu-vvEL2I13VRMyvgLbnnI9YrIllGFoOuszqJBWNMp14kuMfBrY"/>
+</div>
+</div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-tertiary-container shadow-[0_0_8px_rgba(128,158,114,0.6)]"></span>
+<h3 class="text-sm font-bold tracking-wide">ZIMMER</h3>
+</div>
+<p class="text-xs text-on-surface-variant/60 font-medium tracking-wider uppercase">Music Director</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-[#1e1b18] backdrop-blur-md bg-opacity-95 z-50 flex justify-around items-center py-4 px-6 shadow-2xl">
+<a class="flex flex-col items-center gap-1 text-[#e9e1dc]/40" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="radar">radar</span>
+<span class="text-[9px] font-medium tracking-widest uppercase">Ops</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#ffb688]" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="group">group</span>
+<span class="text-[9px] font-medium tracking-widest uppercase">Team</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#e9e1dc]/40" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="shield">shield</span>
+<span class="text-[9px] font-medium tracking-widest uppercase">Sec</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#e9e1dc]/40" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="settings">settings</span>
+<span class="text-[9px] font-medium tracking-widest uppercase">Set</span>
+</a>
+</nav>
+</body></html>

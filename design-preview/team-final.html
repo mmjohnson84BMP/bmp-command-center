@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BMP COMMAND CENTER - ROSTER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700;1,900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-container": "#beb3ab",
+              "error-container": "#93000a",
+              "tertiary-container": "#a09488",
+              "on-primary-fixed": "#311300",
+              "background": "#161310",
+              "error": "#ffb4ab",
+              "surface-tint": "#ffb688",
+              "on-secondary": "#362f29",
+              "on-surface": "#e9e1db",
+              "primary-fixed-dim": "#ffb688",
+              "inverse-on-surface": "#34302c",
+              "primary": "#ffb688",
+              "on-background": "#e9e1db",
+              "surface-dim": "#161310",
+              "surface-container-high": "#2d2926",
+              "surface-container-low": "#1e1b18",
+              "on-surface-variant": "#d7c3b8",
+              "outline": "#9f8d83",
+              "inverse-primary": "#88512b",
+              "on-primary-fixed-variant": "#6b3a16",
+              "tertiary": "#d2c4b7",
+              "primary-fixed": "#ffdbc7",
+              "surface-container-highest": "#383430",
+              "on-tertiary-fixed": "#211a12",
+              "primary-container": "#c8875c",
+              "secondary-container": "#4d453f",
+              "secondary": "#d0c4bc",
+              "inverse-surface": "#e9e1db",
+              "surface-bright": "#3d3835",
+              "on-primary-container": "#4d2301",
+              "surface": "#161310",
+              "on-error": "#690005",
+              "on-tertiary-container": "#352d24",
+              "surface-variant": "#383430",
+              "on-secondary-fixed": "#201a15",
+              "on-tertiary": "#372f26",
+              "surface-container-lowest": "#100e0b",
+              "tertiary-fixed": "#efe0d3",
+              "surface-container": "#221f1c",
+              "secondary-fixed-dim": "#d0c4bc",
+              "on-error-container": "#ffdad6",
+              "on-primary": "#502402",
+              "outline-variant": "#52443c",
+              "tertiary-fixed-dim": "#d2c4b7",
+              "on-tertiary-fixed-variant": "#4f453c",
+              "secondary-fixed": "#ede0d7",
+              "on-secondary-fixed-variant": "#4d453f"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .sentinel-glow {
+            box-shadow: inset 0 0 12px rgba(200, 135, 92, 0.25);
+        }
+        .agent-card:hover .emblem-ring {
+            opacity: 1;
+        }
+        .agent-card:hover .emblem-circle {
+            filter: grayscale(0%);
+        }
+        .emblem-circle {
+            filter: grayscale(100%);
+            transition: filter 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .emblem-ring {
+            background: conic-gradient(from 0deg, #ffb688, transparent);
+            opacity: 0;
+            transition: opacity 300ms ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen flex overflow-hidden">
+<!-- SideNavBar (The Anchor) -->
+<aside class="hidden md:flex flex-col h-full w-64 bg-[#1e1b18] border-r border-[#2d2926]/50 shadow-[40px_0_40px_rgba(200,135,92,0.06)] z-50">
+<div class="px-8 py-10 flex flex-col items-start space-y-2">
+<div class="w-12 h-12 rounded-full bg-surface-container-lowest flex items-center justify-center sentinel-glow border border-primary/20">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<h2 class="text-lg font-bold italic text-[#ffb688]">SENTINEL</h2>
+<p class="tracking-widest uppercase text-[10px] text-on-surface-variant/60">V.04 ACTIVE</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center px-4 py-3 space-x-4 text-[#d7c3b8] opacity-60 hover:bg-[#2d2926] hover:text-[#ffb688] transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-300">grid_view</span>
+<span class="tracking-widest uppercase text-[10px]">DASHBOARD</span>
+</a>
+<a class="flex items-center px-4 py-3 space-x-4 text-[#d7c3b8] opacity-60 hover:bg-[#2d2926] hover:text-[#ffb688] transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-300">shield</span>
+<span class="tracking-widest uppercase text-[10px]">SENTINELS</span>
+</a>
+<a class="flex items-center px-4 py-3 space-x-4 text-[#ffb688] font-bold border-r-4 border-[#ffb688] bg-[#2d2926] transition-all duration-300 rounded-l-lg group" href="#">
+<span class="material-symbols-outlined translate-x-1">group</span>
+<span class="tracking-widest uppercase text-[10px]">ROSTER</span>
+</a>
+<a class="flex items-center px-4 py-3 space-x-4 text-[#d7c3b8] opacity-60 hover:bg-[#2d2926] hover:text-[#ffb688] transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-300">database</span>
+<span class="tracking-widest uppercase text-[10px]">ARCHIVE</span>
+</a>
+<a class="flex items-center px-4 py-3 space-x-4 text-[#d7c3b8] opacity-60 hover:bg-[#2d2926] hover:text-[#ffb688] transition-all duration-300 rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:translate-x-1 duration-300">terminal</span>
+<span class="tracking-widest uppercase text-[10px]">SYSTEMS</span>
+</a>
+</nav>
+<div class="px-4 pb-8">
+<a class="flex items-center px-4 py-3 space-x-4 text-[#d7c3b8] opacity-60 hover:bg-error-container/20 hover:text-error transition-all duration-300 rounded-lg" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="tracking-widest uppercase text-[10px]">LOGOUT</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar (Execution from JSON) -->
+<header class="bg-[#161310] flex justify-between items-center w-full px-8 h-20 z-40">
+<div class="flex items-center space-x-12">
+<h1 class="text-2xl font-black italic text-[#e9e1db]">BMP COMMAND CENTER</h1>
+<nav class="hidden lg:flex space-x-8 h-full items-center">
+<a class="text-[#d7c3b8] uppercase tracking-[0.15rem] text-xs font-semibold hover:text-[#ffb688] transition-colors duration-300" href="#">OPERATIONS</a>
+<a class="text-[#d7c3b8] uppercase tracking-[0.15rem] text-xs font-semibold hover:text-[#ffb688] transition-colors duration-300" href="#">TACTICAL</a>
+<a class="text-[#d7c3b8] uppercase tracking-[0.15rem] text-xs font-semibold hover:text-[#ffb688] transition-colors duration-300" href="#">LOGISTICS</a>
+<a class="text-[#d7c3b8] uppercase tracking-[0.15rem] text-xs font-semibold hover:text-[#ffb688] transition-colors duration-300" href="#">TELEMETRY</a>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<button class="text-[#d7c3b8] hover:text-[#ffb688] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-[#d7c3b8] hover:text-[#ffb688] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden">
+<img alt="Commander Avatar" class="w-full h-full object-cover" data-alt="portrait of a focused commander in a high-tech dark environment with subtle amber backlighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7FmDvAEVP-rqAn2JxIlR8HMxXZODzq8h5zRY7IBRRZpW_fHzRnn61nCT630LKGir6mA79SZNYHyvGw0_rqL4hTQ-bN_a9VlPg0cz34tq0TOhbCl6zUFL3LBW6dN6KQEVKFNGs11kLogEQkKNLNGVJU4JI8VvIXHiN6CrwoSDG1NYGvcsQ3fIUOWmiwl9NB8cXgPACoWkdKyvKj4ymDBHzlYzHr5YQaTqpiBMSWqfTM8Q3XpbtWDJb_F3We2fuLP0oy6a50B9pxYWY"/>
+</div>
+</div>
+</header>
+<!-- Page Canvas -->
+<main class="flex-1 overflow-y-auto p-8 lg:p-12">
+<div class="max-w-6xl mx-auto space-y-12">
+<!-- Title Block -->
+<div class="text-left space-y-1">
+<h2 class="text-5xl font-black italic tracking-tighter text-on-surface uppercase">OPERATIONAL ROSTER</h2>
+<p class="text-primary font-bold italic tracking-widest text-sm opacity-80">BMP COMMAND CENTER</p>
+</div>
+<!-- 3x3 Bento Grid of Team Emblem Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- 1. Will (TRIDENT) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#311300] to-[#c8875c]">
+<span class="material-symbols-outlined text-4xl text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">architecture</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Will</h3>
+<p class="text-[10px] tracking-[0.2em] text-primary uppercase font-bold">TRIDENT</p>
+</div>
+</div>
+<!-- 2. Mike (ROCKET) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#1a2332] to-[#4a7fb5]">
+<span class="material-symbols-outlined text-4xl text-on-surface" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Mike</h3>
+<p class="text-[10px] tracking-[0.2em] text-[#4a7fb5] uppercase font-bold">ROCKET</p>
+</div>
+</div>
+<!-- 3. Titus (SWORDS) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#690005] to-[#93000a]">
+<span class="material-symbols-outlined text-4xl text-white" style="font-variation-settings: 'FILL' 1;">swords</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Titus</h3>
+<p class="text-[10px] tracking-[0.2em] text-error uppercase font-bold">CROSSED SWORDS</p>
+</div>
+</div>
+<!-- 4. Atlas (COMPASS) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#00343b] to-[#5ba0ac]">
+<span class="material-symbols-outlined text-4xl text-on-surface" style="font-variation-settings: 'FILL' 1;">explore</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Atlas</h3>
+<p class="text-[10px] tracking-[0.2em] text-[#5ba0ac] uppercase font-bold">COMPASS</p>
+</div>
+</div>
+<!-- 5. Socrates (WIZARD STAFF) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#311300] to-[#52443c]">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">magic_tether</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Socrates</h3>
+<p class="text-[10px] tracking-[0.2em] text-on-surface-variant uppercase font-bold">WIZARD STAFF</p>
+</div>
+</div>
+<!-- 6. Da Vinci (PALETTE) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#4d2301] to-[#c8875c]">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">palette</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Da Vinci</h3>
+<p class="text-[10px] tracking-[0.2em] text-primary uppercase font-bold">PALETTE</p>
+</div>
+</div>
+<!-- 7. Forge (HAMMER) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#2d2926] to-[#ffb688]">
+<span class="material-symbols-outlined text-4xl text-on-primary-fixed" style="font-variation-settings: 'FILL' 1;">humerus</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Forge</h3>
+<p class="text-[10px] tracking-[0.2em] text-primary uppercase font-bold">HAMMER</p>
+</div>
+</div>
+<!-- 8. Kubrick (CLAPPERBOARD) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#100e0b] to-[#383431]">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant" style="font-variation-settings: 'FILL' 1;">movie</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Kubrick</h3>
+<p class="text-[10px] tracking-[0.2em] text-[#c8875c] uppercase font-bold">CLAPPERBOARD</p>
+</div>
+</div>
+<!-- 9. Zimmer (CONDUCTOR BATON) -->
+<div class="agent-card bg-surface-container-low rounded-xl p-8 flex flex-col items-center justify-center space-y-6 group cursor-pointer transition-all duration-300 hover:bg-surface-container-high border border-outline-variant/10 shadow-lg">
+<div class="relative w-24 h-24 flex items-center justify-center">
+<div class="emblem-ring absolute inset-0 rounded-full blur-[2px]"></div>
+<div class="emblem-circle w-20 h-20 rounded-full flex items-center justify-center sentinel-glow overflow-hidden bg-gradient-to-br from-[#2a1f3d] to-[#c8875c]">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">music_note</span>
+</div>
+</div>
+<div class="text-center">
+<h3 class="text-xl font-bold italic text-on-surface uppercase tracking-tight">Zimmer</h3>
+<p class="text-[10px] tracking-[0.2em] text-primary uppercase font-bold">CONDUCTOR BATON</p>
+</div>
+</div>
+</div>
+<!-- Footer/Status Bar -->
+<div class="pt-8 border-t border-outline-variant/10 flex justify-between items-center text-on-surface-variant text-[10px] tracking-[0.3em] uppercase font-semibold">
+<div>TOTAL COMMAND PERSONNEL: 09</div>
+<div class="flex items-center space-x-4">
+<span class="flex items-center"><span class="w-2 h-2 rounded-full bg-primary mr-2"></span> SYSTEM OPTIMIZED</span>
+<span>GRID REF: 22-81-00</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

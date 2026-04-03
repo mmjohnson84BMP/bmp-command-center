@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Operational Roster v2 - BMP Command Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface": "#161310",
+        "surface-container-low": "#1e1b18",
+        "surface-container-highest": "#383431",
+        "outline-variant": "#52443c",
+        "primary": "#ffb688",
+        "primary-container": "#c8875c",
+        "on-primary": "#502402",
+        "on-surface": "#e9e1dc",
+        "on-surface-variant": "#d7c3b8",
+        "tertiary": "#b0d0a0",
+        "tertiary-container": "#809e72",
+      },
+      fontFamily: { "body": ["Inter"] },
+    },
+  },
+}
+</script>
+<style>
+body { background-color: #161310; color: #e9e1dc; font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="min-h-screen p-12">
+<header class="mb-12 max-w-5xl mx-auto">
+<h1 class="text-5xl font-black tracking-tighter text-[#e9e1dc] mb-2 uppercase italic">Operational Roster</h1>
+<div class="flex items-center gap-3">
+<div class="h-[2px] w-12 bg-[#ffb688]"></div>
+<p class="text-sm font-medium text-[#d7c3b8] tracking-widest uppercase">BMP Command Center</p>
+</div>
+</header>
+
+<section class="max-w-5xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+<!-- Will -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Will" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCsSD6VgNtwTeuvLRwv36hrzw0b_beHpPWc7j1ZOWDXsiCnm0-5w7bA7xLaNkLPbrR6Wwa3CT2ejCCAEaBTL2XZjlD3UabqApOhnN_PWy1naee3nlOu9xq2c3w71EdrRque9YbfM_CPSyxLkIW1pA43Fzfg0rbh0DWZs3mGyEYSdk4LmLDPTTwO2uPQ-B56DLW2UuGDBx2TbomzOZZHB0_YO29_RIXR61IaOVrTm3_RWs8ZyOFH19lqGItFSTCDJpnsmBsuYyeYAhd"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Will</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Co-Founder, Product Visionary</p>
+</div>
+</div>
+
+<!-- Mike -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Mike" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuEGc1jm-FEMMd3JrQUn3xjaOLPLzhBs3Dp_9kh4eNlB5-cIkt5s1tT-hUEeCX8-TXX77crCG4qvqb6L8dIaDBygUXt5iymwnWkXyDsfJMg2RalmwRUd1aRpR_BCj1KwFsKnE4JDkcvBvTv1qY-he7_wffTITMt4mIYWeBU5m1wsyOvlLC1wyIsWH6eAc2MlBxUyQE3PjSWnVuddlzEJUsOFpvkdSV-pPDoePNGXHzGLFHxpFvDGX22Insd34X-FHvhB00_Tsjw2MW"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Mike</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Co-Founder, Technical</p>
+</div>
+</div>
+
+<!-- Titus -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Titus" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDM4Gr2Nr82uQ4cgBmV0ey-67MPhfjKIFwwKBpVEnChkuobXrIJtNv-ggNHpBIt_uYuDYybgjTw66LF6UWmgmSizhYlMN9VO3JFMB17NMlCY4eFMdHbilrLs7i9xEfllEq7wZI8gLexK-w93ppGnmzeHsYPH8xSA0ACorR8M_0mEO3AJI2HQryjzi7tX7ERtlCHygFaLQ4GEuKE7qj1NfV1bFaXJ-ROgWWWXtt8cwW1pFWgeRux6olqdRgRrTmKcUZZVLtG9_egfK39"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Titus</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Will's Strategic AI</p>
+</div>
+</div>
+
+<!-- Atlas -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Atlas" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6x29n1CjpaWTJ3MjWECsm2apU8IrSnFHdvj-k-6ai5w5bVZe7xYCIbSR1fe4eO0SORhlTDz_Cq9cy5xfcFY62O47-GJbba6FhyrlxhaBqQE1Bmq_8DrYyJSXjpxvE1rxwg3p28MA_HO4Mxxqx3i4hIFcU573TJsyPNEixeCdqeVw1bWAia3n5LG6JtsKNh-3UnMEKt5cu-MyAu_tFwozSWJhIIGzxRyrUuqzLsGJSp6nVpKypM35vwYTOET-jUrJ57fuDvnIOzta9"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Atlas</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Mike's Chief of Staff</p>
+</div>
+</div>
+
+<!-- Socrates -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Socrates" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAarox_sppwoWxcUuPIMLpRAp7bV1TVn03DKYzMvDNa5_orXRkppBLdMn9d5D8GPmF7yO-wHk8rUNS37RcoFcjIW4VjZApwcchl89wEu9rd1tNJ7uKlict49OzHkKH7RKl6lyMapq-mSm2FvT_e4rbvCmI7dt9TtGUZ2tTxZc17X8gseIb6bdf1toGDteQz-Wmhcc0mYmhZ6VtbKSvO-bjY6UvQLNprqq-lziCXoVpgKRD9VJdXZJ-7ZwT4penWsng67-_4ClZa1JzM"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Socrates</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">FlowStack CTO</p>
+</div>
+</div>
+
+<!-- Da Vinci -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Da Vinci" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9zlRmVPvgcs9Njf4LZboZekU0Ylwi0Nj0V10PndwJhcImrxSF80n07e9UbD0EviaMwO48yVJIPbmszezd_7_Kb4F89ltjqA0jOJzMGYmMs44DWsF73P82VCya2nlXQXjkTvk_esSY64n9J-9-1l-G9ssvZUFTk1zdqlcp3B1Zqfed7yJTsE4zoWGdnwOP_JqVYafuDeS2ohGXPLW2A7zJk1KVza-RAH7P1owVOOuOgEy6jCveLE-FwhBYfyk53LBHUbOlwgMWd080"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Da Vinci</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Frontend & Visual QA</p>
+</div>
+</div>
+
+<!-- Forge -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Forge" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9vylOyQIrYx4PHAVjj1450nHv-UhrMdPIhVt7mRzu9e1ezUy8h8AilNmUAPHGgVxJtrd4Ka_tFc99lPifm4YDLxOAFU4xH3moWyM1dOqjOQ-OJF_b8ZsgsJ9-Yk-4pcCCT9MXyHl091dthn71lZEpIjQCZiecJ3NwPhg4Pb3pPlthsE7yGss3Cpg1tgTgavE0cUXmLsjlgRv3dMUVU8GA4bwsAMKt-T32W8-vhwTYuIwG6oqWXbwg8d9iemXNd3t-H0lFWbbADl7G"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Forge</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Channel Provisioner</p>
+</div>
+</div>
+
+<!-- Kubrick -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Kubrick" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWuCW9J8W3SkOK-9QCnI0CfWzkUVoCHIxQN9LkGUwlDXyL4w2wqtfos2Uabiu7hOXicuZNXzbxhisFTKw03amWe1YRjK87vgY54fuwiWnBHLCWqDOfCe1BKBhDbMEDe5i-7MNm1XCcZq3MTUJZINB28K4dzeTxY5j6LFajWdl5o9Bc9ihT5-CsRsSqnmoqBnA8uqtxOoG54JuX3FZ_11Vo3EDnzcK_YREOzEca-WfQl7JaqymnTcZIsNelJiosy_avkm2UfZ_zrsLv"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Kubrick</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Creative Director</p>
+</div>
+</div>
+
+<!-- Zimmer -->
+<div class="bg-[#1e1b18] rounded-xl p-8 group hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="absolute top-4 right-4 flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-[#809e72] shadow-[0_0_8px_#809e72]"></div>
+<span class="text-[10px] font-bold uppercase tracking-wider text-[#809e72]">Online</span>
+</div>
+<div class="flex flex-col items-center text-center">
+<div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-[#ffb688] to-transparent mb-6">
+<img alt="Zimmer" class="w-full h-full rounded-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRoqSDPl0Kko5QLeNhAS2k8g2QnXqpi1XaPD9EdeAuYlGqaMYjZV1OkrDy83i_rqMe3o28vh3pUOyFk35UwcnB1-4ZqeFcRLlR-dhNyYwnuhIsfDfF9f2JW8n0HAOq8vuAkZcyq3doiE7EUq-Mv3QxfzVCFhsS3DeCOPoc9dbjuMob_cd2r-mgcJKr6JyhXaHEOgjE5y5-oIi08isdZCnYcl0cgXeaJCJGlerAAIJF9ee0aa492YC_wjqWhjfry1xUguaIEsZYFFsH"/>
+</div>
+<h3 class="text-sm font-bold tracking-wide mb-1 uppercase">Zimmer</h3>
+<p class="text-xs text-[#d7c3b8] font-medium uppercase tracking-[0.05rem]">Music Director</p>
+</div>
+</div>
+
+</div>
+</section>
+</body></html>
