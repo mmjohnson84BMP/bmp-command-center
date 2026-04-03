@@ -199,6 +199,25 @@ const MIGRATIONS = [
      ('Anthropic API', 'AI/Dev Tools', 'active', 'Separate from Claude Code Teams. Powers Slack bots (Titus, Atlas, Socrates)')
    ) AS seed(name, category, status, notes)
    WHERE NOT EXISTS (SELECT 1 FROM services LIMIT 1)`,
+  // Usage dashboard: add seat + cache_savings columns
+  `ALTER TABLE usage_reports ADD COLUMN IF NOT EXISTS seat VARCHAR(20) DEFAULT 'unknown'`,
+  `ALTER TABLE usage_reports ADD COLUMN IF NOT EXISTS cache_savings_usd NUMERIC(10,4) DEFAULT 0`,
+  `CREATE INDEX IF NOT EXISTS idx_usage_seat ON usage_reports(seat)`,
+  // Backfill seat from agent name
+  `UPDATE usage_reports SET seat = 'will' WHERE (seat IS NULL OR seat = 'unknown') AND LOWER(agent) IN ('titus', 'davinci')`,
+  `UPDATE usage_reports SET seat = 'mike' WHERE (seat IS NULL OR seat = 'unknown') AND LOWER(agent) IN ('socrates', 'atlas', 'forge', 'kubrick')`,
+  // Recalculate all costs with correct cache pricing (cache_create at discounted rate, not full input)
+  `UPDATE usage_reports SET
+    cost_usd = ROUND(
+      (COALESCE(input_tokens, 0)::numeric / 1000000) * CASE WHEN LOWER(model) LIKE '%opus%' THEN 15 WHEN LOWER(model) LIKE '%haiku%' THEN 0.80 ELSE 3 END
+      + (COALESCE(output_tokens, 0)::numeric / 1000000) * CASE WHEN LOWER(model) LIKE '%opus%' THEN 75 WHEN LOWER(model) LIKE '%haiku%' THEN 4 ELSE 15 END
+      + (COALESCE(cache_creation_tokens, 0)::numeric / 1000000) * CASE WHEN LOWER(model) LIKE '%opus%' THEN 3.75 WHEN LOWER(model) LIKE '%haiku%' THEN 0.20 ELSE 0.75 END
+      + (COALESCE(cache_read_tokens, 0)::numeric / 1000000) * CASE WHEN LOWER(model) LIKE '%opus%' THEN 1.50 WHEN LOWER(model) LIKE '%haiku%' THEN 0.08 ELSE 0.30 END
+    , 4),
+    cache_savings_usd = ROUND(
+      (COALESCE(cache_creation_tokens, 0)::numeric / 1000000) * (CASE WHEN LOWER(model) LIKE '%opus%' THEN 15 ELSE 3 END - CASE WHEN LOWER(model) LIKE '%opus%' THEN 3.75 ELSE 0.75 END)
+      + (COALESCE(cache_read_tokens, 0)::numeric / 1000000) * (CASE WHEN LOWER(model) LIKE '%opus%' THEN 15 ELSE 3 END - CASE WHEN LOWER(model) LIKE '%opus%' THEN 1.50 ELSE 0.30 END)
+    , 4)`,
 ];
 
 async function initSchema() {

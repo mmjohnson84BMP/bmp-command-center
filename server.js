@@ -643,24 +643,34 @@ app.delete("/api/services/:id", async (req, res) => {
 // ── Usage Reports ──
 
 const COST_RATES = {
-  opus: { input: 15, output: 75, cache_read: 1.5 },
-  sonnet: { input: 3, output: 15, cache_read: 0.3 },
-  haiku: { input: 0.80, output: 4, cache_read: 0.08 }
+  opus:   { input: 15, output: 75, cache_create: 3.75, cache_read: 1.50 },
+  sonnet: { input: 3, output: 15, cache_create: 0.75, cache_read: 0.30 },
+  haiku:  { input: 0.80, output: 4, cache_create: 0.20, cache_read: 0.08 }
 };
 
+const SEAT_MAP = { titus: "will", davinci: "will", socrates: "mike", atlas: "mike", forge: "mike", kubrick: "mike" };
+
+function resolveTier(model) {
+  if (!model) return 'sonnet';
+  var m = model.toLowerCase();
+  if (m.includes('opus')) return 'opus';
+  if (m.includes('haiku')) return 'haiku';
+  return 'sonnet';
+}
+
 function calculateCost(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens) {
-  var tier = 'sonnet'; // default
-  if (model) {
-    var m = model.toLowerCase();
-    if (m.includes('opus')) tier = 'opus';
-    else if (m.includes('haiku')) tier = 'haiku';
-    else if (m.includes('sonnet')) tier = 'sonnet';
-  }
-  var rates = COST_RATES[tier];
-  var cost = ((input_tokens || 0) / 1000000) * rates.input
-    + ((output_tokens || 0) / 1000000) * rates.output
-    + ((cache_creation_tokens || 0) / 1000000) * rates.input
-    + ((cache_read_tokens || 0) / 1000000) * rates.cache_read;
+  var rates = COST_RATES[resolveTier(model)];
+  var cost = ((input_tokens || 0) / 1e6) * rates.input
+    + ((output_tokens || 0) / 1e6) * rates.output
+    + ((cache_creation_tokens || 0) / 1e6) * rates.cache_create
+    + ((cache_read_tokens || 0) / 1e6) * rates.cache_read;
+  return Math.round(cost * 10000) / 10000;
+}
+
+function calculateCostNoCache(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens) {
+  var rates = COST_RATES[resolveTier(model)];
+  var cost = ((input_tokens || 0) + (cache_creation_tokens || 0) + (cache_read_tokens || 0)) / 1e6 * rates.input
+    + ((output_tokens || 0) / 1e6) * rates.output;
   return Math.round(cost * 10000) / 10000;
 }
 
@@ -669,26 +679,28 @@ app.post("/api/usage", async (req, res) => {
     const { agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls } = req.body;
     if (!agent) return res.status(400).json({ error: "missing_fields", message: "agent required" });
     const cost_usd = calculateCost(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens);
-    // Upsert by session_id to prevent duplicates from re-syncs
+    const cost_no_cache = calculateCostNoCache(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens);
+    const cache_savings = Math.round((cost_no_cache - cost_usd) * 10000) / 10000;
+    const seat = SEAT_MAP[(agent || "").toLowerCase()] || "unknown";
     const sid = session_id || null;
     let result;
     if (sid) {
       result = await db.query(
-        `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        `INSERT INTO usage_reports (agent, seat, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd, cache_savings_usd)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
          ON CONFLICT (session_id) WHERE session_id IS NOT NULL
-         DO UPDATE SET input_tokens=$4, output_tokens=$5, cache_creation_tokens=$6, cache_read_tokens=$7, duration_ms=$8, tool_calls=$9, cost_usd=$10, created_at=NOW()
+         DO UPDATE SET input_tokens=$5, output_tokens=$6, cache_creation_tokens=$7, cache_read_tokens=$8, duration_ms=$9, tool_calls=$10, cost_usd=$11, cache_savings_usd=$12, seat=$2, created_at=NOW()
          RETURNING *`,
-        [agent, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
+        [agent, seat, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd, cache_savings]
       );
     } else {
       result = await db.query(
-        `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-        [agent, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
+        `INSERT INTO usage_reports (agent, seat, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd, cache_savings_usd)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+        [agent, seat, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd, cache_savings]
       );
     }
-    logActivity(null, "usage_reported", agent, { session_id, model, cost_usd });
+    logActivity(null, "usage_reported", agent, { session_id, model, cost_usd, seat });
     io.emit("usage:new", { report: result.rows[0] });
     res.status(201).json({ report: result.rows[0] });
   } catch (err) {
@@ -742,26 +754,105 @@ app.get("/api/usage/summary", async (req, res) => {
   try {
     const days = parseInt(req.query.days) || 7;
     const result = await db.query(
-      `SELECT agent,
+      `SELECT agent, COALESCE(seat, 'unknown') as seat,
         SUM(input_tokens) AS total_input_tokens,
         SUM(output_tokens) AS total_output_tokens,
         SUM(cache_creation_tokens) AS total_cache_creation_tokens,
         SUM(cache_read_tokens) AS total_cache_read_tokens,
         SUM(cost_usd) AS total_cost_usd,
+        SUM(COALESCE(cache_savings_usd, 0)) AS total_cache_savings,
         COUNT(*) AS session_count,
         ROUND(AVG(cost_usd), 4) AS avg_cost_per_session,
         CASE WHEN SUM(input_tokens + cache_read_tokens) > 0
           THEN ROUND(SUM(cache_read_tokens)::numeric / SUM(input_tokens + cache_read_tokens) * 100, 1)
           ELSE 0 END AS cache_hit_rate,
-        ROUND(AVG(tool_calls), 1) AS avg_tool_calls,
-        ROUND(AVG(duration_ms)) AS avg_duration
+        ROUND(AVG(tool_calls), 1) AS avg_tool_calls
       FROM usage_reports
       WHERE created_at >= NOW() - INTERVAL '1 day' * $1
-      GROUP BY agent
+      GROUP BY agent, COALESCE(seat, 'unknown')
       ORDER BY total_cost_usd DESC`,
       [days]
     );
     res.json({ summary: result.rows, days });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+// Full dashboard data endpoint
+app.get("/api/usage/dashboard", async (req, res) => {
+  try {
+    const days = parseInt(req.query.days) || 30;
+
+    // Grand totals
+    const totalRes = await db.query(`
+      SELECT SUM(cost_usd) as total_cost, SUM(COALESCE(cache_savings_usd, 0)) as total_savings,
+             SUM(input_tokens) as input, SUM(output_tokens) as output,
+             SUM(cache_creation_tokens) as cache_create, SUM(cache_read_tokens) as cache_read,
+             COUNT(*) as total_sessions
+      FROM usage_reports WHERE created_at >= NOW() - INTERVAL '1 day' * $1
+    `, [days]);
+
+    // Per-seat totals
+    const seatRes = await db.query(`
+      SELECT COALESCE(seat, 'unknown') as seat,
+             SUM(cost_usd) as cost_usd, SUM(COALESCE(cache_savings_usd, 0)) as cache_savings_usd,
+             SUM(input_tokens + cache_creation_tokens + cache_read_tokens) as total_input_tokens,
+             SUM(output_tokens) as total_output_tokens, COUNT(*) as sessions
+      FROM usage_reports WHERE created_at >= NOW() - INTERVAL '1 day' * $1
+      GROUP BY COALESCE(seat, 'unknown') ORDER BY cost_usd DESC
+    `, [days]);
+
+    // Per-agent totals
+    const agentRes = await db.query(`
+      SELECT agent, COALESCE(seat, 'unknown') as seat, model,
+             SUM(input_tokens) as input_tokens, SUM(output_tokens) as output_tokens,
+             SUM(cache_creation_tokens) as cache_creation_tokens, SUM(cache_read_tokens) as cache_read_tokens,
+             SUM(cost_usd) as cost_usd, SUM(COALESCE(cache_savings_usd, 0)) as cache_savings_usd,
+             SUM(tool_calls) as tool_calls, COUNT(*) as sessions
+      FROM usage_reports WHERE created_at >= NOW() - INTERVAL '1 day' * $1
+      GROUP BY agent, COALESCE(seat, 'unknown'), model ORDER BY cost_usd DESC
+    `, [days]);
+
+    // Daily totals by seat and agent
+    const dailyRes = await db.query(`
+      SELECT DATE(created_at) as day, COALESCE(seat, 'unknown') as seat, agent,
+             SUM(cost_usd) as cost_usd, SUM(COALESCE(cache_savings_usd, 0)) as cache_savings_usd,
+             COUNT(*) as sessions
+      FROM usage_reports WHERE created_at >= NOW() - INTERVAL '1 day' * $1
+      GROUP BY DATE(created_at), COALESCE(seat, 'unknown'), agent ORDER BY day DESC, seat, agent
+    `, [days]);
+
+    const t = totalRes.rows[0] || {};
+    const daysElapsed = Math.max(1, days);
+    // Calculate based on actual first/last session dates
+    const rangeRes = await db.query(
+      "SELECT MIN(created_at) as first_at, MAX(created_at) as last_at FROM usage_reports WHERE created_at >= NOW() - INTERVAL '1 day' * $1", [days]
+    );
+    const range = rangeRes.rows[0] || {};
+    const actualDays = range.first_at && range.last_at
+      ? Math.max(1, Math.ceil((new Date(range.last_at) - new Date(range.first_at)) / 86400000) + 1)
+      : 1;
+    const projectedMonthly = (parseFloat(t.total_cost) || 0) / actualDays * 30;
+
+    res.json({
+      period: { days, actual_days_with_data: actualDays },
+      totals: {
+        cost_usd: parseFloat(t.total_cost) || 0,
+        cache_savings_usd: parseFloat(t.total_savings) || 0,
+        input_tokens: parseInt(t.input) || 0,
+        output_tokens: parseInt(t.output) || 0,
+        cache_creation_tokens: parseInt(t.cache_create) || 0,
+        cache_read_tokens: parseInt(t.cache_read) || 0,
+        sessions: parseInt(t.total_sessions) || 0,
+        projected_monthly_usd: Math.round(projectedMonthly * 100) / 100,
+        daily_burn_usd: Math.round((parseFloat(t.total_cost) || 0) / actualDays * 100) / 100
+      },
+      by_seat: seatRes.rows,
+      by_agent: agentRes.rows,
+      daily: dailyRes.rows
+    });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
     res.status(500).json({ error: "db_error", message: err.message });

@@ -1970,8 +1970,14 @@ function renderUsage(main) {
     for (var si = 0; si < S.usageSummary.length; si++) {
       var s = S.usageSummary[si];
       totalCost += parseFloat(s.total_cost_usd) || 0;
-      var cacheTokens = parseInt(s.total_cache_read_tokens) || 0;
-      totalCacheSaved += (cacheTokens / 1000000) * 2.70;
+      totalCacheSaved += parseFloat(s.total_cache_savings) || 0;
+    }
+    // Fallback: estimate from cache_read tokens if backend hasn't populated cache_savings yet
+    if (totalCacheSaved < 0.01) {
+      for (var si2 = 0; si2 < S.usageSummary.length; si2++) {
+        var cr = parseInt(S.usageSummary[si2].total_cache_read_tokens) || 0;
+        totalCacheSaved += (cr / 1000000) * 13.50; // full_rate(15) - cache_rate(1.50) = 13.50 savings per M tokens
+      }
     }
     if (totalCost > 0 || totalCacheSaved > 0) {
       var savBanner = el('div', { className: 'usage-savings-banner' });
@@ -1987,6 +1993,38 @@ function renderUsage(main) {
         savBanner.appendChild(savRight);
       }
       termSection.appendChild(savBanner);
+    }
+
+    // Seat summary cards
+    var seatMap = {};
+    for (var si3 = 0; si3 < S.usageSummary.length; si3++) {
+      var sg = S.usageSummary[si3];
+      var seatKey = sg.seat || 'unknown';
+      if (!seatMap[seatKey]) seatMap[seatKey] = { cost: 0, savings: 0, sessions: 0 };
+      seatMap[seatKey].cost += parseFloat(sg.total_cost_usd) || 0;
+      seatMap[seatKey].savings += parseFloat(sg.total_cache_savings) || 0;
+      seatMap[seatKey].sessions += parseInt(sg.session_count) || 0;
+    }
+    var seatNames = { will: "Will's Seat (Titus + Da Vinci)", mike: "Mike's Seat (Socrates + Atlas)" };
+    var seatKeys = Object.keys(seatMap).sort();
+    if (seatKeys.length > 0) {
+      var seatRow = el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(' + Math.min(seatKeys.length, 2) + ', 1fr)', gap: '16px', marginBottom: '16px' } });
+      for (var ski = 0; ski < seatKeys.length; ski++) {
+        var sk = seatKeys[ski];
+        var sd = seatMap[sk];
+        var seatCard = el('div', { className: 'usage-agent-card', style: { borderColor: sk === 'will' ? 'rgba(200,135,92,0.4)' : 'rgba(124,154,110,0.4)' } });
+        var seatNameRow = el('div', { className: 'usage-agent-name' });
+        seatNameRow.appendChild(el('span', { className: 'usage-agent-icon' }, sk === 'will' ? '\uD83D\uDD31' : '\uD83D\uDE80'));
+        seatNameRow.appendChild(el('span', null, seatNames[sk] || sk));
+        seatCard.appendChild(seatNameRow);
+        var seatStats = el('div', { className: 'usage-agent-stats' });
+        seatStats.appendChild(createStat('Cost', fmtCost(sd.cost), 'cost'));
+        seatStats.appendChild(createStat('Cache Saved', fmtCost(sd.savings), 'green'));
+        seatStats.appendChild(createStat('Sessions', String(sd.sessions)));
+        seatCard.appendChild(seatStats);
+        seatRow.appendChild(seatCard);
+      }
+      termSection.appendChild(seatRow);
     }
 
     // Agent cards
