@@ -752,7 +752,7 @@ app.get("/api/usage/sync", async (req, res) => {
     const endISO = now.toISOString().replace(/\.\d+Z$/, "Z");
 
     // Pull usage grouped by api_key and model, hourly buckets
-    const usageUrl = `https://api.anthropic.com/v1/organizations/usage_report/messages?starting_at=${startISO}&ending_at=${endISO}&bucket_width=1d&group_by[]=api_key&group_by[]=model`;
+    const usageUrl = `https://api.anthropic.com/v1/organizations/usage_report/messages?starting_at=${startISO}&ending_at=${endISO}&bucket_width=1d&group_by[]=api_key_id&group_by[]=model`;
     const usageRes = await fetch(usageUrl, {
       headers: { "x-api-key": adminKey, "anthropic-version": "2023-06-01" }
     });
