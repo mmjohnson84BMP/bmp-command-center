@@ -1983,7 +1983,8 @@ function renderUsage(main) {
     var plan = S.teamsPlan.plan || {};
     var est = S.teamsPlan.estimated || {};
     var spendLimit = parseFloat(plan.spend_limit) || 1000;
-    var estimatedSpend = parseFloat(est.estimated_spend) || 0;
+    var validatedSpend = parseFloat(plan.validated_spend) || 0;
+    var estimatedSpend = validatedSpend > 0 ? validatedSpend : (parseFloat(est.estimated_spend) || 0);
     var pctUsed = spendLimit > 0 ? (estimatedSpend / spendLimit * 100) : 0;
     var sessionCount = parseInt(est.session_count) || 0;
 
@@ -2010,7 +2011,7 @@ function renderUsage(main) {
     var hero = el('div', { className: heroClass });
 
     var titleRow = el('div', { className: 'teams-gauge-title' });
-    titleRow.appendChild(el('span', null, 'Estimated Monthly Spend'));
+    titleRow.appendChild(el('span', null, validatedSpend > 0 ? 'Monthly Overage (Validated)' : 'Estimated Monthly Spend'));
     var badgeCls = 'badge badge-' + gaugeColor;
     var badgeText = pctUsed < 60 ? 'ON TRACK' : (pctUsed < 80 ? 'WATCH' : 'DANGER');
     titleRow.appendChild(el('span', { className: badgeCls }, badgeText));
