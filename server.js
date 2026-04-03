@@ -1024,6 +1024,8 @@ app.post("/api/usage/calibrate", async (req, res) => {
     if (reset_day) { sets.push(`reset_day = $${i++}`); params.push(reset_day); }
     if (reset_hour !== undefined) { sets.push(`reset_hour = $${i++}`); params.push(reset_hour); }
     if (timezone) { sets.push(`timezone = $${i++}`); params.push(timezone); }
+    if (req.body.session_correction_factor !== undefined) { sets.push(`session_correction_factor = $${i++}`); params.push(req.body.session_correction_factor); }
+    if (req.body.weekly_correction_factor !== undefined) { sets.push(`weekly_correction_factor = $${i++}`); params.push(req.body.weekly_correction_factor); }
 
     if (sets.length === 0) return res.status(400).json({ error: "no_fields" });
     sets.push("updated_at = NOW()");
