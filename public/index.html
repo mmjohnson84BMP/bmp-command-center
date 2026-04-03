@@ -1906,7 +1906,7 @@ function renderUsage(main) {
   syncBar.appendChild(syncBtn);
   if (cal.last_weekly_pct) {
     syncBar.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--text-muted)', marginLeft: 'auto' } },
-      'Last: ' + (cal.session_correction_factor || 1).toFixed(2) + 'x sess / ' + (cal.weekly_correction_factor || 1).toFixed(2) + 'x week'));
+      'Last: ' + parseFloat(cal.session_correction_factor || 1).toFixed(2) + 'x sess / ' + parseFloat(cal.weekly_correction_factor || 1).toFixed(2) + 'x week'));
   }
   wrap.appendChild(syncBar);
 
