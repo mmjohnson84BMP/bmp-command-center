@@ -140,8 +140,21 @@ CREATE TABLE IF NOT EXISTS usage_reports (
   cost_usd NUMERIC(10,4) DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_usage_session ON usage_reports(session_id) WHERE session_id IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_usage_agent ON usage_reports(agent);
 CREATE INDEX IF NOT EXISTS idx_usage_created ON usage_reports(created_at DESC);
+
+CREATE TABLE IF NOT EXISTS teams_plan_tracking (
+  id SERIAL PRIMARY KEY,
+  month VARCHAR(7) NOT NULL,
+  spend_limit NUMERIC(10,2) DEFAULT 1000,
+  validated_spend NUMERIC(10,2),
+  validated_at TIMESTAMPTZ,
+  seats INTEGER DEFAULT 2,
+  reset_date DATE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_teams_plan_month ON teams_plan_tracking(month);
 `;
 
 async function query(text, params) {

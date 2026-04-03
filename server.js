@@ -669,11 +669,25 @@ app.post("/api/usage", async (req, res) => {
     const { agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls } = req.body;
     if (!agent) return res.status(400).json({ error: "missing_fields", message: "agent required" });
     const cost_usd = calculateCost(model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens);
-    const result = await db.query(
-      `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
-      [agent, session_id || null, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
-    );
+    // Upsert by session_id to prevent duplicates from re-syncs
+    const sid = session_id || null;
+    let result;
+    if (sid) {
+      result = await db.query(
+        `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+         ON CONFLICT (session_id) WHERE session_id IS NOT NULL
+         DO UPDATE SET input_tokens=$4, output_tokens=$5, cache_creation_tokens=$6, cache_read_tokens=$7, duration_ms=$8, tool_calls=$9, cost_usd=$10, created_at=NOW()
+         RETURNING *`,
+        [agent, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
+      );
+    } else {
+      result = await db.query(
+        `INSERT INTO usage_reports (agent, session_id, model, input_tokens, output_tokens, cache_creation_tokens, cache_read_tokens, duration_ms, tool_calls, cost_usd)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        [agent, sid, model || null, input_tokens || 0, output_tokens || 0, cache_creation_tokens || 0, cache_read_tokens || 0, duration_ms || 0, tool_calls || 0, cost_usd]
+      );
+    }
     logActivity(null, "usage_reported", agent, { session_id, model, cost_usd });
     io.emit("usage:new", { report: result.rows[0] });
     res.status(201).json({ report: result.rows[0] });
@@ -697,6 +711,27 @@ app.get("/api/usage", async (req, res) => {
     params.push(limit);
     const result = await db.query(`SELECT * FROM usage_reports ${where} ORDER BY created_at DESC LIMIT $${i}`, params);
     res.json({ reports: result.rows });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.delete("/api/usage/:id", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM usage_reports WHERE id = $1 RETURNING *", [req.params.id]);
+    if (result.rows.length === 0) return res.status(404).json({ error: "not_found" });
+    res.json({ deleted: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.delete("/api/usage", async (req, res) => {
+  try {
+    const result = await db.query("DELETE FROM usage_reports RETURNING id");
+    res.json({ deleted: result.rows.length });
   } catch (err) {
     if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
     res.status(500).json({ error: "db_error", message: err.message });
@@ -772,6 +807,67 @@ app.get("/api/usage/sync", async (req, res) => {
     res.json({ usage: usageData, costs: costData, period: { start: startISO, end: endISO, days } });
   } catch (err) {
     res.status(500).json({ error: "sync_error", message: err.message });
+  }
+});
+
+// ── Teams Plan Tracking ──
+
+app.get("/api/usage/teams-plan", async (req, res) => {
+  try {
+    const month = req.query.month || new Date().toISOString().slice(0, 7);
+    const result = await db.query(
+      "SELECT * FROM teams_plan_tracking WHERE month = $1 ORDER BY created_at DESC LIMIT 1",
+      [month]
+    );
+    // Also get estimated spend from usage_reports for the current month
+    const estResult = await db.query(
+      `SELECT COALESCE(SUM(cost_usd), 0) AS estimated_spend,
+              COUNT(*) AS session_count,
+              MIN(created_at) AS first_session,
+              MAX(created_at) AS last_session
+       FROM usage_reports
+       WHERE to_char(created_at, 'YYYY-MM') = $1`,
+      [month]
+    );
+    const plan = result.rows[0] || { month, spend_limit: 1000, seats: 2 };
+    const est = estResult.rows[0] || { estimated_spend: 0, session_count: 0 };
+    res.json({ plan, estimated: est });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
+app.post("/api/usage/teams-plan", async (req, res) => {
+  try {
+    const { month, validated_spend, spend_limit, reset_date, seats } = req.body;
+    if (!month) return res.status(400).json({ error: "missing_fields", message: "month required" });
+    // Upsert: check if record exists for this month
+    const existing = await db.query("SELECT id FROM teams_plan_tracking WHERE month = $1", [month]);
+    let result;
+    if (existing.rows.length) {
+      result = await db.query(
+        `UPDATE teams_plan_tracking SET
+          validated_spend = COALESCE($2, validated_spend),
+          validated_at = CASE WHEN $2 IS NOT NULL THEN NOW() ELSE validated_at END,
+          spend_limit = COALESCE($3, spend_limit),
+          reset_date = COALESCE($4, reset_date),
+          seats = COALESCE($5, seats)
+        WHERE month = $1 RETURNING *`,
+        [month, validated_spend || null, spend_limit || null, reset_date || null, seats || null]
+      );
+    } else {
+      result = await db.query(
+        `INSERT INTO teams_plan_tracking (month, spend_limit, validated_spend, validated_at, seats, reset_date)
+         VALUES ($1, $2, $3, CASE WHEN $3 IS NOT NULL THEN NOW() ELSE NULL END, $4, $5) RETURNING *`,
+        [month, spend_limit || 1000, validated_spend || null, seats || 2, reset_date || null]
+      );
+    }
+    logActivity(null, "teams_plan_updated", req.actor, { month, validated_spend, spend_limit });
+    res.json({ plan: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
   }
 });
 
