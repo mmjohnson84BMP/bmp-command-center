@@ -235,6 +235,10 @@ const MIGRATIONS = [
     updated_at TIMESTAMPTZ DEFAULT NOW()
   )`,
   `INSERT INTO usage_calibration (plan_type) SELECT 'team' WHERE NOT EXISTS (SELECT 1 FROM usage_calibration LIMIT 1)`,
+  // Per-seat Anthropic actual billing columns
+  `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS will_seat_actual NUMERIC(10,2)`,
+  `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS mike_seat_actual NUMERIC(10,2)`,
+  `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS seat_actual_month VARCHAR(7)`,
 ];
 
 async function initSchema() {

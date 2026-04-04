@@ -1945,6 +1945,40 @@ function renderUsage(main) {
   }
   wrap.appendChild(syncBar);
 
+  // Anthropic Actuals bar — set real per-seat billing to calibrate displayed costs
+  var actualsBar = el('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '12px 16px', background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' } });
+  actualsBar.appendChild(el('span', { style: { fontSize: '12px', fontWeight: '700', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', whiteSpace: 'nowrap' } }, 'Anthropic Actuals'));
+  actualsBar.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--text-muted)', whiteSpace: 'nowrap' } }, 'MTD per seat ($):'));
+  var willActualInput = el('input', { type: 'number', placeholder: "Will's seat", style: { width: '90px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: '4px', padding: '4px 8px', fontSize: '13px', fontFamily: 'var(--mono)' } });
+  if (cal.will_seat_actual) willActualInput.value = parseFloat(cal.will_seat_actual).toFixed(2);
+  var mikeActualInput = el('input', { type: 'number', placeholder: "Mike's seat", style: { width: '90px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: '4px', padding: '4px 8px', fontSize: '13px', fontFamily: 'var(--mono)' } });
+  if (cal.mike_seat_actual) mikeActualInput.value = parseFloat(cal.mike_seat_actual).toFixed(2);
+  var actualsMonthInput = el('input', { type: 'text', placeholder: 'Month (YYYY-MM)', style: { width: '110px', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text)', borderRadius: '4px', padding: '4px 8px', fontSize: '13px', fontFamily: 'var(--mono)' } });
+  var nowD = new Date(); actualsMonthInput.value = (cal.seat_actual_month) || (nowD.getFullYear() + '-' + String(nowD.getMonth() + 1).padStart(2, '0'));
+  var actualsBtn = el('button', { className: 'btn', style: { fontSize: '12px', padding: '4px 12px' }, onClick: function() {
+    var wa = parseFloat(willActualInput.value), ma = parseFloat(mikeActualInput.value), mo = actualsMonthInput.value.trim();
+    if (!wa && !ma) return;
+    var body = { seat_actual_month: mo || undefined };
+    if (wa > 0) body.will_seat_actual = wa;
+    if (ma > 0) body.mike_seat_actual = ma;
+    actualsBtn.textContent = 'Saving...';
+    API.post('/api/usage/calibrate', body).then(function(d) {
+      S.calibration = d && d.calibration ? d.calibration : S.calibration;
+      actualsBtn.textContent = 'Saved';
+      renderUsage(main);
+    }).catch(function() { actualsBtn.textContent = 'Failed'; });
+  }}, 'Save');
+  actualsBar.appendChild(willActualInput);
+  actualsBar.appendChild(mikeActualInput);
+  actualsBar.appendChild(actualsMonthInput);
+  actualsBar.appendChild(actualsBtn);
+  if (cal.will_seat_actual || cal.mike_seat_actual) {
+    var actualsStatus = 'Calibrated: Will ' + fmtCost(cal.will_seat_actual || 0) + ' / Mike ' + fmtCost(cal.mike_seat_actual || 0);
+    if (cal.seat_actual_month) actualsStatus += ' (' + cal.seat_actual_month + ')';
+    actualsBar.appendChild(el('span', { style: { fontSize: '11px', color: 'var(--green)', marginLeft: 'auto' } }, actualsStatus));
+  }
+  wrap.appendChild(actualsBar);
+
   // 3-column hero gauges
   var heroGrid = el('div', { style: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '24px' } });
 
@@ -2145,11 +2179,15 @@ function renderUsage(main) {
     for (var si3 = 0; si3 < S.usageSummary.length; si3++) {
       var sg = S.usageSummary[si3];
       var seatKey = sg.seat || 'unknown';
-      if (!seatMap[seatKey]) seatMap[seatKey] = { cost: 0, savings: 0, sessions: 0 };
+      if (!seatMap[seatKey]) seatMap[seatKey] = { cost: 0, savings: 0, sessions: 0, tokens: 0 };
       seatMap[seatKey].cost += parseFloat(sg.total_cost_usd) || 0;
       seatMap[seatKey].savings += parseFloat(sg.total_cache_savings) || 0;
       seatMap[seatKey].sessions += parseInt(sg.session_count) || 0;
+      seatMap[seatKey].tokens += (parseInt(sg.total_input_tokens) || 0) + (parseInt(sg.total_output_tokens) || 0) + (parseInt(sg.total_cache_read_tokens) || 0);
     }
+    // Use Anthropic actual billing if calibrated
+    var willActual = parseFloat(cal.will_seat_actual) || 0;
+    var mikeActual = parseFloat(cal.mike_seat_actual) || 0;
     var seatNames = { will: "Will's Seat (Titus + Da Vinci)", mike: "Mike's Seat (Socrates + Atlas)" };
     var seatKeys = Object.keys(seatMap).sort();
     if (seatKeys.length > 0) {
@@ -2157,13 +2195,17 @@ function renderUsage(main) {
       for (var ski = 0; ski < seatKeys.length; ski++) {
         var sk = seatKeys[ski];
         var sd = seatMap[sk];
+        var calibratedSeatCost = (sk === 'will' && willActual > 0) ? willActual : (sk === 'mike' && mikeActual > 0) ? mikeActual : sd.cost;
+        var isCalibrated = (sk === 'will' && willActual > 0) || (sk === 'mike' && mikeActual > 0);
         var seatCard = el('div', { className: 'usage-agent-card', style: { borderColor: sk === 'will' ? 'rgba(200,135,92,0.4)' : 'rgba(124,154,110,0.4)' } });
         var seatNameRow = el('div', { className: 'usage-agent-name' });
         seatNameRow.appendChild(el('span', { className: 'usage-agent-icon' }, sk === 'will' ? '\uD83D\uDD31' : '\uD83D\uDE80'));
         seatNameRow.appendChild(el('span', null, seatNames[sk] || sk));
+        if (isCalibrated) seatNameRow.appendChild(el('span', { style: { fontSize: '10px', color: 'var(--green)', marginLeft: '6px', fontWeight: '700' } }, 'CALIBRATED'));
         seatCard.appendChild(seatNameRow);
         var seatStats = el('div', { className: 'usage-agent-stats' });
-        seatStats.appendChild(createStat('Cost', fmtCost(sd.cost), 'cost'));
+        seatStats.appendChild(createStat(isCalibrated ? 'Anthropic MTD' : 'Est. Cost', fmtCost(calibratedSeatCost), 'cost'));
+        if (isCalibrated) seatStats.appendChild(createStat('Self-Reported', fmtCost(sd.cost), ''));
         seatStats.appendChild(createStat('Cache Saved', fmtCost(sd.savings), 'green'));
         seatStats.appendChild(createStat('Sessions', String(sd.sessions)));
         seatCard.appendChild(seatStats);
@@ -2173,6 +2215,14 @@ function renderUsage(main) {
     }
 
     // Agent cards
+    // Build per-seat token totals for proportional cost calibration
+    var seatTokenTotals = {};
+    for (var sti = 0; sti < S.usageSummary.length; sti++) {
+      var stag = S.usageSummary[sti];
+      var stSeat = stag.seat || 'unknown';
+      if (!seatTokenTotals[stSeat]) seatTokenTotals[stSeat] = 0;
+      seatTokenTotals[stSeat] += (parseInt(stag.total_input_tokens) || 0) + (parseInt(stag.total_output_tokens) || 0) + (parseInt(stag.total_cache_read_tokens) || 0);
+    }
     var agentGrid = el('div', { className: 'usage-agent-grid' });
     for (var ai = 0; ai < S.usageSummary.length; ai++) {
       var ag = S.usageSummary[ai];
@@ -2180,6 +2230,13 @@ function renderUsage(main) {
       var meta = AGENT_META[agName.toLowerCase()] || { icon: '\uD83E\uDD16', color: 'var(--text-muted)', label: agName };
       var card = el('div', { className: 'usage-agent-card' });
       card.setAttribute('data-agent', agName.toLowerCase());
+
+      // Compute calibrated agent cost: (agent_tokens / seat_tokens) * seat_actual
+      var agSeat = ag.seat || 'unknown';
+      var seatActual = (agSeat === 'will' && willActual > 0) ? willActual : (agSeat === 'mike' && mikeActual > 0) ? mikeActual : 0;
+      var agTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0) + (parseInt(ag.total_cache_read_tokens) || 0);
+      var agCalibratedCost = (seatActual > 0 && seatTokenTotals[agSeat] > 0) ? (agTokens / seatTokenTotals[agSeat]) * seatActual : 0;
+      var agIsCalibrated = agCalibratedCost > 0;
 
       var nameRow = el('div', { className: 'usage-agent-name' });
       nameRow.appendChild(el('span', { className: 'usage-agent-icon' }, meta.icon));
@@ -2189,7 +2246,8 @@ function renderUsage(main) {
       var stats = el('div', { className: 'usage-agent-stats' });
       var totalTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0);
       stats.appendChild(createStat('Total Tokens', fmtTokens(totalTokens)));
-      stats.appendChild(createStat('Est. Cost', fmtCost(ag.total_cost_usd), 'cost'));
+      stats.appendChild(createStat(agIsCalibrated ? 'Calibrated Cost' : 'Est. Cost', fmtCost(agIsCalibrated ? agCalibratedCost : ag.total_cost_usd), 'cost'));
+      if (agIsCalibrated) stats.appendChild(createStat('Self-Reported', fmtCost(ag.total_cost_usd), ''));
       stats.appendChild(createStat('Sessions', String(parseInt(ag.session_count) || 0)));
       stats.appendChild(createStat('Avg/Session', fmtCost(ag.avg_cost_per_session), 'cost'));
       stats.appendChild(createStat('Avg Tools', String(parseFloat(ag.avg_tool_calls || 0).toFixed(1))));

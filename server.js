@@ -975,7 +975,7 @@ app.get("/api/usage/calibrate", async (req, res) => {
 
 app.post("/api/usage/calibrate", async (req, res) => {
   try {
-    const { session_pct, weekly_pct, plan_type, session_budget, weekly_budget, overage_cap, reset_day, reset_hour, timezone } = req.body;
+    const { session_pct, weekly_pct, plan_type, session_budget, weekly_budget, overage_cap, reset_day, reset_hour, timezone, will_seat_actual, mike_seat_actual, seat_actual_month } = req.body;
 
     // Get current calibration
     let calRes = await db.query("SELECT * FROM usage_calibration ORDER BY id LIMIT 1");
@@ -1026,6 +1026,9 @@ app.post("/api/usage/calibrate", async (req, res) => {
     if (timezone) { sets.push(`timezone = $${i++}`); params.push(timezone); }
     if (req.body.session_correction_factor !== undefined) { sets.push(`session_correction_factor = $${i++}`); params.push(req.body.session_correction_factor); }
     if (req.body.weekly_correction_factor !== undefined) { sets.push(`weekly_correction_factor = $${i++}`); params.push(req.body.weekly_correction_factor); }
+    if (will_seat_actual !== undefined) { sets.push(`will_seat_actual = $${i++}`); params.push(will_seat_actual); }
+    if (mike_seat_actual !== undefined) { sets.push(`mike_seat_actual = $${i++}`); params.push(mike_seat_actual); }
+    if (seat_actual_month !== undefined) { sets.push(`seat_actual_month = $${i++}`); params.push(seat_actual_month); }
 
     if (sets.length === 0) return res.status(400).json({ error: "no_fields" });
     sets.push("updated_at = NOW()");
