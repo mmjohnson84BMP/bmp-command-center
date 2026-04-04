@@ -2,6 +2,8 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const crypto = require("crypto");
+const fs = require("fs");
+const multer = require("multer");
 const { Server } = require("socket.io");
 const db = require("./db");
 
@@ -9,6 +11,27 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const PORT = process.env.PORT || 3000;
+
+// ── File Upload (multer) ──
+const UPLOADS_DIR = path.join(__dirname, "public", "uploads");
+if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) { cb(null, UPLOADS_DIR); },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, Date.now() + "-" + crypto.randomBytes(6).toString("hex") + ext);
+  }
+});
+const ALLOWED_MIME = ["image/png","image/jpeg","image/gif","image/webp","application/pdf","text/plain","text/markdown"];
+const upload = multer({
+  storage,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+  fileFilter: function(req, file, cb) {
+    if (ALLOWED_MIME.includes(file.mimetype)) cb(null, true);
+    else cb(new Error("File type not allowed"));
+  }
+});
 
 const API_KEYS = {
   [process.env.TITUS_API_KEY]: "titus",
@@ -162,25 +185,42 @@ app.patch("/api/channels/:id", async (req, res) => {
   }
 });
 
+// ── File Upload ──
+
+app.post("/api/upload", function(req, res) {
+  upload.single("file")(req, res, function(err) {
+    if (err) {
+      if (err.message === "File type not allowed") return res.status(400).json({ error: "file_type_not_allowed" });
+      if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "file_too_large", message: "Max 10MB" });
+      return res.status(500).json({ error: "upload_failed", message: err.message });
+    }
+    if (!req.file) return res.status(400).json({ error: "no_file" });
+    const url = "/uploads/" + req.file.filename;
+    res.json({ url, filename: req.file.originalname, mimetype: req.file.mimetype, size: req.file.size });
+  });
+});
+
 // ── Messages ──
 
 app.post("/api/messages", async (req, res) => {
   try {
     const { channel_id, recipient, thread_id } = req.body;
     // Sanitize content: replace mangled UTF-8 sequences (e.g. Windows curl encoding issues)
-    let content = req.body.content;
-    if (!content) return res.status(400).json({ error: "missing_fields", message: "content required" });
+    let content = req.body.content || "";
     // Fix common encoding issues: mangled em dash (3 replacement chars) → proper em dash
     content = content.replace(/\uFFFD{2,3}/g, '\u2014');
     // Also replace standalone replacement characters
     content = content.replace(/\uFFFD/g, '-');
+    // attachments: array of { url, filename, mimetype }
+    const attachments = req.body.attachments || null;
+    if (!content && !attachments) return res.status(400).json({ error: "missing_fields", message: "content or attachments required" });
     if (!channel_id && !recipient) return res.status(400).json({ error: "missing_fields", message: "channel_id or recipient required" });
 
     // Use body sender if provided (agents or browser users), otherwise fall back to resolved actor
     const sender = req.body.sender || req.actor;
     const result = await db.query(
-      "INSERT INTO messages (sender, recipient, content, channel_id, thread_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [sender, recipient || null, content, channel_id || null, thread_id || null]
+      "INSERT INTO messages (sender, recipient, content, channel_id, thread_id, attachments) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [sender, recipient || null, content, channel_id || null, thread_id || null, attachments ? JSON.stringify(attachments) : null]
     );
     logActivity(null, "message_sent", sender, { channel_id, recipient, preview: content.slice(0, 100) });
     io.emit("message:new", { message: result.rows[0] });

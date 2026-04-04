@@ -260,6 +260,7 @@ body::before {
 .channel-item-members { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
 
 .comms-chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+.comms-chat-area { flex: 1; display: flex; flex-direction: column; background: var(--bg); position: relative; min-height: 0; overflow: hidden; }
 .comms-chat-header { padding: 14px 20px; border-bottom: 1px solid transparent; border-image: linear-gradient(90deg, var(--border), rgba(200,135,92,0.15), transparent) 1; display: flex; align-items: center; gap: 12px; background: linear-gradient(180deg, var(--bg-elevated) 0%, var(--bg-elevated) 80%, transparent 100%); position: relative; z-index: 1; }
 .comms-chat-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
 .comms-chat-members { font-size: 12px; color: var(--text-muted); }
@@ -291,13 +292,28 @@ body::before {
 .msg-edit-save:hover { box-shadow: 0 4px 12px rgba(200,135,92,0.3); }
 .msg-edit-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); }
 .msg-edit-cancel:hover { border-color: var(--border-hover); color: var(--text); }
-.comms-input-bar { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: var(--bg-elevated); }
-.comms-input { flex: 1; resize: none; border: 1px solid var(--border); border-radius: 20px; padding: 10px 18px; font-size: 13px; background: var(--bg); color: var(--text); font-family: var(--font); min-height: 42px; max-height: 120px; transition: border-color 200ms var(--ease); }
+.comms-input-wrap { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.comms-input-bar { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-end; background: var(--bg-elevated); }
+.comms-input { width: 100%; resize: none; border: 1px solid var(--border); border-radius: 16px; padding: 10px 18px; font-size: 13px; background: var(--bg); color: var(--text); font-family: var(--font); min-height: 42px; max-height: 120px; transition: border-color 200ms var(--ease); }
 .comms-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,135,92,0.08); }
-.comms-send { background: linear-gradient(135deg, #ffb688, #c8875c); color: #161310; border: none; font-family: var(--font); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: all 300ms var(--ease); align-self: flex-end; }
+.comms-attach-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 16px; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 200ms var(--ease); }
+.comms-attach-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--orange-bg); }
+.comms-send { background: linear-gradient(135deg, #ffb688, #c8875c); color: #161310; border: none; font-family: var(--font); font-weight: 700; font-size: 13px; padding: 10px 20px; border-radius: 20px; cursor: pointer; transition: all 300ms var(--ease); align-self: flex-end; flex-shrink: 0; }
 .comms-send:hover { box-shadow: 0 4px 16px rgba(200,135,92,0.3); transform: translateY(-1px); }
 .comms-send:active { transform: translateY(0); }
 .comms-empty { display: flex; align-items: center; justify-content: center; flex: 1; color: var(--text-muted); font-size: 14px; }
+.comms-preview-area { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 4px; }
+.comms-preview-item { position: relative; display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 8px; font-size: 12px; color: var(--text-muted); max-width: 200px; }
+.comms-preview-item img { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; }
+.comms-preview-remove { position: absolute; top: -6px; right: -6px; background: var(--red); color: #fff; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+.comms-preview-remove:hover { background: #d44; }
+.msg-attachments { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.msg-attachment-img { display: block; max-width: 320px; max-height: 240px; border-radius: var(--radius-sm); border: 1px solid var(--border); cursor: pointer; transition: opacity 200ms var(--ease); object-fit: contain; }
+.msg-attachment-img:hover { opacity: 0.88; }
+.msg-attachment-file { display: inline-flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 12px; font-size: 12px; color: var(--text-secondary); text-decoration: none; transition: all 200ms var(--ease); }
+.msg-attachment-file:hover { border-color: var(--accent); color: var(--accent); }
+.comms-drop-overlay { display: none; position: absolute; inset: 0; background: rgba(200,135,92,0.08); border: 2px dashed var(--accent); border-radius: var(--radius-md); z-index: 10; align-items: center; justify-content: center; font-size: 14px; color: var(--accent); font-weight: 600; pointer-events: none; }
+.comms-drop-overlay.active { display: flex; }
 
 /* DRAWER */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px); z-index: 200; opacity: 0; transition: opacity 250ms var(--ease); pointer-events: none; }
@@ -1213,7 +1229,7 @@ function renderComms(main) {
   sidebar.appendChild(channelList);
   layout.appendChild(sidebar);
 
-  var chatArea = el('div', { className: 'comms-chat' });
+  var chatArea = el('div', { className: 'comms-chat-area' });
   if (S.selectedChannelId) {
     var activeChannel = S.channels.find(function(c) { return c.id === S.selectedChannelId; });
     if (activeChannel) {
@@ -1246,7 +1262,25 @@ function renderComms(main) {
         header.appendChild(el('span', { className: 'msg-time' }, new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })));
         body.appendChild(header);
         var contentDiv = el('div', { className: 'msg-content' });
-        contentDiv.appendChild(renderMarkdownSafe(msg.content));
+        if (msg.content) contentDiv.appendChild(renderMarkdownSafe(msg.content));
+        // Render attachments
+        var msgAttachments = msg.attachments;
+        if (typeof msgAttachments === 'string') { try { msgAttachments = JSON.parse(msgAttachments); } catch(e) { msgAttachments = null; } }
+        if (msgAttachments && msgAttachments.length) {
+          var attRow = el('div', { className: 'msg-attachments' });
+          msgAttachments.forEach(function(att) {
+            if (att.mimetype && att.mimetype.indexOf('image/') === 0) {
+              var imgEl = el('img', { className: 'msg-attachment-img', src: att.url, alt: att.filename || 'image', loading: 'lazy' });
+              imgEl.addEventListener('click', function() { window.open(att.url, '_blank'); });
+              attRow.appendChild(imgEl);
+            } else {
+              var fileLink = el('a', { className: 'msg-attachment-file', href: att.url, target: '_blank', rel: 'noopener' });
+              fileLink.appendChild(document.createTextNode('\uD83D\uDCCE ' + (att.filename || 'file')));
+              attRow.appendChild(fileLink);
+            }
+          });
+          contentDiv.appendChild(attRow);
+        }
         body.appendChild(contentDiv);
         bubble.appendChild(body);
         if (isOwn) {
@@ -1345,13 +1379,116 @@ function renderComms(main) {
         }
       });
       var inputBar = el('div', { className: 'comms-input-bar' });
-      var input = el('textarea', { className: 'comms-input', placeholder: 'Type a message...', rows: '1' });
-      var sendBtn = el('button', { className: 'comms-send', onClick: function() {
-        var content = input.value.trim(); if (!content) return;
-        API.post('/api/messages', { content: content, channel_id: activeChannel.id, sender: S.user }).then(function() { input.value = ''; loadAll().then(function() { render(); var ni = document.querySelector('.comms-input'); if (ni) ni.focus(); }); });
-      } }, 'Send');
-      input.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendBtn.click(); } });
-      inputBar.appendChild(input);
+      // Drop overlay
+      var dropOverlay = el('div', { className: 'comms-drop-overlay' }, '\uD83D\uDDBC\uFE0F Drop image to attach');
+      chatArea.appendChild(dropOverlay);
+
+      // Pending attachments state
+      var pendingAttachments = [];
+
+      // Preview area (shown above input when attachments pending)
+      var previewArea = el('div', { className: 'comms-preview-area', style: { display: 'none' } });
+
+      function refreshPreview() {
+        previewArea.innerHTML = '';
+        if (!pendingAttachments.length) { previewArea.style.display = 'none'; return; }
+        previewArea.style.display = 'flex';
+        pendingAttachments.forEach(function(att, idx) {
+          var item = el('div', { className: 'comms-preview-item' });
+          if (att.mimetype && att.mimetype.indexOf('image/') === 0) {
+            var thumb = el('img', { src: att.url, alt: att.filename || 'image' });
+            item.appendChild(thumb);
+          } else {
+            item.appendChild(document.createTextNode('\uD83D\uDCCE ' + (att.filename || 'file')));
+          }
+          var rmBtn = el('button', { className: 'comms-preview-remove' }, '\u00D7');
+          rmBtn.addEventListener('click', function() { pendingAttachments.splice(idx, 1); refreshPreview(); });
+          item.appendChild(rmBtn);
+          previewArea.appendChild(item);
+        });
+      }
+
+      function uploadFile(file) {
+        var fd = new FormData();
+        fd.append('file', file);
+        var headers = {};
+        if (S.sessionToken) headers['x-session-token'] = S.sessionToken;
+        return fetch('/api/upload', { method: 'POST', headers: headers, body: fd })
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(data) {
+            if (data && data.url) {
+              pendingAttachments.push({ url: data.url, filename: data.filename, mimetype: data.mimetype });
+              refreshPreview();
+              toast('File attached: ' + data.filename);
+            } else {
+              toast('Upload failed', 'error');
+            }
+          })
+          .catch(function() { toast('Upload failed', 'error'); });
+      }
+
+      // Hidden file input
+      var fileInput = el('input', { type: 'file', accept: 'image/png,image/jpeg,image/gif,image/webp,application/pdf,text/plain', style: { display: 'none' } });
+      fileInput.addEventListener('change', function() {
+        if (fileInput.files && fileInput.files[0]) uploadFile(fileInput.files[0]);
+        fileInput.value = '';
+      });
+
+      var attachBtn = el('button', { className: 'comms-attach-btn', type: 'button', 'data-tooltip': 'Attach file' }, '\uD83D\uDCCE');
+      attachBtn.addEventListener('click', function() { fileInput.click(); });
+
+      var inputWrap = el('div', { className: 'comms-input-wrap' });
+      inputWrap.appendChild(previewArea);
+      var input = el('textarea', { className: 'comms-input', placeholder: 'Type a message... (Ctrl+V to paste image)', rows: '1' });
+      inputWrap.appendChild(input);
+
+      function doSend() {
+        var content = input.value.trim();
+        if (!content && !pendingAttachments.length) return;
+        var attachSnapshot = pendingAttachments.slice();
+        pendingAttachments = [];
+        refreshPreview();
+        API.post('/api/messages', {
+          content: content,
+          channel_id: activeChannel.id,
+          sender: S.user,
+          attachments: attachSnapshot.length ? attachSnapshot : null
+        }).then(function() {
+          input.value = '';
+          loadAll().then(function() { render(); var ni = document.querySelector('.comms-input'); if (ni) ni.focus(); });
+        });
+      }
+
+      var sendBtn = el('button', { className: 'comms-send', onClick: doSend }, 'Send');
+      input.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doSend(); } });
+
+      // Paste handler: detect images in clipboard
+      input.addEventListener('paste', function(e) {
+        var items = e.clipboardData && e.clipboardData.items;
+        if (!items) return;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].type.indexOf('image/') === 0) {
+            e.preventDefault();
+            var file = items[i].getAsFile();
+            if (file) uploadFile(file);
+            return;
+          }
+        }
+      });
+
+      // Drag-and-drop on chat area
+      chatArea.addEventListener('dragover', function(e) { e.preventDefault(); dropOverlay.classList.add('active'); });
+      chatArea.addEventListener('dragleave', function(e) { if (!chatArea.contains(e.relatedTarget)) dropOverlay.classList.remove('active'); });
+      chatArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropOverlay.classList.remove('active');
+        var files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length) uploadFile(files[0]);
+      });
+
+      inputBar.appendChild(attachBtn);
+      inputBar.appendChild(fileInput);
+      inputBar.appendChild(inputWrap);
       inputBar.appendChild(sendBtn);
       chatArea.appendChild(inputBar);
     }

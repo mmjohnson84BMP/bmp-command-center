@@ -239,6 +239,8 @@ const MIGRATIONS = [
   `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS will_seat_actual NUMERIC(10,2)`,
   `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS mike_seat_actual NUMERIC(10,2)`,
   `ALTER TABLE usage_calibration ADD COLUMN IF NOT EXISTS seat_actual_month VARCHAR(7)`,
+  // Attachments support for messages (Conference Room file/image uploads)
+  `ALTER TABLE messages ADD COLUMN IF NOT EXISTS attachments JSONB`,
 ];
 
 async function initSchema() {
