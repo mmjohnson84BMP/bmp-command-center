@@ -327,6 +327,29 @@ app.delete("/api/messages/:id", async (req, res) => {
   }
 });
 
+app.patch("/api/messages/:id", async (req, res) => {
+  try {
+    const { content } = req.body;
+    if (!content || !content.trim()) return res.status(400).json({ error: "content_required" });
+    const msgCheck = await db.query("SELECT * FROM messages WHERE id = $1", [req.params.id]);
+    if (!msgCheck.rows.length) return res.status(404).json({ error: "not_found" });
+    const msg = msgCheck.rows[0];
+    if (msg.sender.toLowerCase() !== (req.actor || "").toLowerCase()) {
+      return res.status(403).json({ error: "forbidden", message: "You can only edit your own messages" });
+    }
+    const result = await db.query(
+      "UPDATE messages SET content = $1 WHERE id = $2 RETURNING *",
+      [content.trim(), req.params.id]
+    );
+    logActivity(null, "message_edited", req.actor, { message_id: req.params.id });
+    io.emit("message:edited", result.rows[0]);
+    res.json({ message: result.rows[0] });
+  } catch (err) {
+    if (err.code === "DB_UNAVAILABLE") return res.status(503).json({ error: "database_unavailable" });
+    res.status(500).json({ error: "db_error", message: err.message });
+  }
+});
+
 app.patch("/api/messages/:id/read", async (req, res) => {
   try {
     const reader = req.actor;

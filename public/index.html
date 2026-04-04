@@ -277,6 +277,20 @@ body::before {
 .msg-ai-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 4px; background: rgba(200,135,92,0.2); color: var(--orange); }
 .msg-time { font-size: 11px; color: var(--text-muted); }
 .msg-content { font-size: 14px; color: var(--text); line-height: 1.7; white-space: pre-wrap; }
+.msg-actions { position: absolute; top: 10px; right: 12px; display: none; gap: 4px; }
+.msg-bubble { position: relative; }
+.msg-bubble:hover .msg-actions { display: flex; }
+.msg-action-btn { background: var(--card); border: 1px solid var(--border); color: var(--text-muted); font-size: 12px; font-family: var(--font); font-weight: 600; padding: 3px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); white-space: nowrap; }
+.msg-action-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--orange-bg); }
+.msg-action-btn.delete:hover { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+.msg-edit-area { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.msg-edit-textarea { background: var(--bg); border: 1px solid var(--accent); color: var(--text); border-radius: var(--radius-sm); padding: 8px 12px; font-size: 14px; font-family: var(--font); line-height: 1.7; resize: vertical; min-height: 60px; width: 100%; box-shadow: 0 0 0 3px rgba(200,135,92,0.08); }
+.msg-edit-textarea:focus { outline: none; }
+.msg-edit-actions { display: flex; gap: 8px; }
+.msg-edit-save { background: linear-gradient(135deg, #ffb688, #c8875c); color: #161310; border: none; font-family: var(--font); font-weight: 700; font-size: 12px; padding: 6px 16px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); }
+.msg-edit-save:hover { box-shadow: 0 4px 12px rgba(200,135,92,0.3); }
+.msg-edit-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: var(--font); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); }
+.msg-edit-cancel:hover { border-color: var(--border-hover); color: var(--text); }
 .comms-input-bar { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: var(--bg-elevated); }
 .comms-input { flex: 1; resize: none; border: 1px solid var(--border); border-radius: 20px; padding: 10px 18px; font-size: 13px; background: var(--bg); color: var(--text); font-family: var(--font); min-height: 42px; max-height: 120px; transition: border-color 200ms var(--ease); }
 .comms-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(200,135,92,0.08); }
@@ -1222,7 +1236,8 @@ function renderComms(main) {
       var channelMsgs = S.messages.filter(function(m) { return m.channel_id === activeChannel.id; });
       channelMsgs.forEach(function(msg) {
         var senderIsAI = !isHuman(msg.sender);
-        var bubble = el('div', { className: 'msg-bubble' + (senderIsAI ? ' msg-bubble-ai' : '') });
+        var isOwn = (S.user || '').toLowerCase() === (msg.sender || '').toLowerCase();
+        var bubble = el('div', { className: 'msg-bubble' + (senderIsAI ? ' msg-bubble-ai' : ''), 'data-msg-id': msg.id });
         bubble.appendChild(makeAvatarEl(msg.sender, 'chat'));
         var body = el('div', { className: 'msg-body' });
         var header = el('div', { className: 'msg-header' });
@@ -1234,6 +1249,66 @@ function renderComms(main) {
         contentDiv.appendChild(renderMarkdownSafe(msg.content));
         body.appendChild(contentDiv);
         bubble.appendChild(body);
+        if (isOwn) {
+          (function(m, bbl, bodyEl, contentEl) {
+            var actions = el('div', { className: 'msg-actions' });
+            var editBtn = el('button', { className: 'msg-action-btn', onClick: function(e) {
+              e.stopPropagation();
+              actions.style.display = 'none';
+              var editArea = el('div', { className: 'msg-edit-area' });
+              var textarea = el('textarea', { className: 'msg-edit-textarea' });
+              textarea.value = m.content;
+              var editActions = el('div', { className: 'msg-edit-actions' });
+              var saveBtn = el('button', { className: 'msg-edit-save', onClick: function() {
+                var newContent = textarea.value.trim();
+                if (!newContent) return;
+                API.patch('/api/messages/' + m.id, { content: newContent }).then(function(res) {
+                  if (res && res.message) {
+                    m.content = res.message.content;
+                    var idx = S.messages.findIndex ? S.messages.findIndex(function(x) { return x.id === m.id; }) : -1;
+                    if (idx === -1) { for (var i = 0; i < S.messages.length; i++) { if (S.messages[i].id === m.id) { idx = i; break; } } }
+                    if (idx !== -1) S.messages[idx].content = res.message.content;
+                    clearChildren(contentEl);
+                    contentEl.appendChild(renderMarkdownSafe(res.message.content));
+                    bodyEl.removeChild(editArea);
+                    actions.style.display = '';
+                    toast('Message updated');
+                  } else {
+                    toast('Could not save edit', 'error');
+                    bodyEl.removeChild(editArea);
+                    actions.style.display = '';
+                  }
+                });
+              } }, 'Save');
+              var cancelBtn = el('button', { className: 'msg-edit-cancel', onClick: function() {
+                bodyEl.removeChild(editArea);
+                actions.style.display = '';
+              } }, 'Cancel');
+              editActions.appendChild(saveBtn);
+              editActions.appendChild(cancelBtn);
+              editArea.appendChild(textarea);
+              editArea.appendChild(editActions);
+              bodyEl.appendChild(editArea);
+              textarea.focus();
+              textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+            } }, 'Edit');
+            var delBtn = el('button', { className: 'msg-action-btn delete', onClick: function(e) {
+              e.stopPropagation();
+              API.del('/api/messages/' + m.id).then(function(ok) {
+                if (ok) {
+                  S.messages = S.messages.filter(function(x) { return x.id !== m.id; });
+                  if (bbl.parentNode) bbl.parentNode.removeChild(bbl);
+                  toast('Message deleted');
+                } else {
+                  toast('Could not delete message', 'error');
+                }
+              });
+            } }, 'Delete');
+            actions.appendChild(editBtn);
+            actions.appendChild(delBtn);
+            bbl.appendChild(actions);
+          })(msg, bubble, body, contentDiv);
+        }
         msgArea.appendChild(bubble);
       });
       chatArea.appendChild(msgArea);
@@ -2544,6 +2619,21 @@ function smartRefresh() {
 }
 socket.on('message:new', smartRefresh);
 socket.on('message:deleted', smartRefresh);
+socket.on('message:edited', function(updated) {
+  for (var i = 0; i < S.messages.length; i++) {
+    if (S.messages[i].id === updated.id) {
+      S.messages[i].content = updated.content;
+      break;
+    }
+  }
+  if (S.view === 'comms') {
+    var bubble = document.querySelector('[data-msg-id="' + updated.id + '"]');
+    if (bubble) {
+      var contentEl = bubble.querySelector('.msg-content');
+      if (contentEl) { clearChildren(contentEl); contentEl.appendChild(renderMarkdownSafe(updated.content)); }
+    }
+  }
+});
 socket.on('task:new', smartRefresh);
 socket.on('task:updated', smartRefresh);
 socket.on('usage:new', smartRefresh);
