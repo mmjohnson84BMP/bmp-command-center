@@ -1641,11 +1641,37 @@ function renderBilling(main) {
   header.appendChild(el('button', { className: 'btn-new-task', onClick: function() { openServiceModal(null); } }, '+ Add Service'));
   wrap.appendChild(header);
 
+  // Compute projected Claude cost from teams-plan usage data
+  // Logic: (validated_spend / days_elapsed) * days_in_month, capped at $1,060
+  var CLAUDE_OVERAGE_CAP = 1000;
+  var CLAUDE_SUBSCRIPTION = 60;
+  var CLAUDE_MAX = CLAUDE_SUBSCRIPTION + CLAUDE_OVERAGE_CAP; // $1,060
+  var claudeProjected = CLAUDE_MAX; // default to cap if no data
+  if (S.teamsPlan && S.teamsPlan.plan) {
+    var tPlan = S.teamsPlan.plan;
+    var validatedSpend = parseFloat(tPlan.validated_spend) || 0;
+    if (validatedSpend > 0) {
+      var now = new Date();
+      var dayOfMonth = now.getDate();
+      var daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      var daysElapsed = Math.max(dayOfMonth, 1);
+      var pace = (validatedSpend / daysElapsed) * daysInMonth;
+      claudeProjected = Math.min(pace, CLAUDE_MAX);
+    } else {
+      // No validated spend yet — use subscription cost only
+      claudeProjected = CLAUDE_SUBSCRIPTION;
+    }
+  }
+  claudeProjected = Math.round(claudeProjected * 100) / 100;
+
   // Monthly burn summary banner
   var totalBurn = 0;
   var replitBurn = 0;
   for (var bi = 0; bi < S.services.length; bi++) {
-    var cost = S.services[bi].monthly_cost;
+    var svcBi = S.services[bi];
+    var cost = svcBi.monthly_cost;
+    // Skip Claude/Anthropic static cost — we inject projected cost instead
+    if (svcBi.name && /claude|anthropic/i.test(svcBi.name)) continue;
     if (!cost) continue;
     var parsed = 0;
     // Try to extract dollar amount — handle ranges like "$300-400" (use midpoint)
@@ -1666,10 +1692,12 @@ function renderBilling(main) {
       parsed = parsed / 12;
     }
     totalBurn += parsed;
-    if (S.services[bi].name && /replit/i.test(S.services[bi].name)) {
+    if (svcBi.name && /replit/i.test(svcBi.name)) {
       replitBurn += parsed;
     }
   }
+  // Add projected Claude cost into total burn
+  totalBurn += claudeProjected;
   if (totalBurn > 0) {
     var banner = el('div', { className: 'billing-burn-banner' });
     banner.appendChild(el('span', { className: 'billing-burn-icon' }, '\uD83D\uDD25'));
@@ -1739,10 +1767,17 @@ function renderBilling(main) {
               pm.appendChild(el('span', null, svc.payment_method));
               meta.appendChild(pm);
             }
-            if (svc.monthly_cost) {
+            if (svc.monthly_cost || /claude|anthropic/i.test(svc.name || '')) {
               var mc = el('span', { className: 'billing-meta-item' });
               mc.appendChild(el('span', { className: 'billing-meta-label' }, '\uD83D\uDCB0'));
-              mc.appendChild(el('span', null, svc.monthly_cost));
+              if (/claude|anthropic/i.test(svc.name || '')) {
+                // Show dynamic projected cost instead of static value
+                var projLabel = '$' + claudeProjected.toFixed(0) + '/mo (projected)';
+                var projSpan = el('span', { style: { color: 'var(--orange)', fontWeight: '600' } }, projLabel);
+                mc.appendChild(projSpan);
+              } else {
+                mc.appendChild(el('span', null, svc.monthly_cost));
+              }
               meta.appendChild(mc);
             }
             if (svc.balance) {
