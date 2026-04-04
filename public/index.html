@@ -2206,7 +2206,6 @@ function renderUsage(main) {
         var seatStats = el('div', { className: 'usage-agent-stats' });
         seatStats.appendChild(createStat(isCalibrated ? 'Anthropic MTD' : 'Est. Cost', fmtCost(calibratedSeatCost), 'cost'));
         if (isCalibrated) seatStats.appendChild(createStat('Self-Reported', fmtCost(sd.cost), ''));
-        seatStats.appendChild(createStat('Cache Saved', fmtCost(sd.savings), 'green'));
         seatStats.appendChild(createStat('Sessions', String(sd.sessions)));
         seatCard.appendChild(seatStats);
         seatRow.appendChild(seatCard);
@@ -2245,22 +2244,15 @@ function renderUsage(main) {
 
       var stats = el('div', { className: 'usage-agent-stats' });
       var totalTokens = (parseInt(ag.total_input_tokens) || 0) + (parseInt(ag.total_output_tokens) || 0);
+      var agSessionCount = parseInt(ag.session_count) || 0;
+      var agAvgSession = agIsCalibrated && agSessionCount > 0 ? agCalibratedCost / agSessionCount : (agSessionCount > 0 ? parseFloat(ag.avg_cost_per_session) || 0 : 0);
       stats.appendChild(createStat('Total Tokens', fmtTokens(totalTokens)));
       stats.appendChild(createStat(agIsCalibrated ? 'Calibrated Cost' : 'Est. Cost', fmtCost(agIsCalibrated ? agCalibratedCost : ag.total_cost_usd), 'cost'));
       if (agIsCalibrated) stats.appendChild(createStat('Self-Reported', fmtCost(ag.total_cost_usd), ''));
-      stats.appendChild(createStat('Sessions', String(parseInt(ag.session_count) || 0)));
-      stats.appendChild(createStat('Avg/Session', fmtCost(ag.avg_cost_per_session), 'cost'));
+      stats.appendChild(createStat('Sessions', String(agSessionCount)));
+      stats.appendChild(createStat('Avg/Session', fmtCost(agAvgSession), 'cost'));
       stats.appendChild(createStat('Avg Tools', String(parseFloat(ag.avg_tool_calls || 0).toFixed(1))));
-      stats.appendChild(createStat('Avg Duration', fmtDuration(ag.avg_duration)));
       card.appendChild(stats);
-
-      var cacheRate = parseFloat(ag.cache_hit_rate) || 0;
-      var cacheBar = el('div', { className: 'usage-cache-bar' });
-      cacheBar.appendChild(el('div', { className: 'usage-cache-bar-label' }, 'Cache Hit Rate: ' + cacheRate.toFixed(1) + '%'));
-      var cacheTrack = el('div', { className: 'usage-cache-track' });
-      cacheTrack.appendChild(el('div', { className: 'usage-cache-fill', style: { width: Math.min(cacheRate, 100) + '%' } }));
-      cacheBar.appendChild(cacheTrack);
-      card.appendChild(cacheBar);
 
       agentGrid.appendChild(card);
     }
