@@ -796,10 +796,18 @@ body::before {
 
 @media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } }
 @media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } }
+
+/* ═══════════════════════════════════════════════════════════
+   DYNAMIC BACKGROUND — Particle Constellation + Matrix Rain + Breathing Aurora
+   ═══════════════════════════════════════════════════════════ */
+#bgCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+#app { position: relative; z-index: 1; }
+.overlay { z-index: 10; }
 </style>
 </head>
 <body>
 
+<canvas id="bgCanvas"></canvas>
 <div id="app"></div>
 <div class="overlay" id="overlay"></div>
 <div class="drawer" id="drawer"></div>
@@ -3259,6 +3267,228 @@ socket.on('message:edited', function(updated) {
 socket.on('task:new', smartRefresh);
 socket.on('task:updated', smartRefresh);
 socket.on('usage:new', smartRefresh);
+})();
+</script>
+<script>
+// ═══════════════════════════════════════════════════════════
+// DYNAMIC BACKGROUND — 3 layers: Aurora + Matrix + Constellation
+// ═══════════════════════════════════════════════════════════
+(function() {
+  var canvas = document.getElementById('bgCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, dpr;
+  var particles = [];
+  var matrixStreams = [];
+  var auroraBlobs = [];
+  var time = 0;
+
+  // ── Palette (Obsidian Hearth warm tones) ──
+  var GOLD = { r: 212, g: 165, b: 90 };
+  var AMBER = { r: 200, g: 135, b: 92 };
+  var GREEN = { r: 124, g: 154, b: 110 };
+  var TAN = { r: 191, g: 168, b: 122 };
+  var MUTED = { r: 159, g: 141, b: 131 };
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initParticles();
+    initMatrix();
+    initAurora();
+  }
+
+  // ── Layer 1: Breathing Aurora Blobs ──
+  function initAurora() {
+    auroraBlobs = [];
+    var colors = [
+      { r: GOLD.r, g: GOLD.g, b: GOLD.b },
+      { r: AMBER.r, g: AMBER.g, b: AMBER.b },
+      { r: GREEN.r, g: GREEN.g, b: GREEN.b },
+      { r: 100, g: 80, b: 60 }
+    ];
+    for (var i = 0; i < 4; i++) {
+      auroraBlobs.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        radius: 200 + Math.random() * 300,
+        color: colors[i % colors.length],
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: (Math.random() - 0.5) * 0.1,
+        phase: Math.random() * Math.PI * 2,
+        breathSpeed: 0.003 + Math.random() * 0.004
+      });
+    }
+  }
+
+  function drawAurora() {
+    for (var i = 0; i < auroraBlobs.length; i++) {
+      var b = auroraBlobs[i];
+      b.x += b.vx;
+      b.y += b.vy;
+      b.phase += b.breathSpeed;
+      // Wrap around
+      if (b.x < -b.radius) b.x = W + b.radius;
+      if (b.x > W + b.radius) b.x = -b.radius;
+      if (b.y < -b.radius) b.y = H + b.radius;
+      if (b.y > H + b.radius) b.y = -b.radius;
+      var breathScale = 0.8 + 0.4 * Math.sin(b.phase);
+      var r = b.radius * breathScale;
+      var alpha = 0.04 + 0.02 * Math.sin(b.phase + 1);
+      var grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, r);
+      grad.addColorStop(0, 'rgba(' + b.color.r + ',' + b.color.g + ',' + b.color.b + ',' + alpha + ')');
+      grad.addColorStop(0.5, 'rgba(' + b.color.r + ',' + b.color.g + ',' + b.color.b + ',' + (alpha * 0.4) + ')');
+      grad.addColorStop(1, 'rgba(' + b.color.r + ',' + b.color.g + ',' + b.color.b + ',0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(b.x - r, b.y - r, r * 2, r * 2);
+    }
+  }
+
+  // ── Layer 2: Matrix Rain (warm gold streams) ──
+  var matrixChars = 'FLOWSTACKBMPKUBRICKZIMMERSOCRATESDAVINCI0123456789'.split('');
+
+  function initMatrix() {
+    matrixStreams = [];
+    var cols = Math.floor(W / 28);
+    for (var i = 0; i < cols; i++) {
+      if (Math.random() > 0.4) continue; // sparse — only ~60% of columns
+      matrixStreams.push({
+        x: i * 28 + 14,
+        y: Math.random() * H * -1,
+        speed: 0.3 + Math.random() * 0.8,
+        chars: [],
+        length: 8 + Math.floor(Math.random() * 14),
+        nextChar: 0,
+        interval: 3 + Math.floor(Math.random() * 5),
+        tick: 0
+      });
+    }
+  }
+
+  function drawMatrix() {
+    for (var i = 0; i < matrixStreams.length; i++) {
+      var s = matrixStreams[i];
+      s.y += s.speed;
+      s.tick++;
+      // Add new character at interval
+      if (s.tick >= s.interval) {
+        s.tick = 0;
+        s.chars.push({
+          char: matrixChars[Math.floor(Math.random() * matrixChars.length)],
+          y: s.y,
+          life: 1,
+          flicker: Math.random() > 0.7
+        });
+        if (s.chars.length > s.length) s.chars.shift();
+      }
+      // Draw characters
+      ctx.font = '11px ' + getComputedStyle(document.body).getPropertyValue('--mono').trim();
+      for (var j = 0; j < s.chars.length; j++) {
+        var c = s.chars[j];
+        var age = (s.chars.length - j) / s.chars.length;
+        var alpha = age * 0.12;
+        // Head character is brighter
+        if (j === s.chars.length - 1) alpha = 0.25;
+        // Flicker effect
+        if (c.flicker && Math.random() > 0.7) {
+          c.char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+        }
+        ctx.fillStyle = 'rgba(' + GOLD.r + ',' + GOLD.g + ',' + GOLD.b + ',' + alpha + ')';
+        ctx.fillText(c.char, s.x, c.y);
+      }
+      // Reset stream when fully off screen
+      if (s.chars.length > 0 && s.chars[0].y > H + 100) {
+        s.y = Math.random() * -200;
+        s.chars = [];
+      }
+    }
+  }
+
+  // ── Layer 3: Particle Constellation ──
+  function initParticles() {
+    particles = [];
+    var count = Math.min(Math.floor((W * H) / 18000), 80);
+    var colors = [GOLD, AMBER, TAN, GREEN, MUTED];
+    for (var i = 0; i < count; i++) {
+      var col = colors[Math.floor(Math.random() * colors.length)];
+      particles.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.2,
+        radius: 1 + Math.random() * 1.5,
+        color: col,
+        alpha: 0.15 + Math.random() * 0.25,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.01 + Math.random() * 0.02
+      });
+    }
+  }
+
+  function drawParticles() {
+    var connectDist = 120;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.pulse += p.pulseSpeed;
+      // Wrap
+      if (p.x < 0) p.x = W;
+      if (p.x > W) p.x = 0;
+      if (p.y < 0) p.y = H;
+      if (p.y > H) p.y = 0;
+
+      var pAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.pulse));
+
+      // Draw particle with glow
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius + 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + (pAlpha * 0.2) + ')';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + p.color.r + ',' + p.color.g + ',' + p.color.b + ',' + pAlpha + ')';
+      ctx.fill();
+
+      // Connections
+      for (var j = i + 1; j < particles.length; j++) {
+        var q = particles[j];
+        var dx = p.x - q.x;
+        var dy = p.y - q.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < connectDist) {
+          var lineAlpha = (1 - dist / connectDist) * 0.08;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(q.x, q.y);
+          ctx.strokeStyle = 'rgba(' + GOLD.r + ',' + GOLD.g + ',' + GOLD.b + ',' + lineAlpha + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  // ── Animation Loop ──
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    time++;
+    drawAurora();    // deepest layer
+    drawMatrix();    // middle layer
+    drawParticles(); // top layer
+    requestAnimationFrame(frame);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  frame();
 })();
 </script>
 </body>
