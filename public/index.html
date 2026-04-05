@@ -918,6 +918,79 @@ body::before {
 .bp-catalog-label { color: var(--text-muted); }
 .bp-catalog-value { color: var(--text-secondary); font-weight: 600; }
 
+/* ═══════════════════════════════════════════════════════════
+   VIDEO PIPELINE — Tab 3
+   ═══════════════════════════════════════════════════════════ */
+
+/* Video palette extras */
+:root {
+  --bp-blue-cool: #5b8fd5;
+  --bp-blue-cool-bg: rgba(91,143,213,0.08);
+  --bp-blue-cool-border: rgba(91,143,213,0.25);
+  --bp-blue-purp: #7b6fc8;
+  --bp-blue-purp-bg: rgba(123,111,200,0.08);
+  --bp-blue-purp-border: rgba(123,111,200,0.25);
+}
+
+/* Tier selector bar */
+.bp-tier-selector { display: flex; gap: 6px; margin-bottom: 0; flex-wrap: wrap; }
+.bp-tier-btn { flex: 1; min-width: 120px; border-radius: var(--radius-md); padding: 12px 16px; cursor: pointer; transition: all 300ms var(--ease); box-shadow: 0 3px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.03); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.1); background: linear-gradient(180deg, rgba(30,27,24,0.8) 0%, rgba(22,19,16,0.9) 100%); text-align: center; }
+.bp-tier-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+.bp-tier-btn-num { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 2px; }
+.bp-tier-btn-name { font-size: 11px; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px; }
+.bp-tier-btn-badge { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+
+/* Active tier button */
+.bp-tier-btn-active { border-color: rgba(109,186,109,0.3); background: linear-gradient(180deg, rgba(109,186,109,0.1) 0%, rgba(109,186,109,0.04) 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 30px rgba(109,186,109,0.06), inset 0 1px 0 rgba(109,186,109,0.08); }
+.bp-tier-btn-active .bp-tier-btn-name { color: var(--bp-green); }
+.bp-tier-btn-active .bp-tier-btn-badge { background: rgba(109,186,109,0.2); color: var(--bp-green); }
+
+/* Locked tier buttons */
+.bp-tier-btn-locked { opacity: 0.55; }
+.bp-tier-btn-locked:hover { opacity: 0.75; }
+.bp-tier-btn-locked .bp-tier-btn-badge { background: rgba(159,141,131,0.15); color: var(--text-muted); }
+
+/* Color-coded tier buttons on select */
+.bp-tier-btn-blue { border-color: rgba(91,143,213,0.3); background: linear-gradient(180deg, rgba(91,143,213,0.1) 0%, rgba(91,143,213,0.04) 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 30px rgba(91,143,213,0.06), inset 0 1px 0 rgba(91,143,213,0.08); opacity: 1; }
+.bp-tier-btn-blue .bp-tier-btn-name { color: var(--bp-blue-cool); }
+.bp-tier-btn-blue .bp-tier-btn-badge { background: rgba(91,143,213,0.2); color: var(--bp-blue-cool); }
+.bp-tier-btn-bluepurp { border-color: rgba(123,111,200,0.3); background: linear-gradient(180deg, rgba(123,111,200,0.1) 0%, rgba(123,111,200,0.04) 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 30px rgba(123,111,200,0.06), inset 0 1px 0 rgba(123,111,200,0.08); opacity: 1; }
+.bp-tier-btn-bluepurp .bp-tier-btn-name { color: var(--bp-blue-purp); }
+.bp-tier-btn-bluepurp .bp-tier-btn-badge { background: rgba(123,111,200,0.2); color: var(--bp-blue-purp); }
+.bp-tier-btn-gold-sel { border-color: rgba(212,165,90,0.3); background: linear-gradient(180deg, rgba(212,165,90,0.1) 0%, rgba(212,165,90,0.04) 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 30px rgba(212,165,90,0.06), inset 0 1px 0 rgba(212,165,90,0.08); opacity: 1; }
+.bp-tier-btn-gold-sel .bp-tier-btn-name { color: var(--bp-gold); }
+.bp-tier-btn-gold-sel .bp-tier-btn-badge { background: rgba(212,165,90,0.2); color: var(--bp-gold); }
+.bp-tier-btn-red-sel { border-color: rgba(212,91,91,0.3); background: linear-gradient(180deg, rgba(212,91,91,0.1) 0%, rgba(212,91,91,0.04) 100%); box-shadow: 0 4px 16px rgba(0,0,0,0.3), 0 0 30px rgba(212,91,91,0.06), inset 0 1px 0 rgba(212,91,91,0.08); opacity: 1; }
+.bp-tier-btn-red-sel .bp-tier-btn-name { color: var(--bp-red); }
+.bp-tier-btn-red-sel .bp-tier-btn-badge { background: rgba(212,91,91,0.2); color: var(--bp-red); }
+
+/* Expanded tier flow area */
+.bp-tier-flow { margin-top: 0; }
+
+/* Phase cards for Tier 3 vertical flow */
+.bp-phase { border-radius: var(--radius-lg); padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04); border-bottom-width: 2px; border-bottom-style: solid; transition: all 400ms var(--ease); }
+.bp-phase:hover { transform: translateY(-2px); }
+.bp-phase-num { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px; }
+.bp-phase-title { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.bp-phase-body { font-size: 11px; color: var(--text-secondary); line-height: 1.6; }
+.bp-phase-body strong { color: var(--text); }
+.bp-phase-providers { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.bp-phase-prov { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.04); }
+
+/* Best-for badges */
+.bp-bestfor { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.bp-bestfor-tag { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 12px; background: rgba(200,135,92,0.08); border: 1px solid rgba(200,135,92,0.15); color: var(--tan); }
+
+/* LTX spine (sidebar) */
+.bp-ltx-spine { background: linear-gradient(180deg, rgba(30,27,24,1) 0%, rgba(22,19,16,1) 100%); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.1); border-radius: var(--radius-lg); padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04); }
+.bp-ltx-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--bp-green); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+.bp-ltx-row { display: flex; gap: 8px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(82,68,60,0.08); }
+.bp-ltx-row:last-child { border-bottom: none; }
+.bp-ltx-pipe-name { font-size: 10px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.bp-ltx-pipe-desc { font-size: 9px; color: var(--text-muted); line-height: 1.4; }
+.bp-ltx-tiers { display: flex; gap: 3px; margin-top: 4px; }
+.bp-ltx-tier-dot { width: 6px; height: 6px; border-radius: 50%; }
+
 @media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } }
 @media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } }
 
@@ -3054,8 +3127,12 @@ function renderBlueprint(main) {
 }
 
 function renderBlueprintVideo(main) {
+  if (!S._videoTier) S._videoTier = 't1';
   var wrap = el('div', { className: 'bp-wrap' });
   var mainCol = el('div', { className: 'bp-main' });
+  var sidebar = el('div', { className: 'bp-sidebar' });
+
+  // Header
   var header = el('div', { className: 'bp-header' });
   header.appendChild(el('h1', { className: 'bp-title' }, 'Video Asset Pipeline Blueprint'));
   var sub = el('div', { className: 'bp-subtitle' });
@@ -3068,9 +3145,340 @@ function renderBlueprintVideo(main) {
   sub.appendChild(document.createTextNode(' Upload'));
   header.appendChild(sub);
   mainCol.appendChild(header);
-  mainCol.appendChild(el('div', { style: { textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)', fontSize: '13px' } }, 'Video Pipeline — coming next build.'));
+
+  // Tier selector
+  var tierSel = el('div', { className: 'bp-tier-selector' });
+  var tiers = [
+    { key: 't1', num: 'Tier 1', name: 'Seamless Forward Loop', badge: '\u2713 ACTIVE', active: true, selClass: 'bp-tier-btn-active' },
+    { key: 't2a', num: 'Tier 2a', name: 'Static Slideshow', badge: '\uD83D\uDD12 NEXT', active: false, selClass: 'bp-tier-btn-blue' },
+    { key: 't2b', num: 'Tier 2b', name: 'Breathing Slideshow', badge: '\uD83D\uDD12 NEXT', active: false, selClass: 'bp-tier-btn-bluepurp' },
+    { key: 't3a', num: 'Tier 3a', name: 'Storyboard \u2014 Narrative', badge: '\uD83D\uDD12 FUTURE', active: false, selClass: 'bp-tier-btn-gold-sel' },
+    { key: 't3b', num: 'Tier 3b', name: 'Storyboard \u2014 Music Video', badge: '\uD83D\uDD12 FUTURE', active: false, selClass: 'bp-tier-btn-red-sel' }
+  ];
+  for (var ti = 0; ti < tiers.length; ti++) {
+    (function(t) {
+      var isSelected = S._videoTier === t.key;
+      var btnClass = 'bp-tier-btn';
+      if (isSelected) btnClass += ' ' + t.selClass;
+      else if (!t.active) btnClass += ' bp-tier-btn-locked';
+      else btnClass += ' bp-tier-btn-active';
+      var btn = el('div', { className: btnClass, onClick: function() { S._videoTier = t.key; render(); } });
+      btn.appendChild(el('div', { className: 'bp-tier-btn-num' }, t.num));
+      btn.appendChild(el('div', { className: 'bp-tier-btn-name' }, t.name));
+      btn.appendChild(el('span', { className: 'bp-tier-btn-badge' }, t.badge));
+      tierSel.appendChild(btn);
+    })(tiers[ti]);
+  }
+  mainCol.appendChild(tierSel);
+
+  // Connector
+  var conn = el('div', { className: 'bp-connector bp-connector-green' });
+  var cl = el('div', { className: 'bp-connector-line' });
+  cl.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn.appendChild(cl);
+  mainCol.appendChild(conn);
+
+  // Tier flow area
+  var flow = el('div', { className: 'bp-tier-flow' });
+
+  if (S._videoTier === 't1') renderVideoTier1(flow);
+  else if (S._videoTier === 't2a') renderVideoTier2a(flow);
+  else if (S._videoTier === 't2b') renderVideoTier2b(flow);
+  else if (S._videoTier === 't3a') renderVideoTier3a(flow);
+  else if (S._videoTier === 't3b') renderVideoTier3b(flow);
+
+  mainCol.appendChild(flow);
+
+  // Footer
+  var footer = el('div', { className: 'bp-footer' });
+  footer.appendChild(el('div', { className: 'bp-footer-rule' }, 'Kubrick specs it. The pipeline builds it. LTX owns the stack.'));
+  footer.appendChild(el('div', { className: 'bp-footer-sub' }, 'Video Asset Pipeline Blueprint \u00B7 April 2026'));
+  mainCol.appendChild(footer);
+
+  // ── SIDEBAR: LTX Spine ──
+  var ltx = el('div', { className: 'bp-ltx-spine' });
+  var ltxTitle = el('div', { className: 'bp-ltx-title' });
+  ltxTitle.appendChild(document.createTextNode('\u26A1 LTX Vertical Integration'));
+  ltx.appendChild(ltxTitle);
+
+  var ltxPipes = [
+    { name: 'TI2VidTwoStages', desc: 'Production text/image-to-video', tiers: ['green','green','blue','purple','gold','red'] },
+    { name: 'DistilledPipeline', desc: 'Fast 8-step draft renders', tiers: ['green','green','blue','purple','gold','red'] },
+    { name: 'KeyframeInterpolation', desc: 'Start+end frame \u2192 seamless loop', tiers: ['green','','','','',''] },
+    { name: 'ICLoraPipeline', desc: 'Character locking via LoRA', tiers: ['','','','','gold','red'] },
+    { name: 'A2VidPipeline', desc: 'Audio-conditioned video', tiers: ['','','','','','red'] },
+    { name: 'RetakePipeline', desc: 'Re-render one bad section', tiers: ['','','','','gold','red'] },
+    { name: 'Camera Control LoRAs', desc: 'Dolly, pan, jib, static', tiers: ['','','','','gold','red'] }
+  ];
+  var tierColors = { green: 'var(--bp-green)', blue: 'var(--bp-blue-cool)', purple: 'var(--bp-blue-purp)', gold: 'var(--bp-gold)', red: 'var(--bp-red)' };
+  for (var li = 0; li < ltxPipes.length; li++) {
+    var lp = ltxPipes[li];
+    var lpRow = el('div', { className: 'bp-ltx-row' });
+    var lpInfo = el('div', { style: { flex: '1' } });
+    lpInfo.appendChild(el('div', { className: 'bp-ltx-pipe-name' }, lp.name));
+    lpInfo.appendChild(el('div', { className: 'bp-ltx-pipe-desc' }, lp.desc));
+    var dots = el('div', { className: 'bp-ltx-tiers' });
+    for (var di = 0; di < lp.tiers.length; di++) {
+      var dotColor = lp.tiers[di] ? tierColors[lp.tiers[di]] : 'var(--border)';
+      dots.appendChild(el('div', { className: 'bp-ltx-tier-dot', style: { background: dotColor, boxShadow: lp.tiers[di] ? '0 0 4px ' + dotColor : 'none' } }));
+    }
+    lpInfo.appendChild(dots);
+    lpRow.appendChild(lpInfo);
+    lpRow.appendChild(el('span', null));
+    ltx.appendChild(lpRow);
+  }
+  sidebar.appendChild(ltx);
+
+  // ── SIDEBAR: Provider Matrix ──
+  var provSidebar = el('div', { className: 'bp-catalog' });
+  provSidebar.appendChild(el('div', { className: 'bp-catalog-title' }, 'Video Providers'));
+  var vtable = el('table', { className: 'bp-provider-table' });
+  var vth = el('tr');
+  vth.appendChild(el('th', null, 'Provider'));
+  vth.appendChild(el('th', null, 'Max Clip'));
+  vth.appendChild(el('th', null, 'Cost'));
+  vth.appendChild(el('th', null, 'Status'));
+  vtable.appendChild(vth);
+  var vProviders = [
+    { name: 'LTX-2.3', clip: '20s', cost: '$0.06/s', status: 'active' },
+    { name: 'Veo 3.1', clip: '8s', cost: '$0.15\u20130.40/s', status: 'setup' },
+    { name: 'Seedance 2.0', clip: '5s', cost: '$0.05\u20130.50/5s', status: 'setup' },
+    { name: 'Runway Gen-4', clip: '60s', cost: '~$350/mo', status: 'active' }
+  ];
+  for (var vi = 0; vi < vProviders.length; vi++) {
+    var vp = vProviders[vi];
+    var vrow = el('tr');
+    vrow.appendChild(el('td', { style: { fontWeight: '600', color: 'var(--text)' } }, vp.name));
+    vrow.appendChild(el('td', null, vp.clip));
+    vrow.appendChild(el('td', null, vp.cost));
+    var vsTd = el('td');
+    var vsClass = vp.status === 'active' ? 'bp-provider-status-active' : 'bp-provider-status-setup';
+    vsTd.appendChild(el('span', { className: 'bp-provider-status ' + vsClass }, vp.status === 'active' ? '\u2713 Active' : 'Not Set Up'));
+    vrow.appendChild(vsTd);
+    vtable.appendChild(vrow);
+  }
+  provSidebar.appendChild(vtable);
+
+  provSidebar.appendChild(el('div', { style: { marginTop: '14px', paddingTop: '10px', borderTop: '1px solid var(--border)' } }));
+  var imgTitle = el('div', { className: 'bp-catalog-title', style: { marginBottom: '8px' } });
+  imgTitle.textContent = 'Image Providers';
+  provSidebar.appendChild(imgTitle);
+  var itable = el('table', { className: 'bp-provider-table' });
+  var ith = el('tr');
+  ith.appendChild(el('th', null, 'Provider'));
+  ith.appendChild(el('th', null, 'Self-Host'));
+  ith.appendChild(el('th', null, 'Status'));
+  itable.appendChild(ith);
+  var iProviders = [
+    { name: 'LTX Image', host: 'Yes (future)', status: 'setup' },
+    { name: 'Nano Banana', host: 'No', status: 'active' },
+    { name: 'Flux 1.1 Pro', host: 'No', status: 'active' },
+    { name: 'DALL-E', host: 'No', status: 'active' }
+  ];
+  for (var ii = 0; ii < iProviders.length; ii++) {
+    var ip = iProviders[ii];
+    var irow = el('tr');
+    irow.appendChild(el('td', { style: { fontWeight: '600', color: 'var(--text)' } }, ip.name));
+    irow.appendChild(el('td', null, ip.host));
+    var isTd = el('td');
+    var isClass = ip.status === 'active' ? 'bp-provider-status-active' : 'bp-provider-status-setup';
+    isTd.appendChild(el('span', { className: 'bp-provider-status ' + isClass }, ip.status === 'active' ? '\u2713 Active' : 'Roadmap'));
+    irow.appendChild(isTd);
+    itable.appendChild(irow);
+  }
+  provSidebar.appendChild(itable);
+
+  provSidebar.appendChild(el('div', { style: { marginTop: '12px', fontSize: '10px', color: 'var(--bp-green)', fontWeight: '600', fontStyle: 'italic' } }, 'LTX is the long-term primary for video AND image. Own the generation layer.'));
+  sidebar.appendChild(provSidebar);
+
   wrap.appendChild(mainCol);
+  wrap.appendChild(sidebar);
   main.appendChild(wrap);
+}
+
+// ── Tier renderers ──
+
+function _videoConveyor(parent, steps, zoneColor) {
+  var conveyor = el('div', { className: 'bp-conveyor' });
+  for (var i = 0; i < steps.length; i++) {
+    if (i > 0) {
+      var arrow = el('div', { className: 'bp-pipe-arrow', style: { color: zoneColor } });
+      arrow.appendChild(document.createTextNode('\u25B6'));
+      conveyor.appendChild(arrow);
+    }
+    var s = steps[i];
+    var step = el('div', { className: 'bp-pipe-step', style: { background: 'linear-gradient(180deg, ' + (s.bg || 'rgba(109,186,109,0.08)') + ' 0%, rgba(22,19,16,0.4) 100%)', borderColor: s.border || 'rgba(109,186,109,0.15)' } });
+    step.appendChild(el('span', { className: 'bp-pipe-icon' }, s.icon));
+    step.appendChild(el('div', { className: 'bp-pipe-name', style: { color: zoneColor } }, s.name));
+    step.appendChild(el('div', { className: 'bp-pipe-detail' }, s.detail));
+    if (s.providers) {
+      var provs = el('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '3px', marginTop: '6px', justifyContent: 'center' } });
+      for (var pi = 0; pi < s.providers.length; pi++) {
+        provs.appendChild(el('span', { className: 'bp-phase-prov', style: { background: 'rgba(109,186,109,0.08)', border: '1px solid rgba(109,186,109,0.15)', color: zoneColor, fontSize: '8px' } }, s.providers[pi]));
+      }
+      step.appendChild(provs);
+    }
+    conveyor.appendChild(step);
+  }
+  parent.appendChild(conveyor);
+}
+
+function renderVideoTier1(flow) {
+  var zone = el('div', { className: 'bp-zone bp-zone-pipeline' });
+  var label = el('div', { className: 'bp-zone-label' });
+  label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  label.appendChild(document.createTextNode('Tier 1 \u2014 Seamless Forward Loop'));
+  zone.appendChild(label);
+
+  _videoConveyor(zone, [
+    { icon: '\uD83D\uDDBC\uFE0F', name: 'Anchor Image', detail: 'Scene from archetype', providers: ['LTX', 'Flux 1.1', 'Nano Banana', 'DALL-E'] },
+    { icon: '\uD83C\uDFAC', name: 'Video Clip', detail: 'First+last frame loop', providers: ['LTX-2.3 (20s)', 'Veo 3.1 (8s)'] },
+    { icon: '\uD83C\uDFB5', name: 'Audio', detail: 'Routed per Tab 2' },
+    { icon: '\u2699\uFE0F', name: 'Remotion', detail: 'Loop to target dur' },
+    { icon: '\u2705', name: 'QA Gate', detail: 'Res, sync, seam' },
+    { icon: '\uD83D\uDCE4', name: 'Upload', detail: 'YouTube + SEO' }
+  ], 'var(--bp-green)');
+
+  zone.appendChild(el('div', { style: { fontSize: '10px', color: 'var(--text-muted)', marginTop: '12px', textAlign: 'center' } }, 'Shorts: 30\u201360s \u00B7 Medium: 10\u201330min \u00B7 Long-form: 1\u20138+ hours \u00B7 No ping-pong \u00B7 RIFE seam closure if needed'));
+  flow.appendChild(zone);
+}
+
+function renderVideoTier2a(flow) {
+  var zone = el('div', { className: 'bp-zone', style: { background: 'linear-gradient(180deg, rgba(91,143,213,0.1) 0%, rgba(91,143,213,0.04) 100%)', border: '1px solid rgba(91,143,213,0.25)', borderBottom: '2px solid rgba(91,143,213,0.15)' } });
+  var label = el('div', { className: 'bp-zone-label', style: { color: 'var(--bp-blue-cool)' } });
+  label.appendChild(el('span', { className: 'bp-zone-label-dot', style: { background: 'var(--bp-blue-cool)', boxShadow: '0 0 8px rgba(91,143,213,0.3)' } }));
+  label.appendChild(document.createTextNode('Tier 2a \u2014 Static Slideshow'));
+  label.appendChild(el('span', { style: { marginLeft: '8px', fontSize: '9px', fontWeight: '700', padding: '2px 8px', borderRadius: '10px', background: 'rgba(91,143,213,0.15)', color: 'var(--bp-blue-cool)' } }, '\uD83D\uDD12 NEXT'));
+  zone.appendChild(label);
+
+  _videoConveyor(zone, [
+    { icon: '\uD83D\uDDBC\uFE0F', name: 'Image Set', detail: '5\u201320 images', providers: ['LTX', 'Flux', 'Nano Banana', 'DALL-E'] },
+    { icon: '\u23ED\uFE0F', name: 'No Video Gen', detail: 'Images only \u2014 cheap' },
+    { icon: '\uD83C\uDFB5', name: 'Audio', detail: 'Routed per Tab 2' },
+    { icon: '\u2699\uFE0F', name: 'Remotion', detail: 'Ken Burns + crossfade' },
+    { icon: '\u2705', name: 'QA Gate', detail: 'Slide timing check' },
+    { icon: '\uD83D\uDCE4', name: 'Upload', detail: 'YouTube + SEO' }
+  ], 'var(--bp-blue-cool)');
+
+  var bestFor = el('div', { className: 'bp-bestfor' });
+  var bfTags = ['Educational', 'History', 'Illustrated Scripture', 'Quote Compilations'];
+  for (var i = 0; i < bfTags.length; i++) bestFor.appendChild(el('span', { className: 'bp-bestfor-tag' }, bfTags[i]));
+  zone.appendChild(bestFor);
+  flow.appendChild(zone);
+}
+
+function renderVideoTier2b(flow) {
+  var zone = el('div', { className: 'bp-zone', style: { background: 'linear-gradient(180deg, rgba(123,111,200,0.1) 0%, rgba(123,111,200,0.04) 100%)', border: '1px solid rgba(123,111,200,0.25)', borderBottom: '2px solid rgba(123,111,200,0.15)' } });
+  var label = el('div', { className: 'bp-zone-label', style: { color: 'var(--bp-blue-purp)' } });
+  label.appendChild(el('span', { className: 'bp-zone-label-dot', style: { background: 'var(--bp-blue-purp)', boxShadow: '0 0 8px rgba(123,111,200,0.3)' } }));
+  label.appendChild(document.createTextNode('Tier 2b \u2014 Breathing Slideshow (Living Stills)'));
+  label.appendChild(el('span', { style: { marginLeft: '8px', fontSize: '9px', fontWeight: '700', padding: '2px 8px', borderRadius: '10px', background: 'rgba(123,111,200,0.15)', color: 'var(--bp-blue-purp)' } }, '\uD83D\uDD12 NEXT'));
+  zone.appendChild(label);
+
+  _videoConveyor(zone, [
+    { icon: '\uD83D\uDDBC\uFE0F', name: 'Base Images', detail: '5\u201315 images', providers: ['LTX', 'Flux', 'Nano Banana'] },
+    { icon: '\uD83C\uDF2C\uFE0F', name: 'Motion Layer', detail: '3\u20135s subtle motion', providers: ['LTX-2.3', 'Seedance 2.0'] },
+    { icon: '\uD83C\uDFB5', name: 'Audio', detail: 'Routed per Tab 2' },
+    { icon: '\u2699\uFE0F', name: 'Remotion', detail: 'Loop clips + crossfade' },
+    { icon: '\u2705', name: 'QA Gate', detail: 'Motion + timing' },
+    { icon: '\uD83D\uDCE4', name: 'Upload', detail: 'YouTube + SEO' }
+  ], 'var(--bp-blue-purp)');
+
+  zone.appendChild(el('div', { style: { fontSize: '10px', color: 'var(--text-muted)', marginTop: '10px', textAlign: 'center' } }, 'Motion types: breathing/pulse, parallax drift, particle effects, water/fire, hair/cloth sway, atmospheric haze'));
+
+  var bestFor = el('div', { className: 'bp-bestfor' });
+  var bfTags = ['Meditation Visuals', 'Nature Scenes', 'Atmospheric Storytelling'];
+  for (var i = 0; i < bfTags.length; i++) bestFor.appendChild(el('span', { className: 'bp-bestfor-tag' }, bfTags[i]));
+  zone.appendChild(bestFor);
+  flow.appendChild(zone);
+}
+
+function _renderPhase(parent, num, title, bodyHtml, providers, color, colorBg, colorBorder) {
+  var phase = el('div', { className: 'bp-phase', style: { background: 'linear-gradient(180deg, ' + colorBg + ' 0%, rgba(22,19,16,0.4) 100%)', border: '1px solid ' + colorBorder, borderBottomColor: colorBorder } });
+  phase.appendChild(el('div', { className: 'bp-phase-num', style: { color: color } }, 'Phase ' + num));
+  phase.appendChild(el('div', { className: 'bp-phase-title', style: { color: color } }, title));
+  var body = el('div', { className: 'bp-phase-body' });
+  body.innerHTML = bodyHtml;
+  phase.appendChild(body);
+  if (providers && providers.length) {
+    var provDiv = el('div', { className: 'bp-phase-providers' });
+    for (var i = 0; i < providers.length; i++) {
+      provDiv.appendChild(el('span', { className: 'bp-phase-prov', style: { background: colorBg, border: '1px solid ' + colorBorder, color: color } }, providers[i]));
+    }
+    phase.appendChild(provDiv);
+  }
+  parent.appendChild(phase);
+  // Connector
+  var conn = el('div', { className: 'bp-connector', style: { height: '30px' } });
+  var cl = el('div', { className: 'bp-connector-line', style: { background: 'linear-gradient(to bottom, ' + color + ', rgba(22,19,16,0.2))' } });
+  var dot = el('div', { className: 'bp-connector-dot', style: { background: color, boxShadow: '0 0 6px ' + color } });
+  cl.appendChild(dot);
+  conn.appendChild(cl);
+  parent.appendChild(conn);
+}
+
+function renderVideoTier3a(flow) {
+  var c = 'var(--bp-gold)';
+  var cbg = 'rgba(212,165,90,0.08)';
+  var cbr = 'rgba(212,165,90,0.25)';
+
+  var zone = el('div', { className: 'bp-zone', style: { background: 'linear-gradient(180deg, rgba(212,165,90,0.06) 0%, rgba(22,19,16,0.2) 100%)', border: '1px solid ' + cbr, borderBottom: '2px solid rgba(212,165,90,0.15)', boxShadow: '0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,165,90,0.06)' } });
+  var label = el('div', { className: 'bp-zone-label', style: { color: c } });
+  label.appendChild(el('span', { className: 'bp-zone-label-dot', style: { background: c, boxShadow: '0 0 8px rgba(212,165,90,0.3)' } }));
+  label.appendChild(document.createTextNode('Tier 3a \u2014 Storyboard Production (Narrative)'));
+  label.appendChild(el('span', { style: { marginLeft: '8px', fontSize: '9px', fontWeight: '700', padding: '2px 8px', borderRadius: '10px', background: 'rgba(212,165,90,0.15)', color: c } }, '\uD83D\uDD12 FUTURE'));
+  zone.appendChild(label);
+
+  _renderPhase(zone, '1', 'Story Arc', 'Kubrick creates narrative structure. <strong>Rising action \u2192 climax \u2192 resolution.</strong> Breaks arc into scenes based on duration target. Each scene: purpose, setting, characters, emotional beat, dialogue/narration.', null, c, cbg, cbr);
+  _renderPhase(zone, '2', 'Scene Breakdown', 'Arc splits into numbered scene cards. <strong>LTX-2.3: max 20s/gen</strong>, sweet spot 5\u201310s/clip. Example: 3-min video = ~20\u201335 scenes. Each card: narration segment, visual direction, character list.', null, c, cbg, cbr);
+  _renderPhase(zone, '3', 'Script-to-Scene Mapping', 'Full narration script written first \u2014 <strong>narration is the master timeline.</strong> Script split into per-scene segments. Scene duration = narration duration. Music cues mapped to emotional beats.', null, c, cbg, cbr);
+  _renderPhase(zone, '4', 'Storyboard (Image Gen)', '<strong>Character locking:</strong> reference images \u2192 IC-LoRA IDs \u2192 consistent appearance. <strong>Location locking:</strong> seed images for recurring settings. Lighting/time-of-day continuity across storyboard.', ['LTX Image (future)', 'Nano Banana', 'Flux'], c, cbg, cbr);
+  _renderPhase(zone, '5', 'Video Generation (Directed)', 'Storyboard image + video prompt per scene. Kubrick directs: <strong>camera movement</strong> (dolly, pan, jib, static), subject motion, emotional tone. <strong>LTX camera control LoRAs</strong> for precise direction.', ['LTX-2.3', 'Veo 3.1 (hero shots)'], c, cbg, cbr);
+
+  // Phase 6 (final — no trailing connector)
+  var p6 = el('div', { className: 'bp-phase', style: { background: 'linear-gradient(180deg, ' + cbg + ' 0%, rgba(22,19,16,0.4) 100%)', border: '1px solid ' + cbr, borderBottomColor: cbr } });
+  p6.appendChild(el('div', { className: 'bp-phase-num', style: { color: c } }, 'Phase 6'));
+  p6.appendChild(el('div', { className: 'bp-phase-title', style: { color: c } }, 'Editing & Assembly'));
+  var p6Body = el('div', { className: 'bp-phase-body' });
+  p6Body.innerHTML = 'Remotion <strong>cinematic_narrative</strong> template. Multi-clip timeline in scene order. Cuts: hard cuts, crossfades, fade-to-black. <strong>3 audio tracks:</strong> narration (master), Zimmer score (ducked), SFX/foley. Title cards, credits, overlays. \u2192 <strong>QA Gate \u2192 Upload.</strong>';
+  p6.appendChild(p6Body);
+  zone.appendChild(p6);
+
+  flow.appendChild(zone);
+}
+
+function renderVideoTier3b(flow) {
+  var c = 'var(--bp-red)';
+  var cbg = 'rgba(212,91,91,0.08)';
+  var cbr = 'rgba(212,91,91,0.25)';
+
+  var zone = el('div', { className: 'bp-zone', style: { background: 'linear-gradient(180deg, rgba(212,91,91,0.06) 0%, rgba(22,19,16,0.2) 100%)', border: '1px solid ' + cbr, borderBottom: '2px solid rgba(212,91,91,0.15)', boxShadow: '0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(212,91,91,0.06)' } });
+  var label = el('div', { className: 'bp-zone-label', style: { color: c } });
+  label.appendChild(el('span', { className: 'bp-zone-label-dot', style: { background: c, boxShadow: '0 0 8px rgba(212,91,91,0.3)' } }));
+  label.appendChild(document.createTextNode('Tier 3b \u2014 Storyboard Production (Music Video)'));
+  label.appendChild(el('span', { style: { marginLeft: '8px', fontSize: '9px', fontWeight: '700', padding: '2px 8px', borderRadius: '10px', background: 'rgba(212,91,91,0.15)', color: c } }, '\uD83D\uDD12 FUTURE'));
+  zone.appendChild(label);
+
+  // Badge showing relationship to 3a
+  var badge = el('div', { style: { textAlign: 'center', padding: '10px 16px', marginBottom: '16px', fontSize: '11px', color: 'var(--text-muted)', background: 'rgba(212,91,91,0.04)', border: '1px solid rgba(212,91,91,0.12)', borderRadius: 'var(--radius-sm)', fontStyle: 'italic' } });
+  badge.appendChild(document.createTextNode('Same pipeline as 3a \u2014 the song replaces the script as master timeline'));
+  zone.appendChild(badge);
+
+  _renderPhase(zone, '1', 'Song Analysis (replaces Story Arc)', 'Input: the song (from artist catalog \u2014 Ferron, etc.). Kubrick analyzes: <strong>lyrics, song structure</strong> (verse/chorus/bridge/drop), tempo, emotional arc. <strong>The song IS the story</strong> \u2014 lyrics drive the visual narrative.', null, c, cbg, cbr);
+  _renderPhase(zone, '2', 'Scene Breakdown', 'Song sections \u2192 scene cards. Scene count based on musical structure. <strong>Each section gets its own visual treatment.</strong> Character and location continuity across scenes.', null, c, cbg, cbr);
+  _renderPhase(zone, '3', 'Song-to-Scene Mapping (replaces Script)', '<strong>Song sections \u2192 scene cards</strong> (not narration \u2192 scenes). Scene timing = musical timing. <strong>Cuts sync to beats</strong>, not narration pauses. Beat drops trigger visual transitions.', null, c, cbg, cbr);
+  _renderPhase(zone, '4', 'Storyboard (Image Gen)', 'Same as 3a: <strong>character locking</strong> via IC-LoRA, location locking via seed images, lighting continuity. Lyrics inform visual direction per scene.', ['LTX Image (future)', 'Nano Banana', 'Flux'], c, cbg, cbr);
+  _renderPhase(zone, '5', 'Video Generation (Directed)', 'Same as 3a but motion follows musical energy. <strong>A2VidPipeline:</strong> audio-conditioned video \u2014 video follows the music. Camera control LoRAs for precise direction.', ['LTX-2.3', 'A2VidPipeline', 'Veo 3.1'], c, cbg, cbr);
+
+  var p6 = el('div', { className: 'bp-phase', style: { background: 'linear-gradient(180deg, ' + cbg + ' 0%, rgba(22,19,16,0.4) 100%)', border: '1px solid ' + cbr, borderBottomColor: cbr } });
+  p6.appendChild(el('div', { className: 'bp-phase-num', style: { color: c } }, 'Phase 6'));
+  p6.appendChild(el('div', { className: 'bp-phase-title', style: { color: c } }, 'Editing & Assembly'));
+  var p6Body = el('div', { className: 'bp-phase-body' });
+  p6Body.innerHTML = 'Remotion <strong>music_video</strong> template. <strong>Cuts sync to beat positions.</strong> Speed ramps on drops, slow-mo on bridges. Audio layering: song (master), SFX/foley (accent). Color grading per emotional arc. \u2192 <strong>QA Gate \u2192 Upload.</strong>';
+  p6.appendChild(p6Body);
+  zone.appendChild(p6);
+
+  flow.appendChild(zone);
 }
 
 function renderBlueprintArch(main) {
