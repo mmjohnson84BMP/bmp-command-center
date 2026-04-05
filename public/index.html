@@ -590,6 +590,203 @@ body::before {
 
 @media (max-width: 900px) { .board { flex-direction: column; min-height: auto; } .board-col { min-width: 0; } .dash-grid { grid-template-columns: 1fr; } .hof-grid { grid-template-columns: 1fr; } .billing-grid { grid-template-columns: 1fr; } .usage-agent-grid { grid-template-columns: 1fr; } .agent-row { grid-template-columns: 1fr 1fr; } .sprint-hero-layout { flex-direction: column; } .sprint-hero-right { flex-wrap: wrap; } .usage-table { font-size: 11px; } .usage-table th, .usage-table td { padding: 6px 8px; } }
 @media (max-width: 768px) { .drawer { width: 100%; } .nav { padding: 0 16px; gap: 8px; } .nav-tabs { display: none; } .hamburger { display: flex; } .main { padding: 16px; } .comms-sidebar { width: 200px; min-width: 200px; } .agent-row { grid-template-columns: 1fr; } }
+
+/* ═══════════════════════════════════════════════════════════
+   BLUEPRINT — Architecture Flow Chart
+   ═══════════════════════════════════════════════════════════ */
+
+/* Zone palette */
+:root {
+  --bp-gold: #d4a55a;
+  --bp-gold-bg: rgba(212,165,90,0.08);
+  --bp-gold-border: rgba(212,165,90,0.25);
+  --bp-gold-glow: rgba(212,165,90,0.15);
+  --bp-blue: #5b9bd5;
+  --bp-blue-bg: rgba(91,155,213,0.08);
+  --bp-blue-border: rgba(91,155,213,0.25);
+  --bp-blue-glow: rgba(91,155,213,0.15);
+  --bp-purple: #9b7ec8;
+  --bp-purple-bg: rgba(155,126,200,0.08);
+  --bp-purple-border: rgba(155,126,200,0.25);
+  --bp-purple-glow: rgba(155,126,200,0.15);
+  --bp-green: #6dba6d;
+  --bp-green-bg: rgba(109,186,109,0.08);
+  --bp-green-border: rgba(109,186,109,0.25);
+  --bp-green-glow: rgba(109,186,109,0.15);
+  --bp-red: #d45b5b;
+  --bp-red-bg: rgba(212,91,91,0.08);
+  --bp-red-border: rgba(212,91,91,0.25);
+  --bp-red-glow: rgba(212,91,91,0.15);
+}
+
+.bp-wrap { display: flex; gap: 28px; animation: fadeInUp 350ms var(--ease); }
+.bp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0; position: relative; }
+.bp-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+
+/* Header */
+.bp-header { text-align: center; margin-bottom: 32px; }
+.bp-title { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; color: var(--text); margin-bottom: 4px; }
+.bp-subtitle { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); }
+.bp-subtitle span { color: var(--orange); }
+
+/* Zone containers */
+.bp-zone { position: relative; border-radius: var(--radius-lg); padding: 24px; margin-bottom: 0; transition: box-shadow 400ms var(--ease); }
+.bp-zone-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.bp-zone-label-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* Zone 1 — Channel Forge */
+.bp-zone-forge { background: var(--bp-gold-bg); border: 1px solid var(--bp-gold-border); }
+.bp-zone-forge .bp-zone-label { color: var(--bp-gold); }
+.bp-zone-forge .bp-zone-label-dot { background: var(--bp-gold); box-shadow: 0 0 8px var(--bp-gold-glow); }
+
+/* Zone 2 — Decision Engines */
+.bp-zone-engines { display: flex; gap: 20px; background: none; border: none; padding: 0; }
+.bp-engine { flex: 1; border-radius: var(--radius-lg); padding: 24px; position: relative; }
+.bp-engine-kubrick { background: var(--bp-blue-bg); border: 1px solid var(--bp-blue-border); }
+.bp-engine-kubrick .bp-zone-label { color: var(--bp-blue); }
+.bp-engine-kubrick .bp-zone-label-dot { background: var(--bp-blue); box-shadow: 0 0 8px var(--bp-blue-glow); }
+.bp-engine-zimmer { background: var(--bp-purple-bg); border: 1px solid var(--bp-purple-border); }
+.bp-engine-zimmer .bp-zone-label { color: var(--bp-purple); }
+.bp-engine-zimmer .bp-zone-label-dot { background: var(--bp-purple); box-shadow: 0 0 8px var(--bp-purple-glow); }
+
+/* Bridge between engines */
+.bp-bridge { position: absolute; top: 50%; right: -12px; width: 24px; height: 2px; z-index: 2; }
+.bp-bridge-line { width: 100%; height: 2px; background: linear-gradient(90deg, var(--bp-blue), var(--bp-purple)); position: relative; }
+.bp-bridge-pulse { position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; background: var(--bp-purple); animation: bridgePulse 2.5s ease-in-out infinite; }
+@keyframes bridgePulse { 0% { left: 0; opacity: 1; } 100% { left: calc(100% - 8px); opacity: 0.4; } }
+
+/* Zone 3 — Pipeline */
+.bp-zone-pipeline { background: var(--bp-green-bg); border: 1px solid var(--bp-green-border); }
+.bp-zone-pipeline .bp-zone-label { color: var(--bp-green); }
+.bp-zone-pipeline .bp-zone-label-dot { background: var(--bp-green); box-shadow: 0 0 8px var(--bp-green-glow); }
+
+/* Conveyor belt */
+.bp-conveyor { display: flex; align-items: center; gap: 0; overflow-x: auto; padding: 8px 0; }
+.bp-pipe-step { flex: 1; min-width: 100px; text-align: center; position: relative; padding: 14px 8px; background: rgba(109,186,109,0.06); border: 1px solid rgba(109,186,109,0.15); border-radius: var(--radius-sm); transition: all 250ms var(--ease); cursor: default; }
+.bp-pipe-step:hover { background: rgba(109,186,109,0.12); border-color: rgba(109,186,109,0.35); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(109,186,109,0.1); }
+.bp-pipe-icon { font-size: 20px; margin-bottom: 4px; display: block; }
+.bp-pipe-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--bp-green); }
+.bp-pipe-detail { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+.bp-pipe-arrow { flex-shrink: 0; width: 28px; display: flex; align-items: center; justify-content: center; color: var(--bp-green); opacity: 0.5; font-size: 14px; position: relative; }
+.bp-pipe-arrow::after { content: ''; position: absolute; width: 28px; height: 2px; background: var(--bp-green); opacity: 0.3; }
+.bp-pipe-arrow svg { position: relative; z-index: 1; }
+
+/* Zone 4 — Output */
+.bp-zone-output { background: var(--bp-red-bg); border: 1px solid var(--bp-red-border); }
+.bp-zone-output .bp-zone-label { color: var(--bp-red); }
+.bp-zone-output .bp-zone-label-dot { background: var(--bp-red); box-shadow: 0 0 8px var(--bp-red-glow); }
+
+.bp-output-card { display: flex; align-items: center; gap: 20px; }
+.bp-yt-thumb { width: 120px; height: 68px; background: rgba(212,91,91,0.12); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(212,91,91,0.2); }
+.bp-yt-thumb svg { opacity: 0.6; }
+.bp-yt-info { flex: 1; }
+.bp-yt-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.bp-yt-meta { font-size: 11px; color: var(--text-muted); }
+
+/* Feedback loop arrow */
+.bp-feedback-loop { display: flex; align-items: center; justify-content: center; padding: 8px 0; margin-top: 8px; }
+.bp-feedback-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--bp-red); opacity: 0.7; display: flex; align-items: center; gap: 8px; }
+
+/* Connection lines (SVG overlay) */
+.bp-connections { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+.bp-conn-path { fill: none; stroke-width: 2; stroke-dasharray: 6 4; opacity: 0.4; }
+.bp-conn-particle { fill: var(--orange); opacity: 0.8; }
+
+/* Animated flow dots on connections */
+@keyframes flowDown { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+
+/* Zone-to-zone connector (simple version) */
+.bp-connector { display: flex; justify-content: center; align-items: center; height: 40px; position: relative; }
+.bp-connector-line { width: 2px; height: 100%; position: relative; overflow: visible; }
+.bp-connector-dot { width: 6px; height: 6px; border-radius: 50%; position: absolute; left: -2px; animation: connDotFlow 2s ease-in-out infinite; }
+@keyframes connDotFlow { 0% { top: 0; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: calc(100% - 6px); opacity: 0; } }
+.bp-connector-gold .bp-connector-line { background: linear-gradient(to bottom, var(--bp-gold), rgba(212,165,90,0.1)); }
+.bp-connector-gold .bp-connector-dot { background: var(--bp-gold); box-shadow: 0 0 6px var(--bp-gold-glow); }
+.bp-connector-blue .bp-connector-line { background: linear-gradient(to bottom, var(--bp-blue), rgba(91,155,213,0.1)); }
+.bp-connector-blue .bp-connector-dot { background: var(--bp-blue); box-shadow: 0 0 6px var(--bp-blue-glow); }
+.bp-connector-green .bp-connector-line { background: linear-gradient(to bottom, var(--bp-green), rgba(109,186,109,0.1)); }
+.bp-connector-green .bp-connector-dot { background: var(--bp-green); box-shadow: 0 0 6px var(--bp-green-glow); }
+
+/* Input tags */
+.bp-inputs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.bp-input-tag { font-size: 10px; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; }
+.bp-input-tag-gold { background: var(--bp-gold-bg); border: 1px solid var(--bp-gold-border); color: var(--bp-gold); }
+.bp-input-tag-blue { background: var(--bp-blue-bg); border: 1px solid var(--bp-blue-border); color: var(--bp-blue); }
+.bp-input-tag-purple { background: var(--bp-purple-bg); border: 1px solid var(--bp-purple-border); color: var(--bp-purple); }
+.bp-input-tag-green { background: var(--bp-green-bg); border: 1px solid var(--bp-green-border); color: var(--bp-green); }
+.bp-input-tag-ext { background: rgba(159,141,131,0.08); border: 1px solid rgba(159,141,131,0.2); color: var(--text-muted); }
+.bp-input-tag-icon { font-size: 11px; }
+
+/* Decision output cards */
+.bp-decisions { display: flex; flex-wrap: wrap; gap: 6px; }
+.bp-decision { font-size: 10px; font-weight: 600; padding: 5px 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--text-secondary); }
+
+/* Merged spec card */
+.bp-spec-card { background: rgba(200,135,92,0.06); border: 1px solid rgba(200,135,92,0.2); border-radius: var(--radius-md); padding: 14px 18px; text-align: center; }
+.bp-spec-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--orange); margin-bottom: 6px; }
+.bp-spec-fields { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.bp-spec-field { font-size: 10px; color: var(--text-muted); background: rgba(200,135,92,0.06); padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(200,135,92,0.12); }
+
+/* Sidebar — Skill tree */
+.bp-tier-tree { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+.bp-tier-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 16px; }
+.bp-tier { position: relative; padding: 14px 16px; border-radius: var(--radius-md); margin-bottom: 8px; cursor: default; transition: all 300ms var(--ease); border: 1px solid transparent; }
+.bp-tier:last-child { margin-bottom: 0; }
+.bp-tier-active { background: rgba(109,186,109,0.08); border-color: rgba(109,186,109,0.25); }
+.bp-tier-active .bp-tier-name { color: var(--bp-green); }
+.bp-tier-active .bp-tier-badge { background: var(--bp-green); color: #161310; }
+.bp-tier-active::before { content: ''; position: absolute; left: -1px; top: 20%; height: 60%; width: 3px; background: var(--bp-green); border-radius: 2px; animation: glowPulse 3s ease-in-out infinite; }
+.bp-tier-locked { background: rgba(255,255,255,0.015); border-color: var(--border); opacity: 0.5; }
+.bp-tier-locked:hover { opacity: 0.7; }
+.bp-tier-num { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 4px; }
+.bp-tier-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.bp-tier-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+.bp-tier-badge { display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 2px 8px; border-radius: 10px; margin-top: 6px; }
+.bp-tier-locked .bp-tier-badge { background: rgba(159,141,131,0.15); color: var(--text-muted); }
+
+/* Tier connector lines */
+.bp-tier-connector { height: 8px; display: flex; justify-content: center; }
+.bp-tier-connector-line { width: 2px; height: 100%; background: var(--border); border-radius: 1px; }
+.bp-tier-active + .bp-tier-connector .bp-tier-connector-line { background: linear-gradient(to bottom, var(--bp-green), var(--border)); }
+
+/* Footer */
+.bp-footer { text-align: center; padding: 20px 0 8px; }
+.bp-footer-rule { font-size: 13px; font-weight: 700; color: var(--tan); letter-spacing: 0.5px; }
+.bp-footer-sub { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+/* Channel card in Zone 1 */
+.bp-channel-row { display: flex; gap: 16px; align-items: stretch; }
+.bp-channel-card { background: rgba(212,165,90,0.06); border: 1px solid rgba(212,165,90,0.18); border-radius: var(--radius-md); padding: 16px; flex: 0 0 200px; transition: all 250ms var(--ease); }
+.bp-channel-card:hover { border-color: rgba(212,165,90,0.4); box-shadow: 0 4px 20px rgba(212,165,90,0.08); }
+.bp-channel-name { font-size: 14px; font-weight: 800; color: var(--bp-gold); margin-bottom: 4px; }
+.bp-channel-meta { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+
+/* Template cards */
+.bp-templates { display: flex; gap: 10px; flex: 1; flex-wrap: wrap; }
+.bp-template-card { background: rgba(212,165,90,0.04); border: 1px solid rgba(212,165,90,0.12); border-radius: var(--radius-sm); padding: 12px; flex: 1; min-width: 140px; transition: all 250ms var(--ease); cursor: default; }
+.bp-template-card:hover { border-color: rgba(212,165,90,0.35); background: rgba(212,165,90,0.08); transform: translateY(-1px); }
+.bp-template-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.bp-template-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 8px; background: var(--bp-gold-bg); border: 1px solid var(--bp-gold-border); color: var(--bp-gold); margin-bottom: 6px; }
+.bp-template-props { font-size: 10px; color: var(--text-muted); line-height: 1.6; }
+
+/* Archetype pills inside templates */
+.bp-archetypes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(212,165,90,0.08); }
+.bp-archetype { font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 12px; background: rgba(200,135,92,0.08); border: 1px solid rgba(200,135,92,0.15); color: var(--tan); transition: all 200ms var(--ease); cursor: default; }
+.bp-archetype:hover { background: rgba(200,135,92,0.15); border-color: rgba(200,135,92,0.3); }
+.bp-archetype-exp { border-style: dashed; opacity: 0.7; }
+.bp-80-20 { font-size: 9px; font-weight: 800; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+.bp-80-20-bar { height: 3px; border-radius: 2px; flex: 1; background: var(--border); overflow: hidden; }
+.bp-80-20-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--bp-gold), var(--orange)); }
+
+/* Sidebar legend */
+.bp-legend { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+.bp-legend-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 12px; }
+.bp-legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 11px; color: var(--text-secondary); }
+.bp-legend-item:last-child { margin-bottom: 0; }
+.bp-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+
+@media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } }
+@media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } }
 </style>
 </head>
 <body>
@@ -960,7 +1157,7 @@ function renderNav(container) {
   } }, '\u2630'));
 
   var tabs = el('div', { className: 'nav-tabs' });
-  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }, { key: 'usage', label: 'Usage' }];
+  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'blueprint', label: 'Blueprint' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }, { key: 'usage', label: 'Usage' }];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
       var btn = el('button', { className: 'nav-tab' + (S.view === v.key ? ' active' : ''), onClick: function() { S.view = v.key; render(); } }, v.label);
@@ -2685,6 +2882,284 @@ function renderUsage(main) {
   main.replaceChildren(wrap);
 }
 
+// ═══════════════════════════════════════════════════════════
+// BLUEPRINT — Architecture Flow Chart
+// ═══════════════════════════════════════════════════════════
+
+function renderBlueprint(main) {
+  var wrap = el('div', { className: 'bp-wrap view-enter' });
+  var mainCol = el('div', { className: 'bp-main' });
+  var sidebar = el('div', { className: 'bp-sidebar' });
+
+  // ── Header ──
+  var header = el('div', { className: 'bp-header' });
+  header.appendChild(el('h1', { className: 'bp-title' }, 'FlowStack Architecture Blueprint'));
+  var sub = el('div', { className: 'bp-subtitle' });
+  sub.appendChild(document.createTextNode('Video Type '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Template '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Archetype'));
+  header.appendChild(sub);
+  mainCol.appendChild(header);
+
+  // ── ZONE 1: Channel Forge ──
+  var z1 = el('div', { className: 'bp-zone bp-zone-forge' });
+  var z1Label = el('div', { className: 'bp-zone-label' });
+  z1Label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  z1Label.appendChild(document.createTextNode('Zone 1 \u2014 Channel Forge'));
+  z1.appendChild(z1Label);
+
+  var channelRow = el('div', { className: 'bp-channel-row' });
+  // Channel card
+  var chCard = el('div', { className: 'bp-channel-card' });
+  chCard.appendChild(el('div', { className: 'bp-channel-name' }, 'Mind Rest Radio'));
+  chCard.appendChild(el('div', { className: 'bp-channel-meta' }, 'Niche: Meditation\nTone: Calm, Gentle\nVoice: Warm Female\nSchedule: 6am, 8pm, 10pm'));
+  channelRow.appendChild(chCard);
+
+  // Templates
+  var templates = el('div', { className: 'bp-templates' });
+  var tplData = [
+    { name: 'Guided Meditation Short', type: 'seamless_forward_loop', dur: '30\u201360s', narr: 'Yes', music: 'Ambient', archetypes: ['Moonlit Lake', 'Forest Rain', 'Ocean Cave'], expIdx: 2 },
+    { name: 'Ambient Loop', type: 'seamless_forward_loop', dur: '15\u201330s', narr: 'No', music: 'Full Track', archetypes: ['Deep Ocean', 'Mountain Mist'], expIdx: -1 },
+    { name: 'Sleep Session', type: 'seamless_forward_loop', dur: '2\u20138hr', narr: 'Yes', music: 'Ducked', archetypes: ['Starfield Drift', 'Rain on Glass', 'Forest Night'], expIdx: 2 }
+  ];
+  for (var ti = 0; ti < tplData.length; ti++) {
+    var t = tplData[ti];
+    var tCard = el('div', { className: 'bp-template-card' });
+    tCard.appendChild(el('div', { className: 'bp-template-name' }, t.name));
+    tCard.appendChild(el('div', { className: 'bp-template-badge' }, t.type.replace(/_/g, ' ')));
+    tCard.appendChild(el('div', { className: 'bp-template-props' }, 'Duration: ' + t.dur + '\nNarration: ' + t.narr + '\nMusic: ' + t.music));
+    var archs = el('div', { className: 'bp-archetypes' });
+    for (var ai = 0; ai < t.archetypes.length; ai++) {
+      archs.appendChild(el('span', { className: 'bp-archetype' + (ai === t.expIdx ? ' bp-archetype-exp' : '') }, t.archetypes[ai]));
+    }
+    tCard.appendChild(archs);
+    var bar8020 = el('div', { className: 'bp-80-20' });
+    bar8020.appendChild(document.createTextNode('80'));
+    var barTrack = el('div', { className: 'bp-80-20-bar' });
+    barTrack.appendChild(el('div', { className: 'bp-80-20-fill', style: { width: '80%' } }));
+    bar8020.appendChild(barTrack);
+    bar8020.appendChild(document.createTextNode('20'));
+    tCard.appendChild(bar8020);
+    templates.appendChild(tCard);
+  }
+  channelRow.appendChild(templates);
+  z1.appendChild(channelRow);
+  mainCol.appendChild(z1);
+
+  // ── Connector: Zone 1 → Zone 2 ──
+  var conn1 = el('div', { className: 'bp-connector bp-connector-gold' });
+  var connLine1 = el('div', { className: 'bp-connector-line' });
+  connLine1.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn1.appendChild(connLine1);
+  mainCol.appendChild(conn1);
+
+  // ── ZONE 2: Decision Engines ──
+  var z2 = el('div', { className: 'bp-zone bp-zone-engines' });
+
+  // Kubrick
+  var kubrick = el('div', { className: 'bp-engine bp-engine-kubrick' });
+  var kLabel = el('div', { className: 'bp-zone-label' });
+  kLabel.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  kLabel.appendChild(document.createTextNode('Kubrick \u2014 Creative Director'));
+  kubrick.appendChild(kLabel);
+
+  var kInputs = el('div', { className: 'bp-inputs' });
+  kInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Template'));
+  kInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Archetypes'));
+  kInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Analytics'));
+  kInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Topic Engine'));
+  kubrick.appendChild(kInputs);
+
+  var kDecisions = el('div', { className: 'bp-decisions' });
+  kDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Archetype Selection'));
+  kDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Scene Spec'));
+  kDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Narration Script'));
+  kDecisions.appendChild(el('span', { className: 'bp-decision' }, '80/20 Split'));
+  kubrick.appendChild(kDecisions);
+
+  // Bridge
+  var bridge = el('div', { className: 'bp-bridge' });
+  var bridgeLine = el('div', { className: 'bp-bridge-line' });
+  bridgeLine.appendChild(el('div', { className: 'bp-bridge-pulse' }));
+  bridge.appendChild(bridgeLine);
+  kubrick.appendChild(bridge);
+
+  z2.appendChild(kubrick);
+
+  // Zimmer
+  var zimmer = el('div', { className: 'bp-engine bp-engine-zimmer' });
+  var zLabel = el('div', { className: 'bp-zone-label' });
+  zLabel.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  zLabel.appendChild(document.createTextNode('Zimmer \u2014 Composer'));
+  zimmer.appendChild(zLabel);
+
+  var zInputs = el('div', { className: 'bp-inputs' });
+  zInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2190 Mood Context'));
+  zInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Music Catalog'));
+  zInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Channel Library'));
+  zInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Play History'));
+  zInputs.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Energy Analysis'));
+  zimmer.appendChild(zInputs);
+
+  var zDecisions = el('div', { className: 'bp-decisions' });
+  zDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Track Selection'));
+  zDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Segment Pick'));
+  zDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Playlist Sequence'));
+  zDecisions.appendChild(el('span', { className: 'bp-decision' }, 'Mix Spec'));
+  zimmer.appendChild(zDecisions);
+
+  z2.appendChild(zimmer);
+  mainCol.appendChild(z2);
+
+  // ── Merged KubrickVideoSpec card ──
+  var specCard = el('div', { className: 'bp-spec-card' });
+  specCard.appendChild(el('div', { className: 'bp-spec-title' }, 'KubrickVideoSpec'));
+  var specFields = el('div', { className: 'bp-spec-fields' });
+  var fields = ['content_type', 'archetype', 'scene_desc', 'audio_playlist', 'narration_script', 'duration', 'mix_spec', '80/20 badge'];
+  for (var fi = 0; fi < fields.length; fi++) {
+    specFields.appendChild(el('span', { className: 'bp-spec-field' }, fields[fi]));
+  }
+  specCard.appendChild(specFields);
+  mainCol.appendChild(specCard);
+
+  // ── Connector: Zone 2 → Zone 3 ──
+  var conn2 = el('div', { className: 'bp-connector bp-connector-blue' });
+  var connLine2 = el('div', { className: 'bp-connector-line' });
+  connLine2.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn2.appendChild(connLine2);
+  mainCol.appendChild(conn2);
+
+  // ── ZONE 3: Pipeline ──
+  var z3 = el('div', { className: 'bp-zone bp-zone-pipeline' });
+  var z3Label = el('div', { className: 'bp-zone-label' });
+  z3Label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  z3Label.appendChild(document.createTextNode('Zone 3 \u2014 Pipeline'));
+  z3.appendChild(z3Label);
+
+  var conveyor = el('div', { className: 'bp-conveyor' });
+  var pipeSteps = [
+    { icon: '\uD83D\uDDBC\uFE0F', name: 'Anchor Image', detail: 'Flux / Imagen', status: 'complete' },
+    { icon: '\uD83C\uDFAC', name: 'Video Clip', detail: 'LTX / Veo', status: 'complete' },
+    { icon: '\uD83C\uDFB5', name: 'Music', detail: 'Zimmer Select', status: 'complete' },
+    { icon: '\uD83C\uDF99\uFE0F', name: 'Narration', detail: 'ElevenLabs', status: 'processing' },
+    { icon: '\uD83C\uDFAC', name: 'Remotion', detail: 'Composition', status: 'queued' },
+    { icon: '\u2705', name: 'QA Gate', detail: 'Pass / Fail', status: 'pending' },
+    { icon: '\uD83D\uDCE4', name: 'YouTube', detail: 'Upload + SEO', status: 'pending' }
+  ];
+  for (var pi = 0; pi < pipeSteps.length; pi++) {
+    if (pi > 0) {
+      var arrow = el('div', { className: 'bp-pipe-arrow' });
+      arrow.appendChild(document.createTextNode('\u25B6'));
+      conveyor.appendChild(arrow);
+    }
+    var ps = pipeSteps[pi];
+    var step = el('div', { className: 'bp-pipe-step' });
+    step.appendChild(el('span', { className: 'bp-pipe-icon' }, ps.icon));
+    step.appendChild(el('div', { className: 'bp-pipe-name' }, ps.name));
+    step.appendChild(el('div', { className: 'bp-pipe-detail' }, ps.detail));
+    // Status dot
+    var statusColor = ps.status === 'complete' ? 'var(--bp-green)' : ps.status === 'processing' ? 'var(--bp-blue)' : 'var(--text-muted)';
+    step.appendChild(el('div', { style: { marginTop: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' } },
+      el('span', { style: { width: '6px', height: '6px', borderRadius: '50%', background: statusColor, display: 'inline-block', boxShadow: ps.status === 'complete' ? '0 0 6px var(--bp-green-glow)' : 'none' } }),
+      el('span', { style: { fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' } }, ps.status)
+    ));
+    conveyor.appendChild(step);
+  }
+  z3.appendChild(conveyor);
+  mainCol.appendChild(z3);
+
+  // ── Connector: Zone 3 → Zone 4 ──
+  var conn3 = el('div', { className: 'bp-connector bp-connector-green' });
+  var connLine3 = el('div', { className: 'bp-connector-line' });
+  connLine3.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn3.appendChild(connLine3);
+  mainCol.appendChild(conn3);
+
+  // ── ZONE 4: Output & Feedback ──
+  var z4 = el('div', { className: 'bp-zone bp-zone-output' });
+  var z4Label = el('div', { className: 'bp-zone-label' });
+  z4Label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  z4Label.appendChild(document.createTextNode('Zone 4 \u2014 Output & Feedback'));
+  z4.appendChild(z4Label);
+
+  var outputCard = el('div', { className: 'bp-output-card' });
+  // YouTube thumbnail placeholder
+  var ytThumb = el('div', { className: 'bp-yt-thumb' });
+  ytThumb.innerHTML = '<svg width="40" height="28" viewBox="0 0 40 28" fill="none"><rect width="40" height="28" rx="4" fill="rgba(212,91,91,0.15)"/><polygon points="16,7 16,21 28,14" fill="rgba(212,91,91,0.5)"/></svg>';
+  outputCard.appendChild(ytThumb);
+
+  var ytInfo = el('div', { className: 'bp-yt-info' });
+  ytInfo.appendChild(el('div', { className: 'bp-yt-title' }, 'Deep Mountain Lake \u2014 8 Hour Sleep Ambient'));
+  ytInfo.appendChild(el('div', { className: 'bp-yt-meta' }, 'Mind Rest Radio \u00B7 Published just now \u00B7 seamless_forward_loop'));
+  outputCard.appendChild(ytInfo);
+  z4.appendChild(outputCard);
+
+  // Feedback loop indicator
+  var feedback = el('div', { className: 'bp-feedback-loop' });
+  var fbTag = el('div', { className: 'bp-feedback-tag' });
+  fbTag.appendChild(document.createTextNode('\u21BB'));
+  fbTag.appendChild(document.createTextNode(' Performance data feeds back to Zone 1 \u2014 CTR, retention \u2192 archetype weights \u2192 template weights'));
+  feedback.appendChild(fbTag);
+  z4.appendChild(feedback);
+  mainCol.appendChild(z4);
+
+  // ── Footer ──
+  var footer = el('div', { className: 'bp-footer' });
+  footer.appendChild(el('div', { className: 'bp-footer-rule' }, 'Channel Forge writes. Kubrick reads. One source of truth.'));
+  footer.appendChild(el('div', { className: 'bp-footer-sub' }, 'FlowStack Architecture Blueprint \u00B7 April 2026'));
+  mainCol.appendChild(footer);
+
+  // ── SIDEBAR: Skill Tree ──
+  var tierTree = el('div', { className: 'bp-tier-tree' });
+  tierTree.appendChild(el('div', { className: 'bp-tier-title' }, 'Video Type Tiers'));
+
+  var tiers = [
+    { num: 'Tier 1', name: 'Seamless Forward Loop', desc: 'All current production. Shorts + long-form (2\u20138hr sleep/ambient).', active: true, badge: 'Active' },
+    { num: 'Tier 2', name: 'Slideshow / Living Stills', desc: 'Static and animated slideshows. Requires multi-image pipeline.', active: false, badge: 'Locked' },
+    { num: 'Tier 3', name: 'Multi-scene Cinematic', desc: 'Scene-to-scene consistency. Needs advanced prompt chaining.', active: false, badge: 'Locked' },
+    { num: 'Tier 4', name: 'Character Series', desc: 'Persistent characters + narrative state. Requires LoRA fine-tuning.', active: false, badge: 'Locked' }
+  ];
+  for (var tii = 0; tii < tiers.length; tii++) {
+    if (tii > 0) {
+      var tierConn = el('div', { className: 'bp-tier-connector' });
+      tierConn.appendChild(el('div', { className: 'bp-tier-connector-line' }));
+      tierTree.appendChild(tierConn);
+    }
+    var tr = tiers[tii];
+    var tierEl = el('div', { className: 'bp-tier ' + (tr.active ? 'bp-tier-active' : 'bp-tier-locked') });
+    tierEl.appendChild(el('div', { className: 'bp-tier-num' }, tr.num));
+    tierEl.appendChild(el('div', { className: 'bp-tier-name' }, tr.name));
+    tierEl.appendChild(el('div', { className: 'bp-tier-desc' }, tr.desc));
+    tierEl.appendChild(el('span', { className: 'bp-tier-badge' }, tr.active ? '\u2713 ' + tr.badge : '\uD83D\uDD12 ' + tr.badge));
+    tierTree.appendChild(tierEl);
+  }
+  sidebar.appendChild(tierTree);
+
+  // ── SIDEBAR: Legend ──
+  var legend = el('div', { className: 'bp-legend' });
+  legend.appendChild(el('div', { className: 'bp-legend-title' }, 'Zone Legend'));
+  var legendItems = [
+    { color: 'var(--bp-gold)', label: 'Channel Forge \u2014 Source of Truth' },
+    { color: 'var(--bp-blue)', label: 'Kubrick \u2014 Creative Decisions' },
+    { color: 'var(--bp-purple)', label: 'Zimmer \u2014 Audio Decisions' },
+    { color: 'var(--bp-green)', label: 'Pipeline \u2014 Execution Engine' },
+    { color: 'var(--bp-red)', label: 'Output \u2014 YouTube + Feedback' }
+  ];
+  for (var li = 0; li < legendItems.length; li++) {
+    var lItem = el('div', { className: 'bp-legend-item' });
+    lItem.appendChild(el('div', { className: 'bp-legend-swatch', style: { background: legendItems[li].color } }));
+    lItem.appendChild(document.createTextNode(legendItems[li].label));
+    legend.appendChild(lItem);
+  }
+  sidebar.appendChild(legend);
+
+  wrap.appendChild(mainCol);
+  wrap.appendChild(sidebar);
+  main.replaceChildren(wrap);
+}
+
 function render() {
   var app = document.getElementById('app');
   if (!S.authed) { renderLogin(); return; }
@@ -2698,6 +3173,7 @@ function render() {
   else if (S.view === 'comms') renderComms(main);
   else if (S.view === 'billing') renderBilling(main);
   else if (S.view === 'usage') renderUsage(main);
+  else if (S.view === 'blueprint') renderBlueprint(main);
 }
 
 document.addEventListener('keydown', function(e) {
