@@ -794,6 +794,130 @@ body::before {
 .bp-legend-item:last-child { margin-bottom: 0; }
 .bp-legend-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15); }
 
+/* Blueprint tab switcher */
+.bp-tab-bar { display: flex; gap: 4px; justify-content: center; margin-bottom: 28px; background: rgba(22,19,16,0.6); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 4px; width: fit-content; margin-left: auto; margin-right: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03); }
+.bp-tab { background: none; border: none; color: var(--text-muted); font-size: 12px; font-family: var(--font); font-weight: 700; padding: 8px 20px; border-radius: var(--radius-sm); cursor: pointer; transition: all 250ms var(--ease); text-transform: uppercase; letter-spacing: 1px; }
+.bp-tab:hover { color: var(--text); background: rgba(200,135,92,0.06); }
+.bp-tab.active { color: var(--orange); background: rgba(200,135,92,0.12); box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(200,135,92,0.1); }
+
+/* ═══════════════════════════════════════════════════════════
+   AUDIO PIPELINE — Tab 2
+   ═══════════════════════════════════════════════════════════ */
+
+/* Audio palette */
+:root {
+  --bp-teal: #5bb8b5;
+  --bp-teal-bg: rgba(91,184,181,0.08);
+  --bp-teal-border: rgba(91,184,181,0.25);
+  --bp-teal-glow: rgba(91,184,181,0.15);
+  --bp-cream: #d4c9a8;
+  --bp-cream-bg: rgba(212,201,168,0.08);
+  --bp-cream-border: rgba(212,201,168,0.25);
+  --bp-cream-glow: rgba(212,201,168,0.15);
+  --bp-crimson: #d45b5b;
+  --bp-crimson-bg: rgba(212,91,91,0.08);
+  --bp-crimson-border: rgba(212,91,91,0.25);
+  --bp-crimson-glow: rgba(212,91,91,0.15);
+}
+
+/* Mode selector cards */
+.bp-modes { display: flex; gap: 12px; margin-bottom: 0; }
+.bp-mode-card { flex: 1; border-radius: var(--radius-lg); padding: 18px; cursor: pointer; transition: all 300ms var(--ease); box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04); border-bottom-width: 2px; border-bottom-style: solid; position: relative; overflow: hidden; }
+.bp-mode-card:hover { transform: translateY(-3px); }
+.bp-mode-card::before { content: ''; position: absolute; inset: 0; opacity: 0; transition: opacity 300ms var(--ease); border-radius: inherit; }
+.bp-mode-card.bp-mode-active::before { opacity: 1; }
+.bp-mode-icon { font-size: 24px; margin-bottom: 6px; display: block; }
+.bp-mode-name { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.bp-mode-desc { font-size: 10px; font-weight: 500; opacity: 0.7; margin-bottom: 6px; }
+.bp-mode-channels { font-size: 9px; color: var(--text-muted); line-height: 1.4; }
+
+/* Mode color variants */
+.bp-mode-gold { background: linear-gradient(180deg, rgba(212,165,90,0.1) 0%, rgba(212,165,90,0.04) 100%); border: 1px solid var(--bp-gold-border); border-bottom-color: rgba(212,165,90,0.15); }
+.bp-mode-gold .bp-mode-name { color: var(--bp-gold); }
+.bp-mode-gold:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 30px rgba(212,165,90,0.08), inset 0 1px 0 rgba(212,165,90,0.1); }
+.bp-mode-gold.bp-mode-active { border-color: var(--bp-gold); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(212,165,90,0.12), inset 0 1px 0 rgba(212,165,90,0.15); }
+
+.bp-mode-teal { background: linear-gradient(180deg, rgba(91,184,181,0.1) 0%, rgba(91,184,181,0.04) 100%); border: 1px solid var(--bp-teal-border); border-bottom-color: rgba(91,184,181,0.15); }
+.bp-mode-teal .bp-mode-name { color: var(--bp-teal); }
+.bp-mode-teal:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 30px rgba(91,184,181,0.08), inset 0 1px 0 rgba(91,184,181,0.1); }
+.bp-mode-teal.bp-mode-active { border-color: var(--bp-teal); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(91,184,181,0.12), inset 0 1px 0 rgba(91,184,181,0.15); }
+
+.bp-mode-cream { background: linear-gradient(180deg, rgba(212,201,168,0.1) 0%, rgba(212,201,168,0.04) 100%); border: 1px solid var(--bp-cream-border); border-bottom-color: rgba(212,201,168,0.15); }
+.bp-mode-cream .bp-mode-name { color: var(--bp-cream); }
+.bp-mode-cream:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 30px rgba(212,201,168,0.08), inset 0 1px 0 rgba(212,201,168,0.1); }
+.bp-mode-cream.bp-mode-active { border-color: var(--bp-cream); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(212,201,168,0.12), inset 0 1px 0 rgba(212,201,168,0.15); }
+
+.bp-mode-crimson { background: linear-gradient(180deg, rgba(212,91,91,0.1) 0%, rgba(212,91,91,0.04) 100%); border: 1px solid var(--bp-crimson-border); border-bottom-color: rgba(212,91,91,0.15); }
+.bp-mode-crimson .bp-mode-name { color: var(--bp-crimson); }
+.bp-mode-crimson:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 30px rgba(212,91,91,0.08), inset 0 1px 0 rgba(212,91,91,0.1); }
+.bp-mode-crimson.bp-mode-active { border-color: var(--bp-crimson); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(212,91,91,0.12), inset 0 1px 0 rgba(212,91,91,0.15); }
+
+/* Decision engine (Zimmer brain) */
+.bp-brain { background: linear-gradient(180deg, rgba(155,126,200,0.1) 0%, rgba(155,126,200,0.04) 100%); border: 1px solid var(--bp-purple-border); border-bottom: 2px solid rgba(155,126,200,0.15); border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(155,126,200,0.08); transition: all 400ms var(--ease); }
+.bp-brain:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 40px rgba(155,126,200,0.05), inset 0 1px 0 rgba(155,126,200,0.1); }
+.bp-brain-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; color: var(--bp-purple); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+.bp-brain-label-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--bp-purple); box-shadow: 0 0 8px var(--bp-purple-glow), 0 0 16px rgba(155,126,200,0.2); display: inline-block; }
+
+/* Brain inputs split */
+.bp-brain-io { display: flex; gap: 24px; margin-bottom: 16px; }
+.bp-brain-input-col { flex: 1; }
+.bp-brain-input-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px; }
+
+/* Decision steps inside brain */
+.bp-brain-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.bp-brain-step { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(155,126,200,0.06); border: 1px solid rgba(155,126,200,0.12); border-bottom: 2px solid rgba(155,126,200,0.08); border-radius: var(--radius-md); box-shadow: 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(155,126,200,0.05); }
+.bp-brain-step-num { width: 24px; height: 24px; border-radius: 50%; background: rgba(155,126,200,0.15); border: 1px solid rgba(155,126,200,0.3); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--bp-purple); flex-shrink: 0; }
+.bp-brain-step-text { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+.bp-brain-step-text strong { color: var(--text); font-weight: 700; }
+
+/* Guardrail badges */
+.bp-guardrails { display: flex; flex-wrap: wrap; gap: 6px; }
+.bp-guardrail { font-size: 9px; font-weight: 600; padding: 4px 10px; border-radius: 20px; background: rgba(184,92,76,0.08); border: 1px solid rgba(184,92,76,0.2); color: var(--red); display: flex; align-items: center; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+
+/* Provider rack */
+.bp-provider-rack { display: flex; gap: 12px; flex-wrap: wrap; }
+.bp-provider-card { flex: 1; min-width: 140px; border-radius: var(--radius-md); padding: 14px; box-shadow: 0 3px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.04); transition: all 250ms var(--ease); border-bottom-width: 2px; border-bottom-style: solid; }
+.bp-provider-card:hover { transform: translateY(-2px); }
+.bp-provider-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.bp-provider-cost { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+.bp-provider-status { font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; display: inline-block; }
+.bp-provider-status-active { background: rgba(109,186,109,0.15); color: var(--bp-green); }
+.bp-provider-status-setup { background: rgba(212,165,90,0.15); color: var(--bp-gold); }
+.bp-provider-status-manual { background: rgba(159,141,131,0.15); color: var(--text-muted); }
+.bp-provider-priority { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+
+/* Duration assembly timeline */
+.bp-timeline { display: flex; gap: 16px; align-items: stretch; }
+.bp-timeline-slot { flex: 1; border-radius: var(--radius-md); padding: 16px; background: linear-gradient(180deg, rgba(109,186,109,0.08) 0%, rgba(109,186,109,0.03) 100%); border: 1px solid rgba(109,186,109,0.15); border-bottom: 2px solid rgba(109,186,109,0.1); box-shadow: 0 3px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(109,186,109,0.05); transition: all 250ms var(--ease); }
+.bp-timeline-slot:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3), 0 0 20px rgba(109,186,109,0.05); }
+.bp-timeline-label { font-size: 11px; font-weight: 700; color: var(--bp-green); margin-bottom: 4px; }
+.bp-timeline-dur { font-size: 10px; color: var(--text-muted); margin-bottom: 8px; }
+.bp-timeline-blocks { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; }
+.bp-timeline-block { background: var(--bp-green); border-radius: 2px; opacity: 0.6; }
+.bp-timeline-block:last-child { opacity: 1; }
+.bp-timeline-count { font-size: 9px; color: var(--text-muted); margin-top: 6px; }
+
+/* Output card */
+.bp-audio-output { display: flex; align-items: center; gap: 16px; padding: 16px; background: linear-gradient(180deg, rgba(200,135,92,0.08) 0%, rgba(200,135,92,0.03) 100%); border: 1px solid rgba(200,135,92,0.2); border-bottom: 2px solid rgba(200,135,92,0.12); border-radius: var(--radius-md); box-shadow: 0 3px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(200,135,92,0.06); }
+.bp-audio-output-icon { font-size: 28px; }
+.bp-audio-output-info { flex: 1; }
+.bp-audio-output-title { font-size: 12px; font-weight: 700; color: var(--orange); margin-bottom: 4px; }
+.bp-audio-output-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+.bp-audio-output-tag { font-size: 9px; padding: 2px 7px; border-radius: 8px; background: rgba(200,135,92,0.08); border: 1px solid rgba(200,135,92,0.15); color: var(--tan); }
+
+/* Sidebar provider table */
+.bp-provider-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.bp-provider-table th { text-align: left; font-weight: 700; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.5px; font-size: 9px; }
+.bp-provider-table td { padding: 6px 8px; color: var(--text-secondary); border-bottom: 1px solid rgba(82,68,60,0.08); }
+
+/* Sidebar catalog status */
+.bp-catalog { background: linear-gradient(180deg, rgba(30,27,24,1) 0%, rgba(22,19,16,1) 100%); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.1); border-radius: var(--radius-lg); padding: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04); }
+.bp-catalog-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 12px; }
+.bp-catalog-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 11px; border-bottom: 1px solid rgba(82,68,60,0.08); }
+.bp-catalog-row:last-child { border-bottom: none; }
+.bp-catalog-label { color: var(--text-muted); }
+.bp-catalog-value { color: var(--text-secondary); font-weight: 600; }
+
 @media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } }
 @media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } }
 
@@ -851,7 +975,8 @@ var S = {
   teamsPlan: null,
   anthropicUsage: null,
   calibration: null,
-  usageDashboard: null
+  usageDashboard: null,
+  blueprintTab: 'architecture'
 };
 
 var savedToken = localStorage.getItem('cc_session_token');
@@ -2904,7 +3029,52 @@ function renderUsage(main) {
 // ═══════════════════════════════════════════════════════════
 
 function renderBlueprint(main) {
-  var wrap = el('div', { className: 'bp-wrap view-enter' });
+  var container = el('div', { className: 'view-enter' });
+
+  // ── Tab Switcher ──
+  var tabBar = el('div', { className: 'bp-tab-bar' });
+  var bpTabs = [
+    { key: 'architecture', label: 'Architecture' },
+    { key: 'audio', label: 'Audio Pipeline' },
+    { key: 'video', label: 'Video Pipeline' }
+  ];
+  for (var ti = 0; ti < bpTabs.length; ti++) {
+    (function(t) {
+      var btn = el('button', { className: 'bp-tab' + (S.blueprintTab === t.key ? ' active' : ''), onClick: function() { S.blueprintTab = t.key; render(); } }, t.label);
+      tabBar.appendChild(btn);
+    })(bpTabs[ti]);
+  }
+  container.appendChild(tabBar);
+
+  if (S.blueprintTab === 'audio') { renderBlueprintAudio(container); }
+  else if (S.blueprintTab === 'video') { renderBlueprintVideo(container); }
+  else { renderBlueprintArch(container); }
+
+  main.replaceChildren(container);
+}
+
+function renderBlueprintVideo(main) {
+  var wrap = el('div', { className: 'bp-wrap' });
+  var mainCol = el('div', { className: 'bp-main' });
+  var header = el('div', { className: 'bp-header' });
+  header.appendChild(el('h1', { className: 'bp-title' }, 'Video Asset Pipeline Blueprint'));
+  var sub = el('div', { className: 'bp-subtitle' });
+  sub.appendChild(document.createTextNode('Spec '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Render '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Compose '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Upload'));
+  header.appendChild(sub);
+  mainCol.appendChild(header);
+  mainCol.appendChild(el('div', { style: { textAlign: 'center', padding: '60px 20px', color: 'var(--text-muted)', fontSize: '13px' } }, 'Video Pipeline — coming next build.'));
+  wrap.appendChild(mainCol);
+  main.appendChild(wrap);
+}
+
+function renderBlueprintArch(main) {
+  var wrap = el('div', { className: 'bp-wrap' });
   var mainCol = el('div', { className: 'bp-main' });
   var sidebar = el('div', { className: 'bp-sidebar' });
 
@@ -3174,7 +3344,314 @@ function renderBlueprint(main) {
 
   wrap.appendChild(mainCol);
   wrap.appendChild(sidebar);
-  main.replaceChildren(wrap);
+  main.appendChild(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIO PIPELINE — Blueprint Tab 2
+// ═══════════════════════════════════════════════════════════
+
+function renderBlueprintAudio(main) {
+  var wrap = el('div', { className: 'bp-wrap' });
+  var mainCol = el('div', { className: 'bp-main' });
+  var sidebar = el('div', { className: 'bp-sidebar' });
+
+  // ── Header ──
+  var header = el('div', { className: 'bp-header' });
+  header.appendChild(el('h1', { className: 'bp-title' }, 'Audio Pipeline Blueprint'));
+  var sub = el('div', { className: 'bp-subtitle' });
+  sub.appendChild(document.createTextNode('Template '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Audio Mode '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Source '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Assembly'));
+  header.appendChild(sub);
+  mainCol.appendChild(header);
+
+  // ── ZONE 1: Mode Selection ──
+  var z1 = el('div', { className: 'bp-zone', style: { background: 'none', border: 'none', boxShadow: 'none', padding: '0' } });
+  var z1Label = el('div', { className: 'bp-zone-label', style: { color: 'var(--text-muted)' } });
+  z1Label.appendChild(document.createTextNode('Audio Modes'));
+  z1.appendChild(z1Label);
+
+  var modes = el('div', { className: 'bp-modes' });
+  var modeData = [
+    { key: 'music', icon: '\uD83C\uDFB5', name: 'Music-First', desc: 'Music IS the product', color: 'gold', channels: 'Ferron, Jazz Lounges, Music channels' },
+    { key: 'ambient', icon: '\uD83C\uDF0A', name: 'Ambient / Atmosphere', desc: 'Textures, not songs', color: 'teal', channels: 'Sleep channels, Nature, Lo-fi' },
+    { key: 'narration', icon: '\uD83C\uDF99\uFE0F', name: 'Narration + Underscore', desc: 'Voice leads, music follows', color: 'cream', channels: 'Mind Rest Radio, Guided Meditation' },
+    { key: 'catalog', icon: '\uD83C\uDFB8', name: 'Artist Catalog', desc: 'Own music, zero AI', color: 'crimson', channels: 'Ferron (originals), Licensed artists' }
+  ];
+  if (!S._audioMode) S._audioMode = 'music';
+  for (var mi = 0; mi < modeData.length; mi++) {
+    (function(m) {
+      var card = el('div', { className: 'bp-mode-card bp-mode-' + m.color + (S._audioMode === m.key ? ' bp-mode-active' : ''), onClick: function() { S._audioMode = m.key; render(); } });
+      card.appendChild(el('span', { className: 'bp-mode-icon' }, m.icon));
+      card.appendChild(el('div', { className: 'bp-mode-name' }, m.name));
+      card.appendChild(el('div', { className: 'bp-mode-desc' }, m.desc));
+      card.appendChild(el('div', { className: 'bp-mode-channels' }, m.channels));
+      modes.appendChild(card);
+    })(modeData[mi]);
+  }
+  z1.appendChild(modes);
+  mainCol.appendChild(z1);
+
+  // ── Connector ──
+  var conn1 = el('div', { className: 'bp-connector bp-connector-gold' });
+  var cl1 = el('div', { className: 'bp-connector-line' });
+  cl1.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn1.appendChild(cl1);
+  mainCol.appendChild(conn1);
+
+  // ── ZONE 2: Zimmer's Decision Engine ──
+  var z2 = el('div', { className: 'bp-brain' });
+  var z2Label = el('div', { className: 'bp-brain-label' });
+  z2Label.appendChild(el('span', { className: 'bp-brain-label-dot' }));
+  z2Label.appendChild(document.createTextNode('Zimmer \u2014 Decision Engine'));
+  z2.appendChild(z2Label);
+
+  // Inputs
+  var brainIO = el('div', { className: 'bp-brain-io' });
+  var leftInputs = el('div', { className: 'bp-brain-input-col' });
+  leftInputs.appendChild(el('div', { className: 'bp-brain-input-label' }, 'Inputs'));
+  var leftTags = el('div', { className: 'bp-inputs' });
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Audio Mode'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Channel Identity'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Template'));
+  leftInputs.appendChild(leftTags);
+  brainIO.appendChild(leftInputs);
+
+  var rightInputs = el('div', { className: 'bp-brain-input-col' });
+  rightInputs.appendChild(el('div', { className: 'bp-brain-input-label' }, 'Context'));
+  var rightTags = el('div', { className: 'bp-inputs' });
+  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-purple' }, '\u2B9F Archetype Mood'));
+  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Content Context'));
+  rightInputs.appendChild(rightTags);
+  brainIO.appendChild(rightInputs);
+  z2.appendChild(brainIO);
+
+  // Decision steps
+  var steps = el('div', { className: 'bp-brain-steps' });
+  var stepData = [
+    { num: '1', text: '<strong>Map mood + energy profile</strong> \u2014 Content context \u2192 mood tags (calm / tense / meditative / dramatic). Template energy level (low / medium / high).' },
+    { num: '2', text: '<strong>Search Dropbox catalog</strong> \u2014 Filter by mood + genre + energy + duration fit. Exclude spoken-word folders (shorts, guided meditation).' },
+    { num: '3', text: '<strong>Match found?</strong> \u2192 Use catalog track. <strong>No match?</strong> \u2192 Route to generation fallback.' }
+  ];
+  for (var si = 0; si < stepData.length; si++) {
+    var stepEl = el('div', { className: 'bp-brain-step' });
+    stepEl.appendChild(el('div', { className: 'bp-brain-step-num' }, stepData[si].num));
+    var stepText = el('div', { className: 'bp-brain-step-text' });
+    stepText.innerHTML = stepData[si].text;
+    stepEl.appendChild(stepText);
+    steps.appendChild(stepEl);
+  }
+  z2.appendChild(steps);
+
+  // Guardrails
+  var guardrails = el('div', { className: 'bp-guardrails' });
+  var grData = ['\u26A0 No spoken word + narration', '\u26A0 No repeat within video', '\u26A0 Energy must match visual', '\u26A0 Music-first = reject low-fi', '\u26A0 Underscore sits below voice'];
+  for (var gi = 0; gi < grData.length; gi++) {
+    guardrails.appendChild(el('span', { className: 'bp-guardrail' }, grData[gi]));
+  }
+  z2.appendChild(guardrails);
+  mainCol.appendChild(z2);
+
+  // ── Connector ──
+  var conn2 = el('div', { className: 'bp-connector bp-connector-blue' });
+  var cl2 = el('div', { className: 'bp-connector-line' });
+  cl2.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn2.appendChild(cl2);
+  mainCol.appendChild(conn2);
+
+  // ── ZONE 3: Generation Fallback / Provider Routing (per mode) ──
+  var z3 = el('div', { className: 'bp-zone bp-zone-pipeline' });
+  var z3Label = el('div', { className: 'bp-zone-label' });
+  z3Label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  z3Label.appendChild(document.createTextNode('Generation Fallback \u2014 Provider Routing'));
+  z3.appendChild(z3Label);
+
+  // Show providers based on selected mode
+  var providersByMode = {
+    music: [
+      { name: 'Lyria 3 Pro', cost: '$0.04/30s', status: 'setup', priority: '1st Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
+      { name: 'MiniMax 2.5', cost: '$0.035/track', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
+      { name: 'ElevenLabs', cost: '$0.80/min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' }
+    ],
+    ambient: [
+      { name: 'ACE-Step', cost: '$0.0002/sec', status: 'setup', priority: '1st Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
+      { name: 'Stable Audio', cost: '$0.20/track', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
+      { name: 'ElevenLabs', cost: '$0.80/min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' }
+    ],
+    narration: [
+      { name: 'ElevenLabs TTS', cost: '$0.80/min', status: 'active', priority: 'Voice Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
+      { name: 'ACE-Step (soft)', cost: '$0.0002/sec', status: 'setup', priority: 'Underscore Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
+      { name: 'Catalog Match', cost: 'Free', status: 'active', priority: 'Underscore Alt', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' }
+    ],
+    catalog: [
+      { name: 'Direct Track', cost: 'Free', status: 'active', priority: 'No Gen Needed', bg: 'var(--bp-crimson-bg)', border: 'var(--bp-crimson-border)' }
+    ]
+  };
+
+  var activeProviders = providersByMode[S._audioMode] || providersByMode.music;
+  var rack = el('div', { className: 'bp-provider-rack' });
+  for (var pi = 0; pi < activeProviders.length; pi++) {
+    var p = activeProviders[pi];
+    var pCard = el('div', { className: 'bp-provider-card', style: { background: 'linear-gradient(180deg, ' + p.bg + ' 0%, rgba(22,19,16,0.4) 100%)', border: '1px solid ' + p.border, borderBottomColor: p.border } });
+    pCard.appendChild(el('div', { className: 'bp-provider-priority' }, p.priority));
+    pCard.appendChild(el('div', { className: 'bp-provider-name' }, p.name));
+    pCard.appendChild(el('div', { className: 'bp-provider-cost' }, p.cost));
+    var statusClass = p.status === 'active' ? 'bp-provider-status-active' : p.status === 'manual' ? 'bp-provider-status-manual' : 'bp-provider-status-setup';
+    pCard.appendChild(el('span', { className: 'bp-provider-status ' + statusClass }, p.status === 'active' ? '\u2713 Active' : p.status === 'manual' ? 'Manual' : 'Not Set Up'));
+    rack.appendChild(pCard);
+  }
+  z3.appendChild(rack);
+
+  if (S._audioMode === 'catalog') {
+    var bypass = el('div', { style: { textAlign: 'center', padding: '12px 0', fontSize: '11px', color: 'var(--text-muted)', fontStyle: 'italic' } });
+    bypass.appendChild(document.createTextNode('\u21B3 Track specified \u2014 bypasses generation, routes direct to assembly'));
+    z3.appendChild(bypass);
+  }
+
+  mainCol.appendChild(z3);
+
+  // ── Connector ──
+  var conn3 = el('div', { className: 'bp-connector bp-connector-green' });
+  var cl3 = el('div', { className: 'bp-connector-line' });
+  cl3.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn3.appendChild(cl3);
+  mainCol.appendChild(conn3);
+
+  // ── ZONE 4: Duration Assembly ──
+  var z4 = el('div', { className: 'bp-zone bp-zone-pipeline' });
+  var z4Label = el('div', { className: 'bp-zone-label' });
+  z4Label.appendChild(el('span', { className: 'bp-zone-label-dot' }));
+  z4Label.appendChild(document.createTextNode('Duration Assembly'));
+  z4.appendChild(z4Label);
+
+  var timeline = el('div', { className: 'bp-timeline' });
+  var tlData = [
+    { label: 'Shorts', dur: '30\u201360s', blocks: 1, count: '1 track, trim to fit' },
+    { label: 'Medium', dur: '10\u201330min', blocks: 4, count: '3\u20135 tracks, crossfaded' },
+    { label: 'Long-form', dur: '1\u20138+ hours', blocks: 12, count: '50\u2013100+ tracks, shuffled playlist' }
+  ];
+  for (var tli = 0; tli < tlData.length; tli++) {
+    var t = tlData[tli];
+    var slot = el('div', { className: 'bp-timeline-slot' });
+    slot.appendChild(el('div', { className: 'bp-timeline-label' }, t.label));
+    slot.appendChild(el('div', { className: 'bp-timeline-dur' }, t.dur));
+    var blocks = el('div', { className: 'bp-timeline-blocks' });
+    for (var bi = 0; bi < t.blocks; bi++) {
+      var bWidth = t.blocks === 1 ? 100 : (60 + Math.random() * 40) / t.blocks;
+      blocks.appendChild(el('div', { className: 'bp-timeline-block', style: { flex: '1', minWidth: '4px' } }));
+    }
+    slot.appendChild(blocks);
+    slot.appendChild(el('div', { className: 'bp-timeline-count' }, t.count));
+    timeline.appendChild(slot);
+  }
+  z4.appendChild(timeline);
+  mainCol.appendChild(z4);
+
+  // ── Connector ──
+  var conn4 = el('div', { className: 'bp-connector bp-connector-green' });
+  var cl4 = el('div', { className: 'bp-connector-line' });
+  cl4.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn4.appendChild(cl4);
+  mainCol.appendChild(conn4);
+
+  // ── Output ──
+  var output = el('div', { className: 'bp-audio-output' });
+  output.appendChild(el('div', { className: 'bp-audio-output-icon' }, '\uD83C\uDFB6'));
+  var outInfo = el('div', { className: 'bp-audio-output-info' });
+  outInfo.appendChild(el('div', { className: 'bp-audio-output-title' }, 'Audio Asset(s) Ready for Remotion'));
+  var outMeta = el('div', { className: 'bp-audio-output-meta' });
+  var metaTags = ['BPM', 'Key', 'Mood Tags', 'Duration', 'Track List', 'Mix Instructions', 'Duck Points'];
+  for (var oi = 0; oi < metaTags.length; oi++) {
+    outMeta.appendChild(el('span', { className: 'bp-audio-output-tag' }, metaTags[oi]));
+  }
+  outInfo.appendChild(outMeta);
+  output.appendChild(outInfo);
+  mainCol.appendChild(output);
+
+  // ── Footer ──
+  var footer = el('div', { className: 'bp-footer' });
+  footer.appendChild(el('div', { className: 'bp-footer-rule' }, 'Template declares the mode. Zimmer makes the call. Catalog first, generate second.'));
+  footer.appendChild(el('div', { className: 'bp-footer-sub' }, 'Audio Pipeline Blueprint \u00B7 April 2026'));
+  mainCol.appendChild(footer);
+
+  // ── SIDEBAR: Provider Summary ──
+  var provTable = el('div', { className: 'bp-catalog' });
+  provTable.appendChild(el('div', { className: 'bp-catalog-title' }, 'Provider Summary'));
+  var table = el('table', { className: 'bp-provider-table' });
+  var thead = el('tr');
+  thead.appendChild(el('th', null, 'Provider'));
+  thead.appendChild(el('th', null, 'Use Case'));
+  thead.appendChild(el('th', null, 'Cost'));
+  thead.appendChild(el('th', null, 'Status'));
+  table.appendChild(thead);
+  var providerRows = [
+    { name: 'Dropbox/Suno', use: 'All modes (preferred)', cost: 'Free', status: 'active' },
+    { name: 'Lyria 3 Pro', use: 'Music-first gen', cost: '$0.04/30s', status: 'setup' },
+    { name: 'MiniMax 2.5', use: 'Budget music gen', cost: '$0.035/trk', status: 'setup' },
+    { name: 'ElevenLabs', use: 'Fallback, ambient', cost: '$0.80/min', status: 'active' },
+    { name: 'ACE-Step', use: 'Ambient bulk', cost: '$0.0002/s', status: 'setup' },
+    { name: 'Stable Audio', use: 'Ambient fallback', cost: '$0.20/trk', status: 'setup' },
+    { name: 'Suno', use: 'Best quality, no API', cost: 'Manual', status: 'manual' }
+  ];
+  for (var pri = 0; pri < providerRows.length; pri++) {
+    var pr = providerRows[pri];
+    var row = el('tr');
+    row.appendChild(el('td', { style: { fontWeight: '600', color: 'var(--text)' } }, pr.name));
+    row.appendChild(el('td', null, pr.use));
+    row.appendChild(el('td', null, pr.cost));
+    var statusTd = el('td');
+    var statusClass = pr.status === 'active' ? 'bp-provider-status-active' : pr.status === 'manual' ? 'bp-provider-status-manual' : 'bp-provider-status-setup';
+    statusTd.appendChild(el('span', { className: 'bp-provider-status ' + statusClass }, pr.status === 'active' ? '\u2713 Active' : pr.status === 'manual' ? 'Manual' : 'Not Set Up'));
+    row.appendChild(statusTd);
+    table.appendChild(row);
+  }
+  provTable.appendChild(table);
+  sidebar.appendChild(provTable);
+
+  // ── SIDEBAR: Catalog Status ──
+  var catalog = el('div', { className: 'bp-catalog' });
+  catalog.appendChild(el('div', { className: 'bp-catalog-title' }, 'Dropbox Catalog'));
+  var catData = [
+    { label: 'Total Tracks', value: '376+' },
+    { label: 'Cataloged', value: '133' },
+    { label: 'Pending Analysis', value: '243+' },
+    { label: 'Excluded Folders', value: 'Spoken word, Guided meditation' },
+    { label: 'Last Refresh', value: 'April 2, 2026' }
+  ];
+  for (var ci = 0; ci < catData.length; ci++) {
+    var catRow = el('div', { className: 'bp-catalog-row' });
+    catRow.appendChild(el('span', { className: 'bp-catalog-label' }, catData[ci].label));
+    catRow.appendChild(el('span', { className: 'bp-catalog-value' }, catData[ci].value));
+    catalog.appendChild(catRow);
+  }
+  catalog.appendChild(el('div', { style: { marginTop: '12px', fontSize: '10px', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: '1.5' } }, 'Will organizes Dropbox \u2192 Zimmer catalogs \u2192 better matches'));
+  sidebar.appendChild(catalog);
+
+  // ── SIDEBAR: Mode Legend ──
+  var legend = el('div', { className: 'bp-legend' });
+  legend.appendChild(el('div', { className: 'bp-legend-title' }, 'Audio Modes'));
+  var legendItems = [
+    { color: 'var(--bp-gold)', label: 'Music-First \u2014 Music IS the product' },
+    { color: 'var(--bp-teal)', label: 'Ambient \u2014 Textures, not songs' },
+    { color: 'var(--bp-cream)', label: 'Narration + Underscore \u2014 Voice leads' },
+    { color: 'var(--bp-crimson)', label: 'Artist Catalog \u2014 Own music' }
+  ];
+  for (var li = 0; li < legendItems.length; li++) {
+    var lItem = el('div', { className: 'bp-legend-item' });
+    lItem.appendChild(el('div', { className: 'bp-legend-swatch', style: { background: legendItems[li].color } }));
+    lItem.appendChild(document.createTextNode(legendItems[li].label));
+    legend.appendChild(lItem);
+  }
+  sidebar.appendChild(legend);
+
+  wrap.appendChild(mainCol);
+  wrap.appendChild(sidebar);
+  main.appendChild(wrap);
 }
 
 function render() {
