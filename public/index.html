@@ -3819,22 +3819,44 @@ function renderBlueprintAudio(main) {
   z2Label.appendChild(document.createTextNode('Zimmer \u2014 Decision Engine'));
   z2.appendChild(z2Label);
 
-  // Inputs
+  // Kubrick → Zimmer bridge
+  var bridge = el('div', { style: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '18px', padding: '12px 16px', background: 'linear-gradient(90deg, rgba(91,155,213,0.08) 0%, rgba(155,126,200,0.08) 100%)', border: '1px solid rgba(91,155,213,0.2)', borderRadius: 'var(--radius-md)', boxShadow: '0 3px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(91,155,213,0.06)', position: 'relative', overflow: 'hidden' } });
+  var bridgeLabel = el('div', { style: { fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--bp-blue)', whiteSpace: 'nowrap' } });
+  bridgeLabel.textContent = '\u25C9 Kubrick';
+  bridge.appendChild(bridgeLabel);
+  var bridgeLine = el('div', { style: { flex: '1', height: '2px', background: 'linear-gradient(90deg, var(--bp-blue), var(--bp-purple))', position: 'relative', borderRadius: '1px' } });
+  var bridgeDot = el('div', { style: { position: 'absolute', top: '-3px', width: '8px', height: '8px', borderRadius: '50%', background: 'var(--bp-purple)', boxShadow: '0 0 8px rgba(155,126,200,0.4)', animation: 'bridgePulse 2.5s ease-in-out infinite' } });
+  bridgeLine.appendChild(bridgeDot);
+  bridge.appendChild(bridgeLine);
+  var bridgeLabel2 = el('div', { style: { fontSize: '10px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--bp-purple)', whiteSpace: 'nowrap' } });
+  bridgeLabel2.textContent = 'Zimmer \u25C9';
+  bridge.appendChild(bridgeLabel2);
+  z2.appendChild(bridge);
+
+  // Inputs — Kubrick's audio_brief
   var brainIO = el('div', { className: 'bp-brain-io' });
   var leftInputs = el('div', { className: 'bp-brain-input-col' });
-  leftInputs.appendChild(el('div', { className: 'bp-brain-input-label' }, 'Inputs'));
+  leftInputs.appendChild(el('div', { className: 'bp-brain-input-label', style: { color: 'var(--bp-blue)' } }, 'From Kubrick \u2014 audio_brief'));
   var leftTags = el('div', { className: 'bp-inputs' });
-  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Audio Mode'));
-  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Channel Identity'));
-  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Template'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Audio Mode'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Mood Tags[]'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Energy Level'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Genre Hint'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Tempo Range'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Instrumentation[]'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Content Context'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Visual Mood'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Narration Present'));
+  leftTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-blue' }, '\u2B9F Avoid[]'));
   leftInputs.appendChild(leftTags);
   brainIO.appendChild(leftInputs);
 
   var rightInputs = el('div', { className: 'bp-brain-input-col' });
-  rightInputs.appendChild(el('div', { className: 'bp-brain-input-label' }, 'Context'));
+  rightInputs.appendChild(el('div', { className: 'bp-brain-input-label', style: { color: 'var(--bp-gold)' } }, 'From Channel Forge'));
   var rightTags = el('div', { className: 'bp-inputs' });
-  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-purple' }, '\u2B9F Archetype Mood'));
-  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-ext' }, '\u2193 Content Context'));
+  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Channel Identity'));
+  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Template'));
+  rightTags.appendChild(el('span', { className: 'bp-input-tag bp-input-tag-gold' }, '\u2B9F Duration Target'));
   rightInputs.appendChild(rightTags);
   brainIO.appendChild(rightInputs);
   z2.appendChild(brainIO);
@@ -3842,9 +3864,9 @@ function renderBlueprintAudio(main) {
   // Decision steps
   var steps = el('div', { className: 'bp-brain-steps' });
   var stepData = [
-    { num: '1', text: '<strong>Map mood + energy profile</strong> \u2014 Content context \u2192 mood tags (calm / tense / meditative / dramatic). Template energy level (low / medium / high).' },
-    { num: '2', text: '<strong>Search Dropbox catalog</strong> \u2014 Filter by mood + genre + energy + duration fit. Exclude spoken-word folders (shorts, guided meditation).' },
-    { num: '3', text: '<strong>Match found?</strong> \u2192 Use catalog track. <strong>No match?</strong> \u2192 Route to generation fallback.' }
+    { num: '1', text: '<strong>Map mood + energy profile</strong> \u2014 Kubrick\'s mood_tags + energy_level + genre_hint + tempo_range \u2192 combined audio profile. E.g. <em>"calm | piano | 65 BPM | low energy"</em>' },
+    { num: '2', text: '<strong>Search Dropbox catalog</strong> \u2014 Filter: genre + mood + energy + tempo match + duration fit. Exclude spoken-word folders. Exclude tracks in avoid[] list (anti-repeat). Rank by mood score + freshness.' },
+    { num: '3', text: '<strong>Match found?</strong> \u2192 Use catalog track. <strong>No match?</strong> \u2192 Build generation prompt from Kubrick\'s brief, route to provider.' }
   ];
   for (var si = 0; si < stepData.length; si++) {
     var stepEl = el('div', { className: 'bp-brain-step' });
@@ -3879,25 +3901,38 @@ function renderBlueprintAudio(main) {
   z3Label.appendChild(document.createTextNode('Generation Fallback \u2014 Provider Routing'));
   z3.appendChild(z3Label);
 
+  // Prompt template card
+  if (S._audioMode !== 'catalog') {
+    var promptCard = el('div', { style: { marginBottom: '16px', padding: '14px 18px', background: 'linear-gradient(180deg, rgba(155,126,200,0.06) 0%, rgba(22,19,16,0.3) 100%)', border: '1px solid rgba(155,126,200,0.15)', borderRadius: 'var(--radius-md)', boxShadow: '0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(155,126,200,0.04)' } });
+    promptCard.appendChild(el('div', { style: { fontSize: '9px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px', color: 'var(--bp-purple)', marginBottom: '8px' } }, 'Generation Prompt Template'));
+    var promptText = el('div', { style: { fontSize: '11px', color: 'var(--text-secondary)', lineHeight: '1.6', fontFamily: 'var(--mono)', padding: '10px 12px', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(155,126,200,0.08)' } });
+    promptText.innerHTML = '"A <span style="color:var(--bp-purple)">[mood_tags]</span> <span style="color:var(--bp-gold)">[genre_hint]</span> track at <span style="color:var(--bp-teal)">[tempo_range]</span> BPM, featuring <span style="color:var(--bp-cream)">[instrumentation]</span>, <span style="color:var(--bp-blue)">[energy_level]</span> energy, evoking <span style="color:var(--orange)">[content_context]</span>"';
+    promptCard.appendChild(promptText);
+    var exampleText = el('div', { style: { fontSize: '10px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic', lineHeight: '1.5' } });
+    exampleText.textContent = 'e.g. "A calm, contemplative classical piano piece at 65 BPM, solo piano with subtle reverb, low energy, evoking deep ocean bioluminescence"';
+    promptCard.appendChild(exampleText);
+    z3.appendChild(promptCard);
+  }
+
   // Show providers based on selected mode
   var providersByMode = {
     music: [
-      { name: 'Lyria 3 Pro', cost: '$0.04/30s', status: 'setup', priority: '1st Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
-      { name: 'MiniMax 2.5', cost: '$0.035/track', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
-      { name: 'ElevenLabs', cost: '$0.80/min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' }
+      { name: 'Lyria 3 Pro', cost: '$0.04/30s, $0.08/3min', maxDur: 'Max 3min (pro) / 30s (clip)', status: 'setup', priority: '1st Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
+      { name: 'MiniMax 2.5', cost: '$0.035/track', maxDur: 'Max ~3\u20134min', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' },
+      { name: 'ElevenLabs', cost: '$0.80/min', maxDur: 'Max 5min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-gold-bg)', border: 'var(--bp-gold-border)' }
     ],
     ambient: [
-      { name: 'ACE-Step', cost: '$0.0002/sec', status: 'setup', priority: '1st Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
-      { name: 'Stable Audio', cost: '$0.20/track', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
-      { name: 'ElevenLabs', cost: '$0.80/min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' }
+      { name: 'ACE-Step', cost: '$0.0002/sec', maxDur: 'Max ~5min', status: 'setup', priority: '1st Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
+      { name: 'Stable Audio 2.5', cost: '$0.20/track', maxDur: 'Max 3min', status: 'setup', priority: '2nd Priority', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' },
+      { name: 'ElevenLabs', cost: '$0.80/min', maxDur: 'Max 5min', status: 'active', priority: '3rd Fallback', bg: 'var(--bp-teal-bg)', border: 'var(--bp-teal-border)' }
     ],
     narration: [
-      { name: 'ElevenLabs TTS', cost: '$0.80/min', status: 'active', priority: 'Voice Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
-      { name: 'ACE-Step (soft)', cost: '$0.0002/sec', status: 'setup', priority: 'Underscore Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
-      { name: 'Catalog Match', cost: 'Free', status: 'active', priority: 'Underscore Alt', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' }
+      { name: 'ElevenLabs TTS', cost: '$0.80/min', maxDur: 'Max 5min', status: 'active', priority: 'Voice Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
+      { name: 'ACE-Step (soft)', cost: '$0.0002/sec', maxDur: 'Max ~5min', status: 'setup', priority: 'Underscore Track', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' },
+      { name: 'Catalog Match', cost: 'Free', maxDur: 'Full track', status: 'active', priority: 'Underscore Alt', bg: 'var(--bp-cream-bg)', border: 'var(--bp-cream-border)' }
     ],
     catalog: [
-      { name: 'Direct Track', cost: 'Free', status: 'active', priority: 'No Gen Needed', bg: 'var(--bp-crimson-bg)', border: 'var(--bp-crimson-border)' }
+      { name: 'Direct Track', cost: 'Free', maxDur: 'Full track', status: 'active', priority: 'No Gen Needed', bg: 'var(--bp-crimson-bg)', border: 'var(--bp-crimson-border)' }
     ]
   };
 
@@ -3909,6 +3944,7 @@ function renderBlueprintAudio(main) {
     pCard.appendChild(el('div', { className: 'bp-provider-priority' }, p.priority));
     pCard.appendChild(el('div', { className: 'bp-provider-name' }, p.name));
     pCard.appendChild(el('div', { className: 'bp-provider-cost' }, p.cost));
+    pCard.appendChild(el('div', { style: { fontSize: '9px', fontWeight: '600', color: 'var(--bp-purple)', marginBottom: '6px', padding: '2px 7px', background: 'rgba(155,126,200,0.08)', border: '1px solid rgba(155,126,200,0.15)', borderRadius: '8px', display: 'inline-block' } }, p.maxDur));
     var statusClass = p.status === 'active' ? 'bp-provider-status-active' : p.status === 'manual' ? 'bp-provider-status-manual' : 'bp-provider-status-setup';
     pCard.appendChild(el('span', { className: 'bp-provider-status ' + statusClass }, p.status === 'active' ? '\u2713 Active' : p.status === 'manual' ? 'Manual' : 'Not Set Up'));
     rack.appendChild(pCard);
@@ -3939,9 +3975,10 @@ function renderBlueprintAudio(main) {
 
   var timeline = el('div', { className: 'bp-timeline' });
   var tlData = [
-    { label: 'Shorts', dur: '30\u201360s', blocks: 1, count: '1 track, trim to fit' },
-    { label: 'Medium', dur: '10\u201330min', blocks: 4, count: '3\u20135 tracks, crossfaded' },
-    { label: 'Long-form', dur: '1\u20138+ hours', blocks: 12, count: '50\u2013100+ tracks, shuffled playlist' }
+    { label: 'Shorts', dur: '30\u201360s', blocks: 1, count: '1 track, trimmed to fit' },
+    { label: 'Medium', dur: '10\u201330min', blocks: 6, count: '4\u201310 tracks, crossfaded' },
+    { label: 'Long-form', dur: '1\u20133 hours', blocks: 10, count: '20\u201360 tracks, shuffled playlist' },
+    { label: 'Ultra Long', dur: '3\u20138+ hours', blocks: 16, count: '60\u2013160+ tracks, catalog + gen mix' }
   ];
   for (var tli = 0; tli < tlData.length; tli++) {
     var t = tlData[tli];
