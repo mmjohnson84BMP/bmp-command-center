@@ -991,8 +991,82 @@ body::before {
 .bp-ltx-tiers { display: flex; gap: 3px; margin-top: 4px; }
 .bp-ltx-tier-dot { width: 6px; height: 6px; border-radius: 50%; }
 
-@media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } }
-@media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } }
+/* ═══════════════════════════════════════════════════════════
+   COSTS & USAGE — Flow chart + usage analytics
+   ═══════════════════════════════════════════════════════════ */
+.cu-section-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2.5px; color: var(--text-muted); margin-bottom: 20px; margin-top: 32px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.cu-source { text-align: center; margin-bottom: 0; }
+.cu-source-card { display: inline-flex; align-items: center; gap: 12px; padding: 16px 28px; background: linear-gradient(180deg, rgba(212,165,90,0.12) 0%, rgba(212,165,90,0.04) 100%); border: 1px solid var(--bp-gold-border); border-bottom: 2px solid rgba(212,165,90,0.15); border-radius: var(--radius-lg); box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 30px rgba(212,165,90,0.06), inset 0 1px 0 rgba(212,165,90,0.1); }
+.cu-source-name { font-size: 14px; font-weight: 800; color: var(--bp-gold); }
+.cu-source-burn { font-size: 20px; font-weight: 900; color: var(--text); }
+.cu-source-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+.cu-branches { display: flex; gap: 16px; margin-top: 0; }
+.cu-branch { flex: 1; min-width: 0; }
+.cu-branch-header { padding: 12px 14px; border-radius: var(--radius-md) var(--radius-md) 0 0; display: flex; align-items: center; gap: 8px; border-bottom: none; }
+.cu-branch-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cu-branch-name { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+.cu-branch-services { display: flex; flex-direction: column; gap: 6px; padding: 0 2px; }
+
+.cu-svc { padding: 10px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 250ms var(--ease); box-shadow: 0 2px 6px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.03); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.08); }
+.cu-svc:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.25); }
+.cu-svc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.cu-svc-name { font-size: 11px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 5px; }
+.cu-svc-cost { font-size: 10px; font-weight: 700; color: var(--tan); }
+.cu-svc-powers { font-size: 9px; color: var(--text-muted); line-height: 1.4; }
+.cu-svc-link { font-size: 8px; color: var(--text-muted); opacity: 0.5; margin-top: 4px; }
+.cu-svc-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.cu-svc-dot-green { background: var(--bp-green); box-shadow: 0 0 4px var(--bp-green-glow); }
+.cu-svc-dot-yellow { background: var(--bp-gold); box-shadow: 0 0 4px var(--bp-gold-glow); }
+.cu-svc-dot-red { background: var(--bp-red); box-shadow: 0 0 4px rgba(212,91,91,0.3); }
+
+.cu-divider { margin: 32px 0 8px; border: none; border-top: 1px solid var(--border); }
+
+/* ═══════════════════════════════════════════════════════════
+   CONNECTIONS — Service management
+   ═══════════════════════════════════════════════════════════ */
+.cn-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.cn-title { font-size: 22px; font-weight: 900; color: var(--text); letter-spacing: -0.5px; }
+.cn-stats { font-size: 12px; color: var(--text-muted); display: flex; gap: 16px; }
+.cn-stat { display: flex; align-items: center; gap: 4px; }
+.cn-filters { display: flex; gap: 4px; }
+.cn-filter { background: none; border: 1px solid var(--border); color: var(--text-muted); font-size: 11px; font-family: var(--font); font-weight: 600; padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); }
+.cn-filter:hover { color: var(--text); border-color: var(--border-hover); }
+.cn-filter.active { color: var(--orange); background: rgba(200,135,92,0.1); border-color: rgba(200,135,92,0.3); }
+
+.cn-wrap { display: flex; gap: 24px; }
+.cn-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 24px; }
+.cn-sidebar { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+
+.cn-group-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.cn-group-dot { width: 8px; height: 8px; border-radius: 50%; }
+.cn-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+
+.cn-card { padding: 16px; border-radius: var(--radius-md); background: linear-gradient(180deg, var(--card) 0%, rgba(22,19,16,0.8) 100%); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.08); box-shadow: 0 3px 12px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03); transition: all 250ms var(--ease); }
+.cn-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); border-color: var(--border-hover); }
+.cn-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cn-card-name { font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.cn-card-cat { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 2px 6px; border-radius: 8px; }
+.cn-card-body { display: flex; flex-direction: column; gap: 6px; font-size: 11px; }
+.cn-card-row { display: flex; justify-content: space-between; align-items: center; }
+.cn-card-label { color: var(--text-muted); font-size: 10px; }
+.cn-card-value { color: var(--text-secondary); font-weight: 600; font-size: 10px; }
+.cn-card-key { font-family: var(--mono); font-size: 10px; color: var(--text-muted); background: rgba(0,0,0,0.2); padding: 3px 8px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 6px; }
+.cn-card-actions { display: flex; gap: 6px; margin-top: 10px; }
+.cn-card-btn { font-size: 9px; font-weight: 600; font-family: var(--font); padding: 5px 10px; border-radius: var(--radius-sm); cursor: pointer; transition: all 200ms var(--ease); border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text-muted); }
+.cn-card-btn:hover { color: var(--text); border-color: var(--border-hover); background: rgba(255,255,255,0.06); }
+.cn-card-btn-primary { border-color: rgba(200,135,92,0.3); color: var(--orange); background: rgba(200,135,92,0.08); }
+.cn-card-btn-primary:hover { background: rgba(200,135,92,0.15); }
+.cn-card-cost { font-size: 9px; color: var(--tan); cursor: pointer; margin-top: 6px; }
+.cn-card-cost:hover { color: var(--orange); text-decoration: underline; }
+
+.cn-health { background: linear-gradient(180deg, var(--card) 0%, rgba(22,19,16,1) 100%); border: 1px solid var(--border); border-bottom: 2px solid rgba(82,68,60,0.1); border-radius: var(--radius-lg); padding: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04); overflow: hidden; }
+.cn-health-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 12px; }
+.cn-health-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 11px; border-bottom: 1px solid rgba(82,68,60,0.08); }
+.cn-health-row:last-child { border-bottom: none; }
+
+@media (max-width: 1100px) { .bp-wrap { flex-direction: column; } .bp-sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; } .bp-tier-tree { flex: 1; min-width: 220px; } .bp-legend { flex: 1; min-width: 220px; } .cu-branches { flex-wrap: wrap; } .cu-branch { min-width: 200px; } .cn-wrap { flex-direction: column; } .cn-sidebar { width: 100%; } }
+@media (max-width: 768px) { .bp-zone-engines { flex-direction: column; } .bp-channel-row { flex-direction: column; } .bp-conveyor { flex-wrap: wrap; } .bp-pipe-arrow { display: none; } .cu-branches { flex-direction: column; } .cn-cards { grid-template-columns: 1fr; } }
 
 /* ═══════════════════════════════════════════════════════════
    DYNAMIC BACKGROUND — Particle Constellation + Matrix Rain + Breathing Aurora
@@ -1372,7 +1446,7 @@ function renderNav(container) {
   } }, '\u2630'));
 
   var tabs = el('div', { className: 'nav-tabs' });
-  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'blueprint', label: 'Blueprint' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'billing', label: 'Billing' }, { key: 'usage', label: 'Usage' }];
+  var views = [{ key: 'dashboard', label: 'Dashboard' }, { key: 'blueprint', label: 'Blueprint' }, { key: 'board', label: 'Sprint Board' }, { key: 'scoreboard', label: 'Hall of Fame' }, { key: 'comms', label: 'Conference Room' }, { key: 'costs', label: 'Costs & Usage' }, { key: 'connections', label: 'Connections' }];
   for (var vi = 0; vi < views.length; vi++) {
     (function(v) {
       var btn = el('button', { className: 'nav-tab' + (S.view === v.key ? ' active' : ''), onClick: function() { S.view = v.key; render(); } }, v.label);
@@ -4117,6 +4191,292 @@ function renderBlueprintAudio(main) {
   main.appendChild(wrap);
 }
 
+// ═══════════════════════════════════════════════════════════
+// COSTS & USAGE
+// ═══════════════════════════════════════════════════════════
+
+function renderCostsUsage(main) {
+  var wrap = el('div', { className: 'view-enter' });
+
+  // ── Section 1: Cost Flow Chart ──
+  var header = el('div', { className: 'bp-header', style: { marginBottom: '24px' } });
+  header.appendChild(el('h1', { className: 'bp-title' }, 'Costs & Usage'));
+  var sub = el('div', { className: 'bp-subtitle' });
+  sub.appendChild(document.createTextNode('BMP Card '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Categories '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' Services '));
+  sub.appendChild(el('span', null, '\u2192'));
+  sub.appendChild(document.createTextNode(' What They Power'));
+  header.appendChild(sub);
+  wrap.appendChild(header);
+
+  // Source node
+  var source = el('div', { className: 'cu-source' });
+  var sourceCard = el('div', { className: 'cu-source-card' });
+  sourceCard.appendChild(el('div', { style: { textAlign: 'center' } },
+    el('div', { className: 'cu-source-name' }, '\uD83D\uDCB3 BMP Card'),
+    el('div', { className: 'cu-source-burn' }, '~$3,035'),
+    el('div', { className: 'cu-source-label' }, 'Monthly Burn')
+  ));
+  source.appendChild(sourceCard);
+  wrap.appendChild(source);
+
+  // Connector
+  var conn = el('div', { className: 'bp-connector bp-connector-gold', style: { height: '30px' } });
+  var cl = el('div', { className: 'bp-connector-line' });
+  cl.appendChild(el('div', { className: 'bp-connector-dot' }));
+  conn.appendChild(cl);
+  wrap.appendChild(conn);
+
+  // Branches
+  var branches = el('div', { className: 'cu-branches' });
+
+  var branchData = [
+    { name: 'AI Infrastructure', color: 'var(--bp-blue)', bg: 'rgba(91,155,213,0.06)', border: 'rgba(91,155,213,0.15)', services: [
+      { name: 'Anthropic Teams', cost: '$2,400/mo', status: 'green', powers: 'Powers: Titus, Socrates, Atlas, Da Vinci, Kubrick, Zimmer' },
+      { name: 'fal.ai', cost: 'Pay-per-use', status: 'green', powers: 'Powers: LTX video gen, image gen' },
+      { name: 'ElevenLabs', cost: '$99/mo', status: 'green', powers: 'Powers: narration TTS, music generation' },
+      { name: 'OpenAI', cost: 'Pay-per-use', status: 'green', powers: 'Powers: DALL-E image gen, GPT fallback' },
+      { name: 'Google AI', cost: 'Pay-per-use', status: 'yellow', powers: 'Powers: Gemini, Lyria, Imagen, Veo' }
+    ]},
+    { name: 'Platform', color: 'var(--bp-green)', bg: 'rgba(109,186,109,0.06)', border: 'rgba(109,186,109,0.15)', services: [
+      { name: 'Railway', cost: '$50/mo', status: 'green', powers: 'Hosts: FlowStack, Command Center' },
+      { name: 'Replit', cost: '$25/mo', status: 'green', powers: 'Hosts: Replit production (30+ videos/day)' },
+      { name: 'Supabase', cost: 'Free tier', status: 'green', powers: 'Database: all apps' },
+      { name: 'GitHub', cost: 'Free', status: 'green', powers: 'Code repos: FlowStack, CC' }
+    ]},
+    { name: 'Distribution', color: 'var(--bp-red)', bg: 'rgba(212,91,91,0.06)', border: 'rgba(212,91,91,0.15)', services: [
+      { name: 'DistroKid', cost: '$36/yr', status: 'green', powers: 'Ferron music distribution (all DSPs)' },
+      { name: 'Meta Ads', cost: 'Variable', status: 'yellow', powers: 'Ferron growth campaigns' },
+      { name: 'YouTube API', cost: 'Free', status: 'green', powers: 'Video uploads, analytics, scheduling' }
+    ]},
+    { name: 'Tools & Services', color: 'var(--text-muted)', bg: 'rgba(159,141,131,0.06)', border: 'rgba(159,141,131,0.15)', services: [
+      { name: 'Dropbox', cost: '$12/mo', status: 'green', powers: 'Music catalog (Zimmer\'s library)' },
+      { name: 'Perplexity', cost: '$20/mo', status: 'green', powers: 'Research & web search' },
+      { name: 'Google APIs', cost: 'Free', status: 'green', powers: 'Calendar, Gmail, Gemini' }
+    ]}
+  ];
+
+  for (var bi = 0; bi < branchData.length; bi++) {
+    var b = branchData[bi];
+    var branch = el('div', { className: 'cu-branch' });
+    var bHeader = el('div', { className: 'cu-branch-header', style: { background: b.bg, border: '1px solid ' + b.border, borderBottom: 'none' } });
+    bHeader.appendChild(el('span', { className: 'cu-branch-dot', style: { background: b.color, boxShadow: '0 0 6px ' + b.color } }));
+    bHeader.appendChild(el('span', { className: 'cu-branch-name', style: { color: b.color } }, b.name));
+    branch.appendChild(bHeader);
+
+    var services = el('div', { className: 'cu-branch-services' });
+    for (var si = 0; si < b.services.length; si++) {
+      (function(svc) {
+        var card = el('div', { className: 'cu-svc', style: { background: 'linear-gradient(180deg, ' + b.bg + ' 0%, rgba(22,19,16,0.5) 100%)' }, onClick: function() { S.view = 'connections'; S._connFilter = 'all'; render(); } });
+        var top = el('div', { className: 'cu-svc-top' });
+        var nameEl = el('div', { className: 'cu-svc-name' });
+        nameEl.appendChild(el('span', { className: 'cu-svc-dot cu-svc-dot-' + svc.status }));
+        nameEl.appendChild(document.createTextNode(svc.name));
+        top.appendChild(nameEl);
+        top.appendChild(el('div', { className: 'cu-svc-cost' }, svc.cost));
+        card.appendChild(top);
+        card.appendChild(el('div', { className: 'cu-svc-powers' }, svc.powers));
+        card.appendChild(el('div', { className: 'cu-svc-link' }, '\u2197 Manage Connection'));
+        services.appendChild(card);
+      })(b.services[si]);
+    }
+    branch.appendChild(services);
+    branches.appendChild(branch);
+  }
+  wrap.appendChild(branches);
+
+  // ── Divider ──
+  wrap.appendChild(el('hr', { className: 'cu-divider' }));
+
+  // ── Section 2: Usage Analytics (from existing renderUsage) ──
+  wrap.appendChild(el('div', { className: 'cu-section-title' }, 'Usage Analytics'));
+  var usageContainer = el('div');
+  wrap.appendChild(usageContainer);
+  main.replaceChildren(wrap);
+  // Render existing usage content into the container
+  renderUsage(usageContainer);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONNECTIONS
+// ═══════════════════════════════════════════════════════════
+
+function renderConnections(main) {
+  if (!S._connFilter) S._connFilter = 'all';
+  var wrap = el('div', { className: 'view-enter' });
+
+  // Header
+  var header = el('div', { className: 'cn-header' });
+  var headerLeft = el('div');
+  headerLeft.appendChild(el('div', { className: 'cn-title' }, 'Connections'));
+  var stats = el('div', { className: 'cn-stats' });
+  stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-green' }), ' 14 active'));
+  stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-yellow' }), ' 6 not configured'));
+  stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-red' }), ' 0 issues'));
+  headerLeft.appendChild(stats);
+  header.appendChild(headerLeft);
+
+  var filters = el('div', { className: 'cn-filters' });
+  var filterOpts = ['all', 'active', 'setup', 'issues'];
+  var filterLabels = ['All', 'Active', 'Not Set Up', 'Issues'];
+  for (var fi = 0; fi < filterOpts.length; fi++) {
+    (function(key, label) {
+      filters.appendChild(el('button', { className: 'cn-filter' + (S._connFilter === key ? ' active' : ''), onClick: function() { S._connFilter = key; render(); } }, label));
+    })(filterOpts[fi], filterLabels[fi]);
+  }
+  header.appendChild(filters);
+  wrap.appendChild(header);
+
+  var layout = el('div', { className: 'cn-wrap' });
+  var mainCol = el('div', { className: 'cn-main' });
+  var sidebar = el('div', { className: 'cn-sidebar' });
+
+  // Connection groups
+  var groups = [
+    { name: 'AI Infrastructure', color: 'var(--bp-blue)', catBg: 'rgba(91,155,213,0.12)', catColor: 'var(--bp-blue)', connections: [
+      { name: 'Anthropic', status: 'active', key: 'sk-ant-****...3f8a', plan: 'Teams ($2,400/mo)', verified: '2 hours ago', cost: '$2,400/mo', dash: 'https://console.anthropic.com' },
+      { name: 'fal.ai', status: 'active', key: 'fal-****...9b2c', plan: 'Pay-per-use', verified: '1 hour ago', cost: 'Pay-per-use', dash: 'https://fal.ai/dashboard' },
+      { name: 'ElevenLabs', status: 'active', key: 'el-****...7d1e', plan: 'Pro ($99/mo)', verified: '3 hours ago', cost: '$99/mo', dash: 'https://elevenlabs.io/app' },
+      { name: 'OpenAI', status: 'active', key: 'sk-****...4a2f', plan: 'Pay-per-use', verified: '5 hours ago', cost: 'Pay-per-use', dash: 'https://platform.openai.com' },
+      { name: 'Google AI (Gemini)', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '\u2014', dash: 'https://aistudio.google.com' }
+    ]},
+    { name: 'Platform', color: 'var(--bp-green)', catBg: 'rgba(109,186,109,0.12)', catColor: 'var(--bp-green)', connections: [
+      { name: 'Railway', status: 'active', key: 'Project linked', plan: 'Pro ($50/mo)', verified: 'Live', cost: '$50/mo', dash: 'https://railway.app/dashboard' },
+      { name: 'Replit', status: 'active', key: 'Account linked', plan: 'Core ($25/mo)', verified: 'Live', cost: '$25/mo', dash: 'https://replit.com' },
+      { name: 'Supabase', status: 'active', key: 'sb-****...8c3d', plan: 'Free tier', verified: '1 day ago', cost: 'Free', dash: 'https://supabase.com/dashboard' },
+      { name: 'GitHub', status: 'active', key: 'OAuth connected', plan: 'Free', verified: 'Live', cost: 'Free', dash: 'https://github.com/mmjohnson84BMP' }
+    ]},
+    { name: 'Distribution', color: 'var(--bp-red)', catBg: 'rgba(212,91,91,0.12)', catColor: 'var(--bp-red)', connections: [
+      { name: 'YouTube API', status: 'active', key: 'OAuth connected', plan: 'Free', verified: '6 hours ago', cost: 'Free', dash: 'https://console.cloud.google.com' },
+      { name: 'DistroKid', status: 'active', key: 'Account linked', plan: '$36/yr', verified: 'Active', cost: '$36/yr', dash: 'https://distrokid.com' },
+      { name: 'Meta Ads', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '\u2014', dash: 'https://business.facebook.com' }
+    ]},
+    { name: 'Communication', color: 'var(--purple)', catBg: 'rgba(139,122,168,0.12)', catColor: 'var(--purple)', connections: [
+      { name: 'Slack', status: 'active', key: 'Bot connected', plan: 'Free', verified: 'Live', cost: 'Free', dash: 'https://api.slack.com' },
+      { name: 'Gmail', status: 'active', key: 'OAuth connected', plan: 'Free', verified: 'Live', cost: 'Free', dash: 'https://mail.google.com' },
+      { name: 'Google Calendar', status: 'active', key: 'OAuth connected', plan: 'Free', verified: 'Live', cost: 'Free', dash: 'https://calendar.google.com' },
+      { name: 'Telegram', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '\u2014', dash: 'https://core.telegram.org/bots' }
+    ]},
+    { name: 'Tools', color: 'var(--text-muted)', catBg: 'rgba(159,141,131,0.12)', catColor: 'var(--text-muted)', connections: [
+      { name: 'Dropbox', status: 'active', key: 'OAuth connected', plan: 'Plus ($12/mo)', verified: '1 day ago', cost: '$12/mo', dash: 'https://www.dropbox.com' },
+      { name: 'Perplexity', status: 'active', key: 'pplx-****...2e7f', plan: 'Pro ($20/mo)', verified: '4 hours ago', cost: '$20/mo', dash: 'https://www.perplexity.ai' }
+    ]},
+    { name: 'Music Providers (Future)', color: 'var(--bp-gold)', catBg: 'rgba(212,165,90,0.12)', catColor: 'var(--bp-gold)', connections: [
+      { name: 'Lyria 3 Pro', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.04/30s', dash: '#' },
+      { name: 'MiniMax Music', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.035/track', dash: '#' },
+      { name: 'ACE-Step', status: 'setup', key: '\u2014', plan: 'Not configured (via fal.ai)', verified: '\u2014', cost: '$0.0002/s', dash: '#' },
+      { name: 'Stable Audio', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.20/track', dash: '#' }
+    ]}
+  ];
+
+  for (var gi = 0; gi < groups.length; gi++) {
+    var g = groups[gi];
+    var groupEl = el('div');
+    var gTitle = el('div', { className: 'cn-group-title', style: { color: g.color } });
+    gTitle.appendChild(el('span', { className: 'cn-group-dot', style: { background: g.color } }));
+    gTitle.appendChild(document.createTextNode(g.name));
+    groupEl.appendChild(gTitle);
+
+    var cards = el('div', { className: 'cn-cards' });
+    for (var ci = 0; ci < g.connections.length; ci++) {
+      var c = g.connections[ci];
+      // Filter
+      if (S._connFilter === 'active' && c.status !== 'active') continue;
+      if (S._connFilter === 'setup' && c.status !== 'setup') continue;
+      if (S._connFilter === 'issues' && c.status !== 'issue') continue;
+
+      var dotClass = c.status === 'active' ? 'cu-svc-dot-green' : c.status === 'issue' ? 'cu-svc-dot-red' : 'cu-svc-dot-yellow';
+      var statusText = c.status === 'active' ? 'Connected \u2713' : c.status === 'issue' ? 'Issue' : 'Not Configured';
+
+      var card = el('div', { className: 'cn-card' });
+      var cardHeader = el('div', { className: 'cn-card-header' });
+      var cardName = el('div', { className: 'cn-card-name' });
+      cardName.appendChild(el('span', { className: 'cu-svc-dot ' + dotClass }));
+      cardName.appendChild(document.createTextNode(c.name));
+      cardHeader.appendChild(cardName);
+      cardHeader.appendChild(el('span', { className: 'cn-card-cat', style: { background: g.catBg, color: g.catColor } }, g.name.split(' ')[0]));
+      card.appendChild(cardHeader);
+
+      var body = el('div', { className: 'cn-card-body' });
+      var r1 = el('div', { className: 'cn-card-row' });
+      r1.appendChild(el('span', { className: 'cn-card-label' }, 'Status'));
+      r1.appendChild(el('span', { className: 'cn-card-value', style: { color: c.status === 'active' ? 'var(--bp-green)' : 'var(--bp-gold)' } }, statusText));
+      body.appendChild(r1);
+
+      body.appendChild(el('div', { className: 'cn-card-key' }, c.key));
+
+      var r2 = el('div', { className: 'cn-card-row' });
+      r2.appendChild(el('span', { className: 'cn-card-label' }, 'Plan'));
+      r2.appendChild(el('span', { className: 'cn-card-value' }, c.plan));
+      body.appendChild(r2);
+
+      var r3 = el('div', { className: 'cn-card-row' });
+      r3.appendChild(el('span', { className: 'cn-card-label' }, 'Last Verified'));
+      r3.appendChild(el('span', { className: 'cn-card-value' }, c.verified));
+      body.appendChild(r3);
+      card.appendChild(body);
+
+      var actions = el('div', { className: 'cn-card-actions' });
+      actions.appendChild(el('button', { className: 'cn-card-btn cn-card-btn-primary' }, 'Test Connection'));
+      actions.appendChild(el('a', { className: 'cn-card-btn', href: c.dash, target: '_blank', style: { textDecoration: 'none' } }, 'Dashboard \u2197'));
+      card.appendChild(actions);
+
+      var costLink = el('div', { className: 'cn-card-cost', onClick: function() { S.view = 'costs'; render(); } });
+      costLink.textContent = 'Monthly: ' + c.cost + ' \u2192 Costs & Usage';
+      card.appendChild(costLink);
+
+      cards.appendChild(card);
+    }
+    groupEl.appendChild(cards);
+    // Only show group if it has visible cards
+    if (cards.children.length > 0) mainCol.appendChild(groupEl);
+  }
+
+  // Sidebar — Health summary
+  var health = el('div', { className: 'cn-health' });
+  health.appendChild(el('div', { className: 'cn-health-title' }, 'Connection Health'));
+  var healthData = [
+    { label: 'Total', value: '20', color: 'var(--text)' },
+    { label: 'Active', value: '14', color: 'var(--bp-green)' },
+    { label: 'Not Configured', value: '6', color: 'var(--bp-gold)' },
+    { label: 'Issues', value: '0', color: 'var(--bp-red)' },
+    { label: 'Last Health Check', value: 'Now', color: 'var(--text-muted)' }
+  ];
+  for (var hi = 0; hi < healthData.length; hi++) {
+    var hRow = el('div', { className: 'cn-health-row' });
+    hRow.appendChild(el('span', { style: { color: 'var(--text-muted)' } }, healthData[hi].label));
+    hRow.appendChild(el('span', { style: { fontWeight: '600', color: healthData[hi].color } }, healthData[hi].value));
+    health.appendChild(hRow);
+  }
+  health.appendChild(el('button', { className: 'cn-card-btn cn-card-btn-primary', style: { width: '100%', marginTop: '12px', padding: '8px', textAlign: 'center' } }, '\u26A1 Run Health Check'));
+  sidebar.appendChild(health);
+
+  // Sidebar — Quick links
+  var links = el('div', { className: 'cn-health' });
+  links.appendChild(el('div', { className: 'cn-health-title' }, 'Quick Links'));
+  var linkData = [
+    { label: 'Costs & Usage', action: function() { S.view = 'costs'; render(); } },
+    { label: 'Audio Pipeline Providers', action: function() { S.view = 'blueprint'; S.blueprintTab = 'audio'; render(); } },
+    { label: 'Video Pipeline Providers', action: function() { S.view = 'blueprint'; S.blueprintTab = 'video'; render(); } }
+  ];
+  for (var li = 0; li < linkData.length; li++) {
+    (function(lk) {
+      var linkEl = el('div', { style: { fontSize: '11px', color: 'var(--orange)', cursor: 'pointer', padding: '6px 0', borderBottom: '1px solid rgba(82,68,60,0.08)' }, onClick: lk.action });
+      linkEl.textContent = lk.label + ' \u2192';
+      links.appendChild(linkEl);
+    })(linkData[li]);
+  }
+  sidebar.appendChild(links);
+
+  layout.appendChild(mainCol);
+  layout.appendChild(sidebar);
+  wrap.appendChild(layout);
+  main.replaceChildren(wrap);
+}
+
 function render() {
   var app = document.getElementById('app');
   if (!S.authed) { renderLogin(); return; }
@@ -4129,8 +4489,8 @@ function render() {
   else if (S.view === 'board') renderBoard(main);
   else if (S.view === 'scoreboard') renderScoreboard(main);
   else if (S.view === 'comms') renderComms(main);
-  else if (S.view === 'billing') renderBilling(main);
-  else if (S.view === 'usage') renderUsage(main);
+  else if (S.view === 'costs') renderCostsUsage(main);
+  else if (S.view === 'connections') renderConnections(main);
   else if (S.view === 'blueprint') renderBlueprint(main);
   // Swap in one operation, then fade in
   clearChildren(app);
