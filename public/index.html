@@ -4217,7 +4217,7 @@ function renderCostsUsage(main) {
   var sourceCard = el('div', { className: 'cu-source-card' });
   sourceCard.appendChild(el('div', { style: { textAlign: 'center' } },
     el('div', { className: 'cu-source-name' }, '\uD83D\uDCB3 BMP Card'),
-    el('div', { className: 'cu-source-burn' }, '~$3,035'),
+    el('div', { className: 'cu-source-burn' }, '~$2,606+'),
     el('div', { className: 'cu-source-label' }, 'Monthly Burn')
   ));
   source.appendChild(sourceCard);
@@ -4236,21 +4236,19 @@ function renderCostsUsage(main) {
   var branchData = [
     { name: 'AI Infrastructure', color: 'var(--bp-blue)', bg: 'rgba(91,155,213,0.06)', border: 'rgba(91,155,213,0.15)', services: [
       { name: 'Anthropic Teams', cost: '$2,400/mo', status: 'green', powers: 'Powers: Titus, Socrates, Atlas, Da Vinci, Kubrick, Zimmer' },
-      { name: 'fal.ai', cost: 'Pay-per-use', status: 'green', powers: 'Powers: LTX video gen, image gen' },
+      { name: 'LTX Video', cost: 'Pay-per-use', status: 'green', powers: 'Powers: video generation (direct API)' },
       { name: 'ElevenLabs', cost: '$99/mo', status: 'green', powers: 'Powers: narration TTS, music generation' },
       { name: 'OpenAI', cost: 'Pay-per-use', status: 'green', powers: 'Powers: DALL-E image gen, GPT fallback' },
-      { name: 'Google AI', cost: 'Pay-per-use', status: 'yellow', powers: 'Powers: Gemini, Lyria, Imagen, Veo' }
+      { name: 'Google AI', cost: 'Pay-per-use', status: 'green', powers: 'Powers: Gemini, Veo video gen' }
     ]},
     { name: 'Platform', color: 'var(--bp-green)', bg: 'rgba(109,186,109,0.06)', border: 'rgba(109,186,109,0.15)', services: [
       { name: 'Railway', cost: '$50/mo', status: 'green', powers: 'Hosts: FlowStack, Command Center' },
       { name: 'Replit', cost: '$25/mo', status: 'green', powers: 'Hosts: Replit production (30+ videos/day)' },
-      { name: 'Supabase', cost: 'Free tier', status: 'green', powers: 'Database: all apps' },
       { name: 'GitHub', cost: 'Free', status: 'green', powers: 'Code repos: FlowStack, CC' }
     ]},
     { name: 'Distribution', color: 'var(--bp-red)', bg: 'rgba(212,91,91,0.06)', border: 'rgba(212,91,91,0.15)', services: [
-      { name: 'DistroKid', cost: '$36/yr', status: 'green', powers: 'Ferron music distribution (all DSPs)' },
-      { name: 'Meta Ads', cost: 'Variable', status: 'yellow', powers: 'Ferron growth campaigns' },
-      { name: 'YouTube API', cost: 'Free', status: 'green', powers: 'Video uploads, analytics, scheduling' }
+      { name: 'YouTube API', cost: 'Free', status: 'green', powers: 'Video uploads, analytics, scheduling' },
+      { name: 'Meta Ads', cost: 'Variable', status: 'yellow', powers: 'Ferron growth campaigns' }
     ]},
     { name: 'Tools & Services', color: 'var(--text-muted)', bg: 'rgba(159,141,131,0.06)', border: 'rgba(159,141,131,0.15)', services: [
       { name: 'Dropbox', cost: '$12/mo', status: 'green', powers: 'Music catalog (Zimmer\'s library)' },
@@ -4313,7 +4311,7 @@ function renderConnections(main) {
   var headerLeft = el('div');
   headerLeft.appendChild(el('div', { className: 'cn-title' }, 'Connections'));
   var stats = el('div', { className: 'cn-stats' });
-  stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-green' }), ' 14 active'));
+  stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-green' }), ' 13 active'));
   stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-yellow' }), ' 6 not configured'));
   stats.appendChild(el('div', { className: 'cn-stat' }, el('span', { className: 'cu-svc-dot cu-svc-dot-red' }), ' 0 issues'));
   headerLeft.appendChild(stats);
@@ -4338,20 +4336,19 @@ function renderConnections(main) {
   var groups = [
     { name: 'AI Infrastructure', color: 'var(--bp-blue)', catBg: 'rgba(91,155,213,0.12)', catColor: 'var(--bp-blue)', connections: [
       { name: 'Anthropic', status: 'active', key: 'sk-ant-****...3f8a', plan: 'Teams ($2,400/mo)', verified: '2 hours ago', cost: '$2,400/mo', dash: 'https://console.anthropic.com' },
-      { name: 'fal.ai', status: 'active', key: 'fal-****...9b2c', plan: 'Pay-per-use', verified: '1 hour ago', cost: 'Pay-per-use', dash: 'https://fal.ai/dashboard' },
+      { name: 'LTX Video', status: 'active', key: 'ltx-****...key', plan: 'Pay-per-use', verified: 'Key deployed', cost: 'Pay-per-use', dash: 'https://docs.ltx.video' },
       { name: 'ElevenLabs', status: 'active', key: 'el-****...7d1e', plan: 'Pro ($99/mo)', verified: '3 hours ago', cost: '$99/mo', dash: 'https://elevenlabs.io/app' },
       { name: 'OpenAI', status: 'active', key: 'sk-****...4a2f', plan: 'Pay-per-use', verified: '5 hours ago', cost: 'Pay-per-use', dash: 'https://platform.openai.com' },
-      { name: 'Google AI (Gemini)', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '\u2014', dash: 'https://aistudio.google.com' }
+      { name: 'Google AI (Gemini)', status: 'active', key: 'AIza****...env', plan: 'Pay-per-use', verified: 'Railway env', cost: 'Pay-per-use', dash: 'https://aistudio.google.com' }
     ]},
     { name: 'Platform', color: 'var(--bp-green)', catBg: 'rgba(109,186,109,0.12)', catColor: 'var(--bp-green)', connections: [
       { name: 'Railway', status: 'active', key: 'Project linked', plan: 'Pro ($50/mo)', verified: 'Live', cost: '$50/mo', dash: 'https://railway.app/dashboard' },
       { name: 'Replit', status: 'active', key: 'Account linked', plan: 'Core ($25/mo)', verified: 'Live', cost: '$25/mo', dash: 'https://replit.com' },
-      { name: 'Supabase', status: 'active', key: 'sb-****...8c3d', plan: 'Free tier', verified: '1 day ago', cost: 'Free', dash: 'https://supabase.com/dashboard' },
       { name: 'GitHub', status: 'active', key: 'OAuth connected', plan: 'Free', verified: 'Live', cost: 'Free', dash: 'https://github.com/mmjohnson84BMP' }
     ]},
     { name: 'Distribution', color: 'var(--bp-red)', catBg: 'rgba(212,91,91,0.12)', catColor: 'var(--bp-red)', connections: [
       { name: 'YouTube API', status: 'active', key: 'OAuth connected', plan: 'Free', verified: '6 hours ago', cost: 'Free', dash: 'https://console.cloud.google.com' },
-      { name: 'DistroKid', status: 'active', key: 'Account linked', plan: '$36/yr', verified: 'Active', cost: '$36/yr', dash: 'https://distrokid.com' },
+      { name: 'DistroKid', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$36/yr', dash: 'https://distrokid.com' },
       { name: 'Meta Ads', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '\u2014', dash: 'https://business.facebook.com' }
     ]},
     { name: 'Communication', color: 'var(--purple)', catBg: 'rgba(139,122,168,0.12)', catColor: 'var(--purple)', connections: [
@@ -4367,7 +4364,7 @@ function renderConnections(main) {
     { name: 'Music Providers (Future)', color: 'var(--bp-gold)', catBg: 'rgba(212,165,90,0.12)', catColor: 'var(--bp-gold)', connections: [
       { name: 'Lyria 3 Pro', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.04/30s', dash: '#' },
       { name: 'MiniMax Music', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.035/track', dash: '#' },
-      { name: 'ACE-Step', status: 'setup', key: '\u2014', plan: 'Not configured (via fal.ai)', verified: '\u2014', cost: '$0.0002/s', dash: '#' },
+      { name: 'ACE-Step', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.0002/s', dash: '#' },
       { name: 'Stable Audio', status: 'setup', key: '\u2014', plan: 'Not configured', verified: '\u2014', cost: '$0.20/track', dash: '#' }
     ]}
   ];
@@ -4439,8 +4436,8 @@ function renderConnections(main) {
   var health = el('div', { className: 'cn-health' });
   health.appendChild(el('div', { className: 'cn-health-title' }, 'Connection Health'));
   var healthData = [
-    { label: 'Total', value: '20', color: 'var(--text)' },
-    { label: 'Active', value: '14', color: 'var(--bp-green)' },
+    { label: 'Total', value: '19', color: 'var(--text)' },
+    { label: 'Active', value: '13', color: 'var(--bp-green)' },
     { label: 'Not Configured', value: '6', color: 'var(--bp-gold)' },
     { label: 'Issues', value: '0', color: 'var(--bp-red)' },
     { label: 'Last Health Check', value: 'Now', color: 'var(--text-muted)' }
