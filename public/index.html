@@ -3583,11 +3583,12 @@ function renderBlueprintArch(main) {
 
   z2.appendChild(kubrick);
 
-  // Zimmer
-  var zimmer = el('div', { className: 'bp-engine bp-engine-zimmer' });
+  // Zimmer (clickable → Audio Pipeline tab)
+  var zimmer = el('div', { className: 'bp-engine bp-engine-zimmer', style: { cursor: 'pointer' }, onClick: function() { S.blueprintTab = 'audio'; render(); } });
   var zLabel = el('div', { className: 'bp-zone-label' });
   zLabel.appendChild(el('span', { className: 'bp-zone-label-dot' }));
   zLabel.appendChild(document.createTextNode('Zimmer \u2014 Composer'));
+  zLabel.appendChild(el('span', { style: { fontSize: '10px', color: 'var(--text-muted)', opacity: '0.6', marginLeft: '6px' } }, '\u2197'));
   zimmer.appendChild(zLabel);
 
   var zInputs = el('div', { className: 'bp-inputs' });
@@ -3635,9 +3636,9 @@ function renderBlueprintArch(main) {
 
   var conveyor = el('div', { className: 'bp-conveyor' });
   var pipeSteps = [
-    { icon: '\uD83D\uDDBC\uFE0F', name: 'Anchor Image', detail: 'Flux / Imagen', status: 'complete' },
-    { icon: '\uD83C\uDFAC', name: 'Video Clip', detail: 'LTX / Veo', status: 'complete' },
-    { icon: '\uD83C\uDFB5', name: 'Music', detail: 'Zimmer Select', status: 'complete' },
+    { icon: '\uD83D\uDDBC\uFE0F', name: 'Anchor Image', detail: 'Flux / Imagen', status: 'complete', link: 'video', tier: 't1' },
+    { icon: '\uD83C\uDFAC', name: 'Video Clip', detail: 'LTX / Veo', status: 'complete', link: 'video', tier: 't1' },
+    { icon: '\uD83C\uDFB5', name: 'Music', detail: 'Zimmer Select', status: 'complete', link: 'audio' },
     { icon: '\uD83C\uDF99\uFE0F', name: 'Narration', detail: 'ElevenLabs', status: 'processing' },
     { icon: '\uD83C\uDFAC', name: 'Remotion', detail: 'Composition', status: 'queued' },
     { icon: '\u2705', name: 'QA Gate', detail: 'Pass / Fail', status: 'pending' },
@@ -3650,9 +3651,22 @@ function renderBlueprintArch(main) {
       conveyor.appendChild(arrow);
     }
     var ps = pipeSteps[pi];
-    var step = el('div', { className: 'bp-pipe-step' });
+    var stepStyle = ps.link ? { cursor: 'pointer' } : {};
+    var step = el('div', { className: 'bp-pipe-step', style: stepStyle });
+    if (ps.link) {
+      (function(p) {
+        step.addEventListener('click', function() {
+          if (p.link === 'audio') { S.blueprintTab = 'audio'; }
+          else if (p.link === 'video') { S.blueprintTab = 'video'; S._videoTier = p.tier || 't1'; }
+          render();
+        });
+      })(ps);
+    }
     step.appendChild(el('span', { className: 'bp-pipe-icon' }, ps.icon));
-    step.appendChild(el('div', { className: 'bp-pipe-name' }, ps.name));
+    var nameRow = el('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '3px' } });
+    nameRow.appendChild(el('div', { className: 'bp-pipe-name' }, ps.name));
+    if (ps.link) nameRow.appendChild(el('span', { style: { fontSize: '8px', color: 'var(--text-muted)', opacity: '0.5' } }, '\u2197'));
+    step.appendChild(nameRow);
     step.appendChild(el('div', { className: 'bp-pipe-detail' }, ps.detail));
     // Status dot
     var statusColor = ps.status === 'complete' ? 'var(--bp-green)' : ps.status === 'processing' ? 'var(--bp-blue)' : 'var(--text-muted)';
@@ -3711,10 +3725,9 @@ function renderBlueprintArch(main) {
   tierTree.appendChild(el('div', { className: 'bp-tier-title' }, 'Video Type Tiers'));
 
   var tiers = [
-    { num: 'Tier 1', name: 'Seamless Forward Loop', desc: 'All current production. Shorts + long-form (2\u20138hr sleep/ambient).', active: true, badge: 'Active' },
-    { num: 'Tier 2', name: 'Slideshow / Living Stills', desc: 'Static and animated slideshows. Requires multi-image pipeline.', active: false, badge: 'Locked' },
-    { num: 'Tier 3', name: 'Multi-scene Cinematic', desc: 'Scene-to-scene consistency. Needs advanced prompt chaining.', active: false, badge: 'Locked' },
-    { num: 'Tier 4', name: 'Character Series', desc: 'Persistent characters + narrative state. Requires LoRA fine-tuning.', active: false, badge: 'Locked' }
+    { num: 'Tier 1', name: 'Seamless Forward Loop', desc: 'All current production. Shorts + long-form (2\u20138hr sleep/ambient).', active: true, badge: 'Active', videoTier: 't1' },
+    { num: 'Tier 2', name: 'Slideshow', desc: '2a Static Slideshow, 2b Breathing/Living Stills.', active: false, badge: 'Locked', videoTier: 't2a' },
+    { num: 'Tier 3', name: 'Storyboard Production', desc: '3a Narrative (script-driven), 3b Music Video (song-driven). Character + location locking built in.', active: false, badge: 'Locked', videoTier: 't3a' }
   ];
   for (var tii = 0; tii < tiers.length; tii++) {
     if (tii > 0) {
@@ -3723,12 +3736,17 @@ function renderBlueprintArch(main) {
       tierTree.appendChild(tierConn);
     }
     var tr = tiers[tii];
-    var tierEl = el('div', { className: 'bp-tier ' + (tr.active ? 'bp-tier-active' : 'bp-tier-locked') });
-    tierEl.appendChild(el('div', { className: 'bp-tier-num' }, tr.num));
-    tierEl.appendChild(el('div', { className: 'bp-tier-name' }, tr.name));
-    tierEl.appendChild(el('div', { className: 'bp-tier-desc' }, tr.desc));
-    tierEl.appendChild(el('span', { className: 'bp-tier-badge' }, tr.active ? '\u2713 ' + tr.badge : '\uD83D\uDD12 ' + tr.badge));
-    tierTree.appendChild(tierEl);
+    (function(t) {
+      var tierEl = el('div', { className: 'bp-tier ' + (t.active ? 'bp-tier-active' : 'bp-tier-locked'), style: { cursor: 'pointer' }, onClick: function() { S.blueprintTab = 'video'; S._videoTier = t.videoTier; render(); } });
+      tierEl.appendChild(el('div', { className: 'bp-tier-num' }, t.num));
+      var nameRow = el('div', { style: { display: 'flex', alignItems: 'center', gap: '6px' } });
+      nameRow.appendChild(el('div', { className: 'bp-tier-name', style: { marginBottom: '0' } }, t.name));
+      nameRow.appendChild(el('span', { style: { fontSize: '10px', color: 'var(--text-muted)', opacity: '0.6' } }, '\u2197'));
+      tierEl.appendChild(nameRow);
+      tierEl.appendChild(el('div', { className: 'bp-tier-desc' }, t.desc));
+      tierEl.appendChild(el('span', { className: 'bp-tier-badge' }, t.active ? '\u2713 ' + t.badge : '\uD83D\uDD12 ' + t.badge));
+      tierTree.appendChild(tierEl);
+    })(tr);
   }
   sidebar.appendChild(tierTree);
 
@@ -4102,10 +4120,11 @@ function renderBlueprintAudio(main) {
 function render() {
   var app = document.getElementById('app');
   if (!S.authed) { renderLogin(); return; }
-  clearChildren(app);
-  renderNav(app);
+  // Build new content offscreen to prevent FOUC
+  var offscreen = el('div', { style: { opacity: '0' } });
+  renderNav(offscreen);
   var main = el('div', { className: 'main', id: 'main' });
-  app.appendChild(main);
+  offscreen.appendChild(main);
   if (S.view === 'dashboard') renderDashboard(main);
   else if (S.view === 'board') renderBoard(main);
   else if (S.view === 'scoreboard') renderScoreboard(main);
@@ -4113,6 +4132,11 @@ function render() {
   else if (S.view === 'billing') renderBilling(main);
   else if (S.view === 'usage') renderUsage(main);
   else if (S.view === 'blueprint') renderBlueprint(main);
+  // Swap in one operation, then fade in
+  clearChildren(app);
+  while (offscreen.firstChild) app.appendChild(offscreen.firstChild);
+  app.style.opacity = '0';
+  requestAnimationFrame(function() { app.style.transition = 'opacity 120ms ease'; app.style.opacity = '1'; });
 }
 
 document.addEventListener('keydown', function(e) {
